@@ -32,6 +32,7 @@ def build(output, skills, root=ROOT):
              "Included: " + ", ".join(skills) + ".\n\n"
              "Installation copies only the included skills and adds their automatic user-level guidance.\n"
              "Context Management installation selects same-project continuation/routing defaults for requested work.\n"
+             "Before a substantial new phase in a long project chat, it asks new same-project chat or continue here.\n"
              "Existing user preferences are preserved. No project activation prompt, Git account, or plugin is needed.\n"
              "Guidance takes effect when Codex next reloads instructions; existing sessions may retain an old snapshot.\n\n"
              "Check: Install.cmd status\nRemove and restore originals: Install.cmd uninstall\n\n"

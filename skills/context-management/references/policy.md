@@ -37,6 +37,10 @@ Optional `settings` contains `mode` (`notify-and-transfer`, `suggest-only`, or `
 
 `completed` describes the present outcome. `new_outcome` means the user has requested a distinct next outcome, not that the assistant has invented another task. `safe_checkpoint` is false while transfer would interrupt work that cannot safely pause. Omitted booleans default to false; supplied booleans must be true or false, not null. Missing safe-checkpoint evidence defaults to false in the helper.
 
+`new_phase` means a requested next stage, such as implementation after accepted planning. `substantial_history` describes already-visible substantial prior work that can be represented by a concise brief; do not infer measured pressure from it. With either `new_phase` or `new_outcome`, substantial history, verified project membership, and a safe checkpoint, the default is `ask_thread_choice`. Ask new same-project chat or continue here, then wait before substantial domain work, regardless of occupancy, standing routing authorization, or estimated transfer costs. The result permits no dispatch. Small same-phase fixes do not qualify.
+
+Optional `boundary_choice` is `new-thread` or `current-thread`, supplied only from an actual human choice applicable to this phase. Omit it while unanswered; an asynchronous pending question is not consent. `current-thread` continues without pressure notices. `new-thread` returns a transfer candidate, subject to essential-context and safe-transfer gates. Reuse the choice within that phase rather than asking on each edit. An explicit `user_requested_new_thread` already supplies the choice. Global stay/disabled preferences remain binding. If membership is unknown, `review` with `phase_project_unverified` means verify membership before asking; it is not permission to begin implementation. Verified standalone work retains its ordinary checkpoint policy.
+
 Use `context` only for genuinely current window occupancy, with its source and freshness. Never place lifetime input/output totals, account percentages, a quota budget, or the last request's token count here unless the host explicitly defines it as current occupancy. Stale observations are ignored. The helper checks declared types, not the truth of their source.
 
 Counters cover the current thread since its accepted handoff. Count substantive user work turns, observed tool outputs at least 8,000 characters, and actual observed compactions. Do not infer them from elapsed time or import predecessor counters. Unknown is not zero. `obsolete_context_evidence` contains distinct, concrete observations (not general statements that a chat is long).
@@ -45,7 +49,7 @@ At first use in an already-long chat, set `admission_check: true` and use alread
 
 ## Transfer cost and reconstruction
 
-Optional `transfer_context_ready: false` keeps work here when essential destination context is unavailable. Optional `reconstruction_repeats_work: true` returns a concise `checkpoint` at a safe boundary or `continue` otherwise. Both avoid automatic reconstruction of completed investigations; no extra tools are needed when the facts are known. Checkpoint means retain only useful changed findings, not introduce a logging routine.
+Optional `transfer_context_ready: false` prevents transfer when essential destination context is unavailable. If the user explicitly chose a new chat, return `blocked_transfer`: preserve the source and explain the blocker, without starting implementation here. Otherwise continue in place. Optional `reconstruction_repeats_work: true` returns a concise `checkpoint` at a safe boundary or `continue` otherwise. These avoid automatic reconstruction of completed investigations; no extra tools are needed when the facts are known. Checkpoint means retain only useful changed findings, not introduce a logging routine.
 
 When comparable remaining-work costs are actually available, optional `transfer_cost` accepts:
 
@@ -65,12 +69,13 @@ When comparable remaining-work costs are actually available, optional `transfer_
 
 All four costs are nonnegative integers in one unit: `tokens`, `milliseconds`, or `tool_calls`. Compare the same remaining work and include handoff, startup, and reconstruction. `basis` is `measured` or `estimated` with a nonempty observation source; the helper validates declarations, not economic truth. Tokens are usage units, not billing amounts. Estimates are not savings measurements. Do not make an extra model call, inspect private logs, or invent telemetry to fill this object.
 
-A fresh total transfer cost at least as large as continuing returns `continue` without a notice or transfer checks. Stale or absent comparisons leave ordinary routing intact. A favorable comparison still needs all transfer/authorization gates. Reassess only at a meaningful change, not by polling. Explicit `user_requested_new_thread: true` bypasses cost/repeated-work preferences, but not inaccessible essential context, safe checkpoints, authorization, or explicit stay constraints. Use the latest human preference when normalizing conflicting observations.
+A fresh total transfer cost at least as large as continuing returns `continue` for ordinary pressure transfers. It does not suppress a phase-location question or override its answer. Stale or absent comparisons leave ordinary routing intact. A favorable comparison still needs all transfer/authorization gates. Reassess only at a meaningful change, not by polling. Explicit `user_requested_new_thread: true` or a phase choice of `new-thread` bypasses cost/repeated-work preferences, but not inaccessible essential context, safe checkpoints, authorization, or explicit stay constraints. Use the latest human preference when normalizing conflicting observations.
 
 ## Decision order
 
-1. Completed outcome with no next outcome: `complete`. No successor.
+1. Completed outcome with no requested next outcome/phase or explicit new-chat request: `complete`. No successor.
 2. User asks to remain here: `continue`, even with pressure.
+   An explicit new-chat request needs no question. Otherwise, a requested next phase/outcome with substantial history takes precedence over pressure: apply the phase choice above. A safe unanswered choice in a verified project returns `ask_thread_choice`; an unsafe boundary defers until a checkpoint. Never treat an unanswered choice as a transfer or start implementing while waiting.
 3. Verified standalone chat with fresh occupancy at least 75%, or proxy/catch-up pressure when fresh telemetry is missing: by default, `checkpoint` at a safe checkpoint or `continue` while work cannot safely pause; neither needs project setup. Only when `project_setup_allowed: true` reflects a useful, permitted offer, return `offer_project` at a safe checkpoint or `defer`. A dismissed offer yields `review` without asking again. This result grants no creation/move permission.
 4. Distinct requested outcome: `rollover` candidate at a safe checkpoint, otherwise `defer`.
 5. Fresh measured occupancy at least 85%: `rollover` candidate, or `defer` if unsafe.

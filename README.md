@@ -47,7 +47,7 @@ Reminders make no model calls, read no transcripts, write no per-turn project st
 
 ## What to expect
 
-Context Management checks useful task boundaries during active work. It keeps related work together, uses concise checkpoints for standalone chats, and transfers only when justified, authorized, and supported. Source Selection retrieves enough evidence for the actual task and preserves explicit full-read or exhaustive-coverage requirements.
+Context Management checks task boundaries before substantial work. At a requested new phase in a long project chat—for example, implementing an accepted plan—it asks once whether to start a new chat in the same project or continue here, then waits for the answer. It honors existing choices and keeps small follow-up fixes together. It uses concise checkpoints for standalone chats and transfers only when justified, authorized, and supported. Source Selection retrieves enough evidence for the actual task and preserves explicit full-read or exhaustive-coverage requirements.
 
 Available cost comparisons can keep work in place when a handoff would repeat an investigation or cost more than continuing. Concise findings reuse evidence at known versions. An optional local reader hashes UTF-8 sources, returns bounded pages, and omits already-available unchanged text. These helpers need no persistent cache, per-turn report, or new service; native tools remain available.
 

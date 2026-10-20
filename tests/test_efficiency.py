@@ -168,7 +168,7 @@ class TransferCostTests(unittest.TestCase):
     def test_user_requested_thread_bypasses_cost_but_preserves_access_gate(self):
         value = self.observation | {"user_requested_new_thread": True, "transfer_cost": self.cost}
         self.assertEqual(POLICY.assess(value)["action"], "rollover")
-        self.assertEqual(POLICY.assess(value | {"transfer_context_ready": False})["action"], "continue")
+        self.assertEqual(POLICY.assess(value | {"transfer_context_ready": False})["action"], "blocked_transfer")
         self.assertEqual(POLICY.assess(value | {"completed": True, "new_outcome": False})["action"], "rollover")
         self.assertEqual(POLICY.assess(value | {"safe_checkpoint": False})["action"], "defer")
 

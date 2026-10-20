@@ -16,7 +16,8 @@ def render(home, skills, installation=False, brief=False):
     lines = ["## PM Essential Skills"]
     if "context-management" in skills:
         lines.append(f"Use `{(home / 'skills/context-management/SKILL.md').as_posix()}` "
-                     "for relevant continuity/handoffs.")
+                     "at task boundaries. Before starting a substantial new phase in a long project chat, "
+                     "ask: new chat in this project or continue here? Wait for the answer; honor existing choices.")
     if "source-selection" in skills:
         lines.append(f"Use `{(home / 'skills/source-selection/SKILL.md').as_posix()}` "
                      "for relevant evidence retrieval/reuse.")

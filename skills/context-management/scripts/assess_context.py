@@ -14,9 +14,10 @@ ROLLOVER_RATIO = 0.85
 PROXY_LIMITS = {"substantive_turns": 20, "large_outputs": 6, "compactions": 2}
 BOOLEAN_FIELDS = {"completed", "new_outcome", "safe_checkpoint", "user_keep_thread",
                   "project_offer_dismissed", "project_setup_allowed", "admission_check",
-                  "transfer_context_ready", "reconstruction_repeats_work", "user_requested_new_thread"}
+                  "transfer_context_ready", "reconstruction_repeats_work", "user_requested_new_thread",
+                  "new_phase", "substantial_history"}
 FIELDS = BOOLEAN_FIELDS | set(PROXY_LIMITS) | {"context", "obsolete_context_evidence", "project_mode",
-                                             "last_notice_level", "settings", "transfer_cost"}
+                                             "last_notice_level", "settings", "transfer_cost", "boundary_choice"}
 NOTICE_RANK = {"none": 0, "review": 1, "rollover": 2}
 
 
@@ -69,6 +70,8 @@ def _validate(observation: Any) -> tuple[dict, float | None, int]:
     unknown = set(observation) - FIELDS
     if unknown:
         raise ValueError(f"Unknown observation fields: {', '.join(sorted(unknown))}")
+    if "boundary_choice" in observation and observation["boundary_choice"] not in ("new-thread", "current-thread"):
+        raise ValueError("boundary_choice must be new-thread or current-thread")
     project_mode = observation.get("project_mode", "unknown")
     if not isinstance(project_mode, str) or project_mode not in {"project", "standalone", "unknown"}:
         raise ValueError("project_mode must be project, standalone, or unknown")
@@ -150,8 +153,9 @@ def assess(observation: Any) -> dict:
 
     def transfer(reason: str) -> dict:
         if obs.get("transfer_context_ready") is False:
-            return finish("continue", "transfer_context_unavailable")
-        if not obs.get("user_requested_new_thread", False):
+            explicit_destination = obs.get("user_requested_new_thread", False) or reason == "user_chose_new_thread"
+            return finish("blocked_transfer" if explicit_destination else "continue", "transfer_context_unavailable")
+        if not obs.get("user_requested_new_thread", False) and reason != "user_chose_new_thread":
             if obs.get("reconstruction_repeats_work", False):
                 return finish("checkpoint" if obs.get("safe_checkpoint", False) else "continue",
                               "transfer_would_repeat_investigation")
@@ -163,7 +167,8 @@ def assess(observation: Any) -> dict:
             return result
         return finish("rollover" if obs.get("safe_checkpoint", False) else "defer", reason)
 
-    if obs.get("completed", False) and not obs.get("new_outcome", False) and not obs.get("user_requested_new_thread", False):
+    if (obs.get("completed", False) and not obs.get("new_outcome", False)
+            and not obs.get("new_phase", False) and not obs.get("user_requested_new_thread", False)):
         return finish("complete", "outcome_finished")
     if obs.get("user_keep_thread", False):
         return finish("continue", "user_prefers_current_thread")
@@ -171,6 +176,17 @@ def assess(observation: Any) -> dict:
         return finish("continue", "intervention_mode_stay")
     if obs.get("user_requested_new_thread", False):
         return transfer("user_requested_new_thread")
+    if (obs.get("new_phase", False) or obs.get("new_outcome", False)) and obs.get("substantial_history", False):
+        if obs.get("boundary_choice") == "current-thread":
+            return finish("continue", "user_chose_current_thread")
+        if obs.get("boundary_choice") == "new-thread":
+            return transfer("user_chose_new_thread")
+        if not obs.get("safe_checkpoint", False):
+            return finish("defer", "phase_choice_at_checkpoint")
+        if obs.get("project_mode") == "project":
+            return finish("ask_thread_choice", "requested_phase_boundary")
+        if obs.get("project_mode", "unknown") == "unknown":
+            return finish("review", "phase_project_unverified")
     pressure = ratio >= settings["review_ratio"] if ratio is not None else proxy_triggered or existing_history_signal
     if obs.get("project_mode") == "standalone" and pressure:
         if not obs.get("project_setup_allowed", False):

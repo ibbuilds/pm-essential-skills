@@ -2,6 +2,20 @@
 
 Load on first activation in an existing conversation, or when deciding whether to notify the user about context pressure. The skill applies to old project chats immediately; it does not wait for a new project or a new conversation.
 
+## Phase choice before domain work
+
+At turn entry, distinguish continuing the current phase from a requested next phase or distinct outcome. When a substantial project chat has established the research or accepted plan and the user says to start implementation, ask once:
+
+> Start implementation in a new chat in this project, or continue here?
+
+Wait for the answer before substantial implementation or further domain investigation. Acknowledge the requested work and reuse the accepted plan to make the choice concrete; do not begin the work while the question is pending. An asynchronous question is still pending until answered. Standing routing authorization permits execution after the choice; it does not choose the location for this phase.
+
+`new_phase` means a human-requested next stage, not an invented assistant task. `substantial_history` means already-visible research, planning, iterations, or resolved material that can be replaced by a concise authoritative brief. This is a structural judgment, not a token measurement. Low or unavailable occupancy does not suppress the choice. Small plans followed by small edits, unfinished reasoning within one phase, and related follow-up fixes do not automatically trigger it.
+
+Reuse a location choice already made for this phase. An explicit request for a new chat, an explicit choice to stay, or a relevant standing stay/disabled preference needs no repeated question. “Implement it” requests the work; by itself it does not choose the chat. A later substantial phase may warrant a fresh choice; do not ask on every turn. With unknown project membership, verify it using supported tools first. Standalone work does not require project creation or a setup interview.
+
+If the user chooses a new chat, carry the accepted decisions, constraints, artifact references, changed work, and next action into the handoff. Preserve the same project, settings, and one owner. If essential context or capabilities block execution, explain that specific blocker once; do not silently start implementation here. If the user chooses this chat, continue immediately without pressure prompts for that choice.
+
 ## Catch-up assessment
 
 1. Verify current project membership and whether management is enabled. Reuse known host facts. Installing the skill does not automatically activate it in every historical chat.
@@ -14,7 +28,7 @@ Existing successful compaction is respected: fresh low occupancy overrides old c
 
 ## Notice once, then act
 
-At a safe checkpoint, give a short pressure notice before a justified transfer or material review. Name observed evidence and the next action. With standing authorization, proceed with the handoff; the notice is informational, not another permission prompt.
+For same-phase context pressure, at a safe checkpoint give a short pressure notice before a justified transfer or material review. Name observed evidence and the next action. With standing authorization, proceed with the handoff; this pressure notice is informational. The phase-location choice above requires an answer and takes precedence when both signals apply.
 
 Measured example:
 
