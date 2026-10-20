@@ -34,6 +34,7 @@ Source Selection does not create a parallel project-memory system. Context Manag
 ## Non-intrusive behavior
 
 - Useful same-task work proceeds without a new management call, message, or file when current state is sufficient.
+- Plugin and individual skill installs use normal implicit selection without per-project activation prompts. Each skill remains independent; optional host activation adapters strengthen discovery without becoming prerequisites. Installation receipts and project notes are not authorization grants.
 - Unknown measurements stay unknown. No skill attributes waste or claims savings from chat age, account percentages, or word counts.
 - Notices explain a substantiated issue and an actionable next step. Avoid repeated warnings, user blame, and unnecessary confirmation.
 - Respect explicit exhaustive coverage, full-document reads, required tools, output standards, and the user's choice to stay in a chat. Optimization cannot silently reduce the assignment.

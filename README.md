@@ -1,88 +1,80 @@
 # PM Essential Skills
 
-Reusable AI skills that reduce avoidable context, repeated investigation, and unnecessary coordination across projects. Preserve useful work and the user's control while improving total task efficiency.
+Skills that help AI assistants preserve useful context and retrieve sufficient evidence with less repeated work. They work across project types and preserve the user's goals, preferences, and required quality.
 
-The suite works across project types. It does not prescribe how to code, design, research, or produce the project's deliverables. Git, GitHub, and other services can be optional adapters; none is required to use the suite. See [suite principles and skill boundaries](docs/suite-principles.md).
+## Install, then work normally
 
-## Skills
+1. Choose the full-suite download or the individual skill you want.
+2. Extract it and open **Install.cmd** on Windows.
+3. Continue using Codex normally when it next loads its instructions. No project activation prompt is needed.
 
-| Skill | Responsibility | Avoidable work addressed |
-| --- | --- | --- |
-| [Context Management](skills/context-management/SKILL.md) | Conversation boundaries, project association, and reliable handoffs | Carrying obsolete conversation context and repeating work after a bad transfer. |
-| [Source Selection](skills/source-selection/SKILL.md) | Locate and read sufficient task-relevant evidence | Repeatedly loading entire collections, unchanged files, and unrelated search results. |
+The installer finds Codex's bundled Python runtime when available. It installs only the included skills and adds a small activation rule to your existing user-level instructions. It preserves existing preferences and saves originals for uninstall. It needs no Git account, plugin, server, project registration, or tracking service. It does not create project files or alter tool permissions.
 
-Each skill works independently. Neither requires another manager skill or a mandatory project structure.
-
-## First skill: Context Management
-
-[`skills/context-management`](skills/context-management/SKILL.md) keeps conversations focused on a coherent outcome and moves work into a fresh thread when there is a useful boundary or excessive context. It creates a concise handoff, preserves the project association, and resumes the authorized work when the host supports thread creation.
-
-The first version is a reviewable implementation, not a measured token-savings claim. Long conversations can increase usage, but caching, automatic compaction, model choice, reasoning, and reconstruction costs affect whether a fresh thread is cheaper. More threads are not automatically better.
-
-## Use it
-
-1. Install the `skills/context-management` directory in a skill location supported by your host. For Codex, a repository-local location is `.agents/skills/context-management`; a personal location is `~/.codex/skills/context-management`. Do not copy this suite into every project unless you want project-local installations.
-2. In the target project, send the [activation prompt](skills/context-management/assets/activation-prompt.txt). This gives standing authorization to create and coordinate threads within the requested work. It does not authorize new project scope.
-3. Continue asking for work normally. The skill checks boundaries during active turns and at safe checkpoints. It avoids interrupting useful work just to satisfy a message-count rule.
-
-Install `skills/source-selection` in the same way when useful. Invoke it with `$source-selection` for a retrieval-heavy task, or let the host select it implicitly when appropriate. It needs no standing write authorization or tracking database: it uses available read tools, keeps existing source requirements, and does not create project files by default.
-
-Implicit skill selection is enabled, but selection is not a guaranteed per-turn hook. For persistent project discovery, the activation workflow offers a small, project-local instruction referencing the skill. It preserves existing instructions. A skill cannot run while the assistant is idle or change an app's context policy by itself.
-
-This repository does not enable management for itself, install globally, or modify any project just by being checked out.
-
-## What is automatic
-
-| Capability | Behavior |
+| Download | What it helps with |
 | --- | --- |
-| Detect a task boundary | Separate independently describable outcomes; keep related edits and follow-up fixes together. |
-| Join an existing long chat | Assess already-visible history immediately; issue one evidence-based pressure notice and prepare a same-project handoff when justified. No waiting for future growth. |
-| Recognize standalone work | Offer project setup once when warranted; obtain the user's name and consent, create/move only through supported host capabilities, and verify membership. |
-| Evaluate context pressure | Use fresh current-context telemetry when exposed. Otherwise use labeled structural signals. |
-| Prepare continuation | Record current state, binding decisions, references, pending work, and a specific next action. |
-| Create a fresh chat | Use the host's supported thread tools under standing user authorization. Preserve the project and execution location. |
-| Complete the transfer | Verify creation, record the destination, and finish the source turn without duplicate implementation. |
-| Missing capabilities | Keep working when possible and provide a ready-to-use handoff. Do not fabricate a thread or measurement. |
+| Full suite | Both independent skills together. |
+| Context Management | Keep related work together, preserve continuity, and perform justified handoffs with supported tools. |
+| Source Selection | Find, read, and revalidate sufficient evidence while avoiding unnecessary repeated retrieval. |
 
-Thread tools are currently documented for the Codex desktop adapter. The core workflow is domain independent; other hosts need an equivalent supported adapter or use the manual handoff fallback. The skill is not a background monitor and cannot guarantee every turn will invoke it.
+Each skill works independently. Installing one does not require the other. Existing user choices such as disabled, suggest-only, and stay remain binding. Short work should usually proceed without management notices or extra files.
 
-The current authoring host can move chats to existing projects but exposes no app-project creation tool. The skill includes the complete capability-gated setup flow and an honest fallback. Moving an existing chat organizes it; a separate fresh-thread handoff is what can reduce carried context.
+For other systems, or an advanced installation:
 
-## Development
-
-Requires Python 3.10+ for optional deterministic helpers; the skills themselves are instruction based. Runtime helper dependencies: standard library only. Repository validation uses the development dependency PyYAML.
-
-```powershell
-py -3 -m pip install -r requirements-dev.txt
-py -3 -m unittest discover -s tests -v
-py -3 scripts/validate_repository.py
+```sh
+python3 scripts/install_suite.py install
 ```
 
-Example policy assessment:
+The installer requires Python 3.10+; the skills themselves also work through ordinary host skill discovery without Python or the installer. You can install a skill folder directly in a supported skill location. The installer strengthens local activation; it does not make bare skills dependent on it.
 
-```powershell
-py -3 skills/context-management/scripts/assess_context.py --input tests/fixtures/high-context.json
+## Check or remove
+
+On Windows, run `Install.cmd status` or `Install.cmd uninstall`. On other systems:
+
+```sh
+python3 scripts/install_suite.py status
+python3 scripts/install_suite.py uninstall
 ```
 
-The helper only assesses supplied observations. It neither reads chat histories nor creates threads. See the [design and implementation plan](docs/context-management-design.md) and [behavioral evaluation cases](tests/behavioral-cases.md).
+Uninstall restores preexisting skill files and removes only the managed activation rule. It preserves user text added outside that rule and refuses to overwrite customized installed files. Another installer or an interrupted operation leaves a lock that must be reconciled before retrying.
 
-The [research and edge-case review](docs/research-and-edge-cases.md) explains source-based decisions, project setup, capability gaps, and failure handling.
+`CODEX_HOME` and `--codex-home PATH` select a profile. In a full source download, `install --skill source-selection` or `install --skill context-management` selects one skill; installing another later keeps the first. Repeating installation updates unchanged managed files without duplicating guidance.
 
-The agent execution path is deliberately small: a core skill under 700 words, conditional policy/adapter references, no extra management calls during unchanged same-task work, and compact JSON from the optional helper. Measured token savings still require a real project pilot.
+## Stronger automatic reminders
 
-## Reliability helpers
+For local Codex hosts supporting hooks, add `--hooks` to installation. This registers compact reminders on session start and user prompt submission. Existing hook definitions are preserved. **Codex still requires review and trust before these reminders run.** Registration is reported separately from trust and live invocation.
 
-- **Intervention modes:** notify-and-transfer, suggest-only, or stay, with validated project-specific context thresholds. Automatic mode still requires trusted authorization.
-- **Readiness checks:** assess actual host capabilities, project/chat identity, destination skill availability, references, settings, and consent before operations. Missing facts remain missing.
-- **Recoverable transfers:** one journal per handoff, revision checks, exclusive locks, immutable-brief fingerprints, bounded retry, and idempotent destination confirmation. A lost response cannot silently trigger another create. See [runtime readiness and recovery](skills/context-management/references/runtime.md).
-- **Freshness-aware evidence:** reuse sufficient matching content at a known revision; revalidate uncertain current facts and fetch changed/missing/incomplete content. See [source reuse](skills/source-selection/references/source-reuse.md).
+Reminders make no model calls, read no transcripts, write no per-turn project state, and make no tool-approval decisions. They use only installed-skill metadata. Ordinary skills and the user-level rule remain useful without them. See [automatic activation and recovery](skills/context-management/references/automatic-activation.md).
 
-Transfer journals record only bounded lifecycle events, attempts, IDs, and brief size. No transcript or credentials are logged. The helpers use declared observations rather than gaining new host access. If Python is unavailable, the skill preserves its instruction-based fallback and reports reduced runtime guarantees.
+## What to expect
 
-The local tests include a simulated host-response-loss recovery, file locking, atomic-write failure, process restart, and source-reuse decisions. These are not live Codex transfer tests. CI checks both Windows and Linux; actual host integration and measured savings remain separate pilot work.
+Context Management checks useful task boundaries during active work. It keeps related work together, uses concise checkpoints for standalone chats, and transfers only when justified, authorized, and supported. Source Selection retrieves enough evidence for the actual task and preserves explicit full-read or exhaustive-coverage requirements.
 
-## Contributing
+Available cost comparisons can keep work in place when a handoff would repeat an investigation or cost more than continuing. Concise findings reuse evidence at known versions. An optional local reader hashes UTF-8 sources, returns bounded pages, and omits already-available unchanged text. These helpers need no persistent cache, per-turn report, or new service; native tools remain available.
 
-Keep each skill responsible for one distinct source of avoidable project work. Prefer a small entrypoint with conditional references over a large instruction bundle. Add scripts only for repeatable decisions or mechanics that benefit from deterministic behavior. Preserve the user's workflow, authorization, tools, and chosen project structure.
+Activation takes effect when the host rebuilds its instruction chain. Existing sessions can retain earlier instructions. Host overrides, disabled skills, unavailable tools, and cloud/local differences affect behavior. The current authoring host exposes chat continuation tools but no native app-project creation or current-context occupancy telemetry.
 
-Changes to routing or handoffs need examples where continuation should happen, where it should not, and where a transfer fails. Evaluate output quality and coordination overhead alongside usage. Do not claim savings from chat age, cumulative token counts, or a dashboard category alone.
+Installation checks verify files and instruction placement; they do not prove live model invocation or measured savings. Neither skill is an idle background monitor. More chats or fewer prompt words alone do not prove a benefit. See [suite principles](docs/suite-principles.md) and [behavioral cases](tests/behavioral-cases.md).
+
+## Development and distribution
+
+Build the full-suite and individual downloads:
+
+```sh
+python scripts/package_installers.py
+```
+
+Archives are created under `work/downloads/`. The optional [plugin manifest](plugin.json) remains available for hosts that prefer a skills bundle; plugin packaging is not required for normal use. `scripts/package_plugin.py` builds that alternative without installing or uploading it.
+
+Run the required checks with the development dependency installed:
+
+```sh
+python -m pip install -r requirements-dev.txt
+python -m unittest discover -s tests
+python scripts/validate_repository.py
+```
+
+Helpers use the standard library; repository validation uses PyYAML. Tests cover policy decisions, capability checks, recoverable transfers, source reuse, isolated installer/hook behavior, and extracted downloads. The Windows launcher is tested on Windows; platform-specific tests are skipped elsewhere. Live model behavior and net usage effects need separate evaluation.
+
+Use the optional [complete-task evaluator](docs/efficiency-evaluation.md) for supported usage exports. It includes startup/retry/handoff requests, preserves quality failures, and keeps missing telemetry unknown. It does not collect data during normal work.
+
+See the [design notes](docs/context-management-design.md), [research decisions](docs/research-and-edge-cases.md), [transfer recovery](skills/context-management/references/runtime.md), and [source reuse](skills/source-selection/references/source-reuse.md). Keep skill entrypoints under 700 words, domain work independent, and conditional detail in references.

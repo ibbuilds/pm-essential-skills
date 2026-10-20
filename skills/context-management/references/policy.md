@@ -14,6 +14,7 @@ The optional helper accepts a JSON object. Unavailable quantities are omitted or
   "user_keep_thread": false,
   "project_mode": "project",
   "project_offer_dismissed": false,
+  "project_setup_allowed": false,
   "admission_check": false,
   "last_notice_level": "none",
   "context": {
@@ -42,11 +43,35 @@ Counters cover the current thread since its accepted handoff. Count substantive 
 
 At first use in an already-long chat, set `admission_check: true` and use already-visible pre-activation history when reliable. Missing historical counts remain unknown. Without fresh telemetry or a counter threshold, two concrete obsolete-context observations trigger `review`, not automatic rollover. See [existing chats](existing-chats.md) for immediate assessment and deduplicated user notices.
 
+## Transfer cost and reconstruction
+
+Optional `transfer_context_ready: false` keeps work here when essential destination context is unavailable. Optional `reconstruction_repeats_work: true` returns a concise `checkpoint` at a safe boundary or `continue` otherwise. Both avoid automatic reconstruction of completed investigations; no extra tools are needed when the facts are known. Checkpoint means retain only useful changed findings, not introduce a logging routine.
+
+When comparable remaining-work costs are actually available, optional `transfer_cost` accepts:
+
+```json
+{
+  "basis": "estimated",
+  "source": "Labeled assessment of the same remaining requested work",
+  "unit": "tokens",
+  "scope": "remaining_requested_work",
+  "fresh": true,
+  "continue": 2000,
+  "handoff": 500,
+  "startup": 500,
+  "reconstruction": 1500
+}
+```
+
+All four costs are nonnegative integers in one unit: `tokens`, `milliseconds`, or `tool_calls`. Compare the same remaining work and include handoff, startup, and reconstruction. `basis` is `measured` or `estimated` with a nonempty observation source; the helper validates declarations, not economic truth. Tokens are usage units, not billing amounts. Estimates are not savings measurements. Do not make an extra model call, inspect private logs, or invent telemetry to fill this object.
+
+A fresh total transfer cost at least as large as continuing returns `continue` without a notice or transfer checks. Stale or absent comparisons leave ordinary routing intact. A favorable comparison still needs all transfer/authorization gates. Reassess only at a meaningful change, not by polling. Explicit `user_requested_new_thread: true` bypasses cost/repeated-work preferences, but not inaccessible essential context, safe checkpoints, authorization, or explicit stay constraints. Use the latest human preference when normalizing conflicting observations.
+
 ## Decision order
 
 1. Completed outcome with no next outcome: `complete`. No successor.
 2. User asks to remain here: `continue`, even with pressure.
-3. Verified standalone chat with fresh occupancy at least 75%, or proxy/catch-up pressure when fresh telemetry is missing: `offer_project` at a safe checkpoint, otherwise `defer`. A dismissed offer yields `review` without asking again. Follow the project-setup reference; this result grants no creation/move permission.
+3. Verified standalone chat with fresh occupancy at least 75%, or proxy/catch-up pressure when fresh telemetry is missing: by default, `checkpoint` at a safe checkpoint or `continue` while work cannot safely pause; neither needs project setup. Only when `project_setup_allowed: true` reflects a useful, permitted offer, return `offer_project` at a safe checkpoint or `defer`. A dismissed offer yields `review` without asking again. This result grants no creation/move permission.
 4. Distinct requested outcome: `rollover` candidate at a safe checkpoint, otherwise `defer`.
 5. Fresh measured occupancy at least 85%: `rollover` candidate, or `defer` if unsafe.
 6. Fresh measured occupancy at least 75%: `review`.
@@ -55,7 +80,7 @@ At first use in an already-long chat, set `admission_check: true` and use alread
 9. First-use catch-up with at least two obsolete-context observations and no fresh telemetry/counter threshold: `review`.
 10. Otherwise: `continue`. Unknown occupancy alone is not a reason to interrupt.
 
-`project_mode` is `project`, `standalone`, or `unknown` (default). It describes verified membership, not a folder guess. `project_offer_dismissed` defaults to false and records the user's decision for this chat/scope. Its absence does not mean prior consent exists. A high-pressure standalone offer takes precedence over task splitting so the agent can establish a useful container first, while a completed task with no next work never generates an offer.
+`project_mode` is `project`, `standalone`, or `unknown` (default). It describes verified membership, not a folder guess. `project_setup_allowed` defaults to false: standalone work needs no organization interview. When a project offer is useful and permitted, explicitly set it true; this permits an offer, not creation. `project_offer_dismissed` records the scoped decision and never implies prior consent. A completed task with no next work never generates an offer.
 
 For `review`, evaluate whether a short handoff removes substantial obsolete material without causing expensive reconstruction. Continue if the history is still relevant. A review is not a user approval request, a warning to repeat every turn, or authority to create a thread. Save the last observation and decision; do not run the helper once per tool call.
 

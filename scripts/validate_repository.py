@@ -3,6 +3,7 @@
 
 import re
 import ast
+import json
 from pathlib import Path
 
 import yaml
@@ -15,6 +16,21 @@ def main():
     skills = sorted((ROOT / "skills").glob("*/SKILL.md"))
     if not skills:
         errors.append("No skills found")
+    try:
+        manifest = json.loads((ROOT / "plugin.json").read_text(encoding="utf-8"))
+        if manifest.get("$schema") != "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json":
+            raise ValueError("missing portable plugin schema")
+        if manifest.get("name") != "pm-essential-skills":
+            raise ValueError("unexpected plugin identity")
+        if not re.fullmatch(r"\d+\.\d+\.\d+", manifest.get("version", "")):
+            raise ValueError("plugin version must be SemVer")
+        interface = manifest["extensions"]["com.openai"]["interface"]
+        if not 1 <= len(interface["shortDescription"]) <= 30:
+            raise ValueError("plugin short description must be 1-30 characters")
+        if any(key in manifest for key in ("skills", "interface", "apps", "mcpServers")):
+            raise ValueError("portable manifest uses unsupported top-level component fields")
+    except (ValueError, OSError, KeyError, TypeError) as exc:
+        errors.append(f"plugin.json: {exc}")
     for path in skills:
         text = path.read_text(encoding="utf-8")
         match = re.match(r"\A---\n(.*?)\n---\n", text, re.DOTALL)

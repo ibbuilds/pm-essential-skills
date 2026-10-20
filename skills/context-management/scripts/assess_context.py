@@ -13,9 +13,10 @@ REVIEW_RATIO = 0.75
 ROLLOVER_RATIO = 0.85
 PROXY_LIMITS = {"substantive_turns": 20, "large_outputs": 6, "compactions": 2}
 BOOLEAN_FIELDS = {"completed", "new_outcome", "safe_checkpoint", "user_keep_thread",
-                  "project_offer_dismissed", "admission_check"}
+                  "project_offer_dismissed", "project_setup_allowed", "admission_check",
+                  "transfer_context_ready", "reconstruction_repeats_work", "user_requested_new_thread"}
 FIELDS = BOOLEAN_FIELDS | set(PROXY_LIMITS) | {"context", "obsolete_context_evidence", "project_mode",
-                                             "last_notice_level", "settings"}
+                                             "last_notice_level", "settings", "transfer_cost"}
 NOTICE_RANK = {"none": 0, "review": 1, "rollover": 2}
 
 
@@ -39,6 +40,27 @@ def _integer(value: Any, name: str, minimum: int = 0) -> int:
     if type(value) is not int or value < minimum:
         raise ValueError(f"{name} must be an integer >= {minimum}")
     return value
+
+
+def _transfer_cost(value):
+    if value is None:
+        return None
+    fields = {"basis", "source", "unit", "scope", "fresh", "continue", "handoff", "startup", "reconstruction"}
+    if not isinstance(value, dict) or set(value) != fields:
+        raise ValueError("transfer_cost must contain basis, source, unit, scope, fresh, continue, handoff, startup, reconstruction")
+    if value["basis"] not in ("measured", "estimated"):
+        raise ValueError("transfer_cost.basis must be measured or estimated")
+    if not isinstance(value["source"], str) or not value["source"].strip():
+        raise ValueError("transfer_cost.source is required")
+    if value["unit"] not in ("tokens", "milliseconds", "tool_calls"):
+        raise ValueError("transfer_cost.unit must be tokens, milliseconds, or tool_calls")
+    if value["scope"] != "remaining_requested_work" or type(value["fresh"]) is not bool:
+        raise ValueError("transfer_cost needs matching remaining-work scope and boolean freshness")
+    for key in ("continue", "handoff", "startup", "reconstruction"):
+        _integer(value[key], f"transfer_cost.{key}")
+    return {"basis": value["basis"], "source": value["source"], "unit": value["unit"],
+            "fresh": value["fresh"], "continue": value["continue"],
+            "transfer": value["handoff"] + value["startup"] + value["reconstruction"]}
 
 
 def _validate(observation: Any) -> tuple[dict, float | None, int]:
@@ -93,6 +115,7 @@ def assess(observation: Any) -> dict:
     """Return a routing candidate, never authorization to perform a transfer."""
     obs, ratio, evidence_count = _validate(observation)
     settings = _settings(obs.get("settings", {}))
+    cost = _transfer_cost(obs.get("transfer_cost"))
     proxy_triggered = any(
         obs.get(name) is not None and obs[name] >= limit
         for name, limit in PROXY_LIMITS.items()
@@ -110,6 +133,8 @@ def assess(observation: Any) -> dict:
         "requires_transfer_checks": False,
         "notice": "none",
     }
+    if cost is not None:
+        result["transfer_cost"] = cost
 
     def finish(action: str, reason: str) -> dict:
         result.update(action=action, reason=reason,
@@ -124,20 +149,33 @@ def assess(observation: Any) -> dict:
         return result
 
     def transfer(reason: str) -> dict:
+        if obs.get("transfer_context_ready") is False:
+            return finish("continue", "transfer_context_unavailable")
+        if not obs.get("user_requested_new_thread", False):
+            if obs.get("reconstruction_repeats_work", False):
+                return finish("checkpoint" if obs.get("safe_checkpoint", False) else "continue",
+                              "transfer_would_repeat_investigation")
+            if cost and cost["fresh"] and cost["transfer"] >= cost["continue"]:
+                return finish("continue", "transfer_cost_not_beneficial")
         if settings["mode"] == "suggest-only" and obs.get("safe_checkpoint", False):
             result = finish("rollover", reason)
             result.update(action="suggest_rollover", requires_transfer_checks=False)
             return result
         return finish("rollover" if obs.get("safe_checkpoint", False) else "defer", reason)
 
-    if obs.get("completed", False) and not obs.get("new_outcome", False):
+    if obs.get("completed", False) and not obs.get("new_outcome", False) and not obs.get("user_requested_new_thread", False):
         return finish("complete", "outcome_finished")
     if obs.get("user_keep_thread", False):
         return finish("continue", "user_prefers_current_thread")
     if settings["mode"] == "stay":
         return finish("continue", "intervention_mode_stay")
+    if obs.get("user_requested_new_thread", False):
+        return transfer("user_requested_new_thread")
     pressure = ratio >= settings["review_ratio"] if ratio is not None else proxy_triggered or existing_history_signal
     if obs.get("project_mode") == "standalone" and pressure:
+        if not obs.get("project_setup_allowed", False):
+            return finish("checkpoint" if obs.get("safe_checkpoint", False) else "continue",
+                          "standalone_without_setup")
         if obs.get("project_offer_dismissed", False):
             return finish("review", "standalone_offer_dismissed")
         if not obs.get("safe_checkpoint", False):

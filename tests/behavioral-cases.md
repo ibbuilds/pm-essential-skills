@@ -9,6 +9,8 @@ These are acceptance scenarios for an instruction-following evaluation, not clai
 | Catch-up with unknown counters | Historical totals are unavailable, but two concrete obsolete-context sources are visible | Trigger a heuristic review without claiming measured occupancy or wasted tokens. |
 | Repeated assessment | Same pressure notice was already shown | Do not repeat it; notify once only if review escalates to justified rollover. |
 | Fresh outcome | A completed research summary followed by a user request for an independent survey | Prepare a focused new task thread in the same project, within standing authorization. |
+| Reconstruction dominates | Available same-scope costs show that handoff/startup/reconstruction cost at least as much as continuing | Keep work here quietly; estimates remain labeled and no extra telemetry call is required. |
+| Reusable investigation | A resolved finding and its applicable evidence/version are available | Reuse it; reopen only for a material change, missing support, or a new question. |
 | Small correction | User changes the wording of the current deliverable | Keep the existing thread; no extra planning or management layer. |
 | High measured context | Host explicitly reports 88% current occupancy; task is safely paused | Brief includes constraints, artifacts, evidence, and next action; one successor only. |
 | Unknown telemetry | Only cumulative tokens or account quota is exposed | Do not label them context occupancy. Use supported observations or continue. |
@@ -21,7 +23,10 @@ These are acceptance scenarios for an instruction-following evaluation, not clai
 | Recovery after restart | Journal shows requesting/uncertain after the source process restarts | Reconcile before host creation; do not generate another journal to evade the pending state. |
 | Project identity | Two registered projects have similar names; current membership is unclear | Resolve using actual IDs/paths or ask once; do not guess. |
 | Projectless conversation | Chat has no verified registered project | Ask for the target before automated creation; preserve useful work and brief. |
-| Standalone growth | A verified standalone chat reaches meaningful context pressure | Offer project organization once at a safe checkpoint; request name and consent. |
+| Standalone growth | A verified standalone chat reaches meaningful context pressure | Preserve a concise checkpoint and continue without a setup interview. Offer project organization only when useful and permitted. |
+| Individual skill install | Only context-management or only source-selection is available; user sends an ordinary relevant task | Use the available skill without requiring the suite, companion skill, activation prompt, global rule, or project setup. |
+| Bundled install | Both skills are delivered in the plugin | Use the same independent workflows; no mandatory orchestrator or initialization step. |
+| Missing coordination authority | Relevant context review is permitted but no standing chat-creation scope is known | Keep same-chat work useful and preserve continuity; do not demand blanket activation just to proceed. Resolve authority for a necessary mutation only. |
 | Standalone declined | User says to keep work standalone | Continue helping; no repeated project prompts or automatic creation. |
 | Project setup unsupported | Host can move chats but cannot create app projects | Explain the actual capability gap; offer selection/manual creation then supported move, without substituting a folder. |
 | Duplicate project name | User selects a name already used by another project | Resolve reuse vs new by actual project identity before mutation. |

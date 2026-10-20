@@ -249,7 +249,7 @@ class ExistingChatTests(unittest.TestCase):
         self.assertEqual(result["notice"], "none")
 
     def test_standalone_catchup_uses_one_project_offer(self):
-        result = POLICY.assess({"project_mode": "standalone", "admission_check": True,
+        result = POLICY.assess({"project_mode": "standalone", "project_setup_allowed": True, "admission_check": True,
                                 "safe_checkpoint": True, "obsolete_context_evidence": [
                                     "Replaced draft", "Resolved investigation logs"]})
         self.assertEqual(result["action"], "offer_project")
@@ -258,31 +258,41 @@ class ExistingChatTests(unittest.TestCase):
 
 class StandaloneTests(unittest.TestCase):
     def test_standalone_pressure_offers_instead_of_creating_or_rolling_over(self):
-        result = POLICY.assess({"project_mode": "standalone", "context": context(),
+        result = POLICY.assess({"project_mode": "standalone", "project_setup_allowed": True, "context": context(),
                                 "safe_checkpoint": True})
         self.assertEqual(result["action"], "offer_project")
         self.assertFalse(result["requires_transfer_checks"])
 
     def test_standalone_review_threshold_can_offer_organization(self):
-        result = POLICY.assess({"project_mode": "standalone", "context": context(75000),
+        result = POLICY.assess({"project_mode": "standalone", "project_setup_allowed": True, "context": context(75000),
                                 "safe_checkpoint": True})
         self.assertEqual(result["action"], "offer_project")
 
     def test_standalone_proxy_signal_is_honestly_labeled(self):
-        result = POLICY.assess({"project_mode": "standalone", "substantive_turns": 20,
+        result = POLICY.assess({"project_mode": "standalone", "project_setup_allowed": True, "substantive_turns": 20,
                                 "safe_checkpoint": True})
         self.assertEqual(result["action"], "offer_project")
         self.assertEqual(result["measurement"], "heuristic")
 
     def test_dismissal_does_not_keep_prompting_or_disable_context_review(self):
-        result = POLICY.assess({"project_mode": "standalone", "context": context(),
+        result = POLICY.assess({"project_mode": "standalone", "project_setup_allowed": True, "context": context(),
                                 "safe_checkpoint": True, "project_offer_dismissed": True})
         self.assertEqual(result["action"], "review")
         self.assertEqual(result["reason"], "standalone_offer_dismissed")
 
     def test_standalone_offer_waits_for_safe_checkpoint(self):
-        result = POLICY.assess({"project_mode": "standalone", "context": context()})
+        result = POLICY.assess({"project_mode": "standalone", "project_setup_allowed": True, "context": context()})
         self.assertEqual(result["action"], "defer")
+
+    def test_standalone_needs_no_setup_by_default(self):
+        for safe, action in [(True, "checkpoint"), (False, "continue")]:
+            with self.subTest(safe=safe):
+                result = POLICY.assess({"project_mode": "standalone", "context": context(),
+                                       "safe_checkpoint": safe, "new_outcome": True})
+                self.assertEqual(result["action"], action)
+                self.assertEqual(result["reason"], "standalone_without_setup")
+                self.assertFalse(result["requires_transfer_checks"])
+                self.assertEqual(result["notice"], "none")
 
     def test_no_offer_for_small_finished_or_user_overridden_chat(self):
         cases = [{"context": context(10000)}, {"completed": True, "context": context()},

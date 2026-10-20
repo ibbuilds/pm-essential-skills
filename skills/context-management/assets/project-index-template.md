@@ -16,6 +16,8 @@
 
 Keep only current outcomes and routing needed to find their owners. Link existing project records for completed work instead of growing this table into a transcript.
 
+When a material resolved question would otherwise need repeated investigation, keep a concise finding with its evidence/version and invalidation condition in existing notes. Update only changed findings; no per-turn logs or extra database.
+
 ## Latest assessment per active thread
 
 Record the observation source, fresh current-context occupancy when known, observed counters when known, decision reason, last pressure notice actually shown (none / review / rollover), initial catch-up assessment status, and any deferred transfer. Missing data is unknown. Historical usage is not current occupancy.

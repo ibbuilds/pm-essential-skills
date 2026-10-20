@@ -1,0 +1,55 @@
+"""Verify actual distributable contents and independently packaged skills."""
+
+import importlib.util
+import json
+from pathlib import Path
+import shutil
+import tempfile
+import unittest
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[1]
+SPEC = importlib.util.spec_from_file_location("package_plugin", ROOT / "scripts/package_plugin.py")
+PACKAGE = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(PACKAGE)
+
+
+class PluginPackageTests(unittest.TestCase):
+    def setUp(self):
+        work = ROOT / "work"
+        work.mkdir(exist_ok=True)
+        self.temp = tempfile.TemporaryDirectory(dir=work)
+        self.addCleanup(self.temp.cleanup)
+        self.directory = Path(self.temp.name)
+
+    def test_archive_contains_skills_without_private_state_or_install_side_effects(self):
+        output = self.directory / "plugin.zip"
+        result = PACKAGE.build(output)
+        self.assertEqual(result["skills"], ["context-management", "source-selection"])
+        with zipfile.ZipFile(output) as archive:
+            names = archive.namelist()
+            manifest = json.loads(archive.read("pm-essential-skills/plugin.json"))
+            self.assertEqual(manifest["name"], "pm-essential-skills")
+            for path in names:
+                relative = Path(path).relative_to("pm-essential-skills")
+                self.assertTrue(relative.as_posix() == "plugin.json" or relative.parts[0] == "skills")
+                self.assertEqual(archive.read(path), (ROOT / relative).read_bytes())
+            self.assertFalse(any(".pm-context" in path or "__pycache__" in path for path in names))
+
+    def test_each_skill_packages_without_companion(self):
+        for skill in ("context-management", "source-selection"):
+            with self.subTest(skill=skill):
+                root = self.directory / skill
+                root.mkdir()
+                shutil.copyfile(ROOT / "plugin.json", root / "plugin.json")
+                shutil.copytree(ROOT / "skills" / skill, root / "skills" / skill,
+                                ignore=shutil.ignore_patterns("__pycache__"))
+                output = self.directory / f"{skill}.zip"
+                result = PACKAGE.build(output, root)
+                self.assertEqual(result["skills"], [skill])
+                with zipfile.ZipFile(output) as archive:
+                    self.assertIn(f"pm-essential-skills/skills/{skill}/SKILL.md", archive.namelist())
+
+
+if __name__ == "__main__":
+    unittest.main()
