@@ -9,7 +9,8 @@ from pathlib import Path
 FLAGS = {"current_skill_available", "destination_skill_available", "create_thread_available",
          "reconcile_thread_available", "create_project_available", "move_chat_available",
          "verify_membership_available", "authorization_verified", "safe_checkpoint",
-         "references_accessible", "settings_preserved", "setup_consent_verified"}
+         "references_accessible", "settings_preserved", "setup_consent_verified",
+         "target_project_verified", "project_selection_authorized"}
 FLAGS.add("execution_mode_allows_transfer")
 TEXT = {"project_id", "source_thread_id", "chosen_project_name"}
 
@@ -33,7 +34,9 @@ def assess(value):
                 "reconcile_thread_available", "authorization_verified", "safe_checkpoint",
                 "references_accessible", "settings_preserved", "execution_mode_allows_transfer"]
     missing = [key for key in required if value.get(key) is not True]
-    if membership != "project":
+    selected_target = (value.get("target_project_verified") is True
+                       and value.get("project_selection_authorized") is True)
+    if membership != "project" and not selected_target:
         missing.append("verified_project_membership")
     for key in ["project_id", "source_thread_id"]:
         if not value.get(key):
@@ -55,6 +58,7 @@ def assess(value):
     else:
         setup = "ready"
     return {"transfer_ready": not missing, "transfer_missing": missing,
+            "source_membership": membership,
             "project_setup": setup, "setup_missing_capabilities": setup_missing,
             "status": "ready" if not missing else "degraded" if value.get("current_skill_available") is True else "unavailable"}
 

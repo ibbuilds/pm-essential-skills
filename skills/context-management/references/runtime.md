@@ -27,6 +27,8 @@ Verify destination skill availability from the same project's installed skill pa
 
 `transfer_ready` means the supplied gates passed, not that the script independently discovered or authorized them. Report unsupported capabilities once, with the manual fallback; never claim full automatic management is active when gates are missing. For standalone setup, flags `create_project_available`, `move_chat_available`, `verify_membership_available`, `setup_consent_verified`, and `chosen_project_name` distinguish unsupported, consent/name requirements, and readiness. They do not perform creation.
 
+An explicitly user-selected continuation can target a verified existing project even when source membership is standalone or unknown. Set both `target_project_verified` and `project_selection_authorized` only with actual project identity and direct user authorization. This does not assert that the old chat moved: `source_membership` remains unchanged in the report. Without both observations, uncertain membership still blocks automatic routing. Use this path for a specifically authorized new project chat, not to silently assign unrelated conversations.
+
 ## Transfer journal
 
 With Python 3.10+ available, use `scripts/transfer_state.py` for actual transfers. Write one journal beside its immutable brief, e.g. `.pm-context/handoffs/task-001.state.json`. Reference that journal from the small project index. Do not start a second journal for the same pending transfer to bypass an uncertain result.

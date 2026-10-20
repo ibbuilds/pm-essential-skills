@@ -217,6 +217,18 @@ class PreflightTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             PREFLIGHT.assess({"create_thread_available": "yes"})
 
+    def test_explicit_verified_target_can_accept_unaffiliated_source(self):
+        value = {key: True for key in PREFLIGHT.FLAGS}
+        value.update(membership="unknown", project_id="project-a", source_thread_id="source-a")
+        result = PREFLIGHT.assess(value)
+        self.assertTrue(result["transfer_ready"])
+        self.assertEqual(result["source_membership"], "unknown")
+        for key in ["target_project_verified", "project_selection_authorized"]:
+            with self.subTest(key=key):
+                result = PREFLIGHT.assess(value | {key: False})
+                self.assertFalse(result["transfer_ready"])
+                self.assertIn("verified_project_membership", result["transfer_missing"])
+
 
 class SourceReuseTests(unittest.TestCase):
     def setUp(self):
