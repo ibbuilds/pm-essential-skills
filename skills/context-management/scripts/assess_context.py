@@ -15,8 +15,24 @@ PROXY_LIMITS = {"substantive_turns": 20, "large_outputs": 6, "compactions": 2}
 BOOLEAN_FIELDS = {"completed", "new_outcome", "safe_checkpoint", "user_keep_thread",
                   "project_offer_dismissed", "admission_check"}
 FIELDS = BOOLEAN_FIELDS | set(PROXY_LIMITS) | {"context", "obsolete_context_evidence", "project_mode",
-                                             "last_notice_level"}
+                                             "last_notice_level", "settings"}
 NOTICE_RANK = {"none": 0, "review": 1, "rollover": 2}
+
+
+def _settings(value: Any) -> dict:
+    if not isinstance(value, dict) or set(value) - {"mode", "review_ratio", "rollover_ratio"}:
+        raise ValueError("settings accepts only mode, review_ratio, rollover_ratio")
+    mode = value.get("mode", "notify-and-transfer")
+    if not isinstance(mode, str) or mode not in {"notify-and-transfer", "suggest-only", "stay"}:
+        raise ValueError("settings.mode must be notify-and-transfer, suggest-only, or stay")
+    review = value.get("review_ratio", REVIEW_RATIO)
+    rollover = value.get("rollover_ratio", ROLLOVER_RATIO)
+    for name, number in [("review_ratio", review), ("rollover_ratio", rollover)]:
+        if type(number) not in {int, float} or not 0 < number <= 1:
+            raise ValueError(f"settings.{name} must be a finite number in (0, 1]")
+    if not 0 < review < rollover <= 1:
+        raise ValueError("settings ratios must satisfy 0 < review_ratio < rollover_ratio <= 1")
+    return {"mode": mode, "review_ratio": review, "rollover_ratio": rollover}
 
 
 def _integer(value: Any, name: str, minimum: int = 0) -> int:
@@ -76,6 +92,7 @@ def _validate(observation: Any) -> tuple[dict, float | None, int]:
 def assess(observation: Any) -> dict:
     """Return a routing candidate, never authorization to perform a transfer."""
     obs, ratio, evidence_count = _validate(observation)
+    settings = _settings(obs.get("settings", {}))
     proxy_triggered = any(
         obs.get(name) is not None and obs[name] >= limit
         for name, limit in PROXY_LIMITS.items()
@@ -107,13 +124,19 @@ def assess(observation: Any) -> dict:
         return result
 
     def transfer(reason: str) -> dict:
+        if settings["mode"] == "suggest-only" and obs.get("safe_checkpoint", False):
+            result = finish("rollover", reason)
+            result.update(action="suggest_rollover", requires_transfer_checks=False)
+            return result
         return finish("rollover" if obs.get("safe_checkpoint", False) else "defer", reason)
 
     if obs.get("completed", False) and not obs.get("new_outcome", False):
         return finish("complete", "outcome_finished")
     if obs.get("user_keep_thread", False):
         return finish("continue", "user_prefers_current_thread")
-    pressure = ratio >= REVIEW_RATIO if ratio is not None else proxy_triggered or existing_history_signal
+    if settings["mode"] == "stay":
+        return finish("continue", "intervention_mode_stay")
+    pressure = ratio >= settings["review_ratio"] if ratio is not None else proxy_triggered or existing_history_signal
     if obs.get("project_mode") == "standalone" and pressure:
         if obs.get("project_offer_dismissed", False):
             return finish("review", "standalone_offer_dismissed")
@@ -123,9 +146,9 @@ def assess(observation: Any) -> dict:
     if obs.get("new_outcome", False):
         return transfer("distinct_requested_outcome")
     if ratio is not None:
-        if ratio >= ROLLOVER_RATIO:
+        if ratio >= settings["rollover_ratio"]:
             return transfer("measured_context_high")
-        if ratio >= REVIEW_RATIO:
+        if ratio >= settings["review_ratio"]:
             return finish("review", "measured_context_review")
         return finish("continue", "measured_context_below_review")
     if proxy_triggered:

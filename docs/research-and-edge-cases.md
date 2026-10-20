@@ -41,6 +41,6 @@ These sources were fetched on October 20, 2026. API-level caching mechanisms exp
 
 ## Validation boundary
 
-Deterministic tests cover observation validation, routing, thresholds, safe checkpoints, user overrides, and standalone offers. Structural checks cover skill frontmatter, entrypoint budget, and local links. The human-readable live-host cases cover tool execution, permissions, membership, and failure recovery; they have not been run against real user projects.
+Deterministic tests cover observation validation, routing, configurable intervention modes/thresholds, standalone offers, capability preflight, transfer persistence, source identity/revision/coverage, and recovery. A local host simulation exercises creation-response loss followed by reconciliation without duplicate creation. Storage tests exercise process restart, stale revisions, locks, and atomic-write failure. These tests do not call real project/chat tools. Structural checks cover skill YAML/UI metadata, entrypoint budget, local links, and Python syntax. Live-host cases remain separate and have not been run against real user projects.
 
 The initial release must not be described as flawless or proven to reduce usage. The next validation step is a disposable or user-selected pilot with actual thread tools and observable task outcomes. Compare total work, including handoff cost, rediscovery, retries, and missing constraints, with a comparable task completed without forced rollover. Revise only on evidence rather than adding arbitrary universal rules.

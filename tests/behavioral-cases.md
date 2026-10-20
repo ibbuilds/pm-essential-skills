@@ -15,6 +15,10 @@ These are acceptance scenarios for an instruction-following evaluation, not clai
 | Proxy pressure | 25 observed substantive turns plus replaced requirements and resolved logs | Explain a heuristic rollover reason; do not claim measured token savings. |
 | Successful compaction | Current occupancy is 30% after compaction, with many historical turns | Continue if still working on the same outcome. |
 | User override | User says to stay in this chat despite pressure | Respect the preference without repeatedly seeking approval. |
+| Suggest-only mode | High pressure with project mode set to suggest-only | Propose continuation without creating a thread; suppress repeated suggestions. |
+| Explicit threshold override | Project preferences specify more conservative thresholds | Use those validated values without silently reverting to defaults. |
+| Readiness degraded | Destination skill or required settings cannot be verified | Explain the actual missing gate once; preserve source work and use the supported fallback. |
+| Recovery after restart | Journal shows requesting/uncertain after the source process restarts | Reconcile before host creation; do not generate another journal to evade the pending state. |
 | Project identity | Two registered projects have similar names; current membership is unclear | Resolve using actual IDs/paths or ask once; do not guess. |
 | Projectless conversation | Chat has no verified registered project | Ask for the target before automated creation; preserve useful work and brief. |
 | Standalone growth | A verified standalone chat reaches meaningful context pressure | Offer project organization once at a safe checkpoint; request name and consent. |

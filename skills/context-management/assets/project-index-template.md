@@ -6,6 +6,7 @@
 - Standing activation: source user instruction reference and authorized scope
 - Persistent discovery rule location (if installed):
 - User routing preferences:
+- Assessment settings, if explicitly configured: mode (notify-and-transfer / suggest-only / stay), review_ratio, rollover_ratio. Defaults: notify-and-transfer, 0.75, 0.85.
 - Standalone setup status/reference, if this project was created from a chat:
 
 ## Current outcomes
@@ -26,5 +27,6 @@ Record the observation source, fresh current-context occupancy when known, obser
 - Lifecycle: prepared / destination-confirmed / superseded
 - Destination thread ID and readiness evidence (unknown until confirmed):
 - Recovery action, if needed:
+- Transfer journal path and latest revision, when available:
 
 This file records operational state. It does not grant user authorization. Keep it concise, omit credentials and transcripts, and preserve the user's original scope.

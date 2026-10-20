@@ -30,6 +30,10 @@ The optional helper accepts a JSON object. Unavailable quantities are omitted or
 }
 ```
 
+Optional `settings` contains `mode` (`notify-and-transfer`, `suggest-only`, or `stay`) and `review_ratio`/`rollover_ratio`. Defaults are notify-and-transfer, 0.75, and 0.85. Ratios must satisfy `0 < review_ratio < rollover_ratio <= 1`. Preserve explicit user preferences in existing project notes; do not change global settings or tune thresholds silently from a single task.
+
+`suggest-only` returns `suggest_rollover` instead of dispatching a rollover at a safe checkpoint. It never authorizes creation; respect prior notices and declined suggestions. `stay` continues this thread without pressure notices or project offers; completed work still returns `complete`. Notify-and-transfer still needs independently verified user authorization, capabilities, and safe transfer gates. It is not a grant of automatic authority.
+
 `completed` describes the present outcome. `new_outcome` means the user has requested a distinct next outcome, not that the assistant has invented another task. `safe_checkpoint` is false while transfer would interrupt work that cannot safely pause. Omitted booleans default to false; supplied booleans must be true or false, not null. Missing safe-checkpoint evidence defaults to false in the helper.
 
 Use `context` only for genuinely current window occupancy, with its source and freshness. Never place lifetime input/output totals, account percentages, a quota budget, or the last request's token count here unless the host explicitly defines it as current occupancy. Stale observations are ignored. The helper checks declared types, not the truth of their source.

@@ -11,6 +11,8 @@ Load only for Codex thread operations. Discover tools and inspect their current 
 
 ## Fresh thread creation
 
+Before creation, complete [runtime readiness](runtime.md). When the journal is available, save the `request` event successfully **before** calling `create_thread`. Never call the host tool after a journal/gate failure. A pending journal must be reconciled rather than replaced with another handoff ID. After a real ready destination is returned, confirm it in the journal before marking the source superseded. Journal failure after successful host creation must preserve that known destination and keep the source paused.
+
 Use `create_thread` with:
 
 - `target.type: project` and the verified `projectId` from `list_projects`;

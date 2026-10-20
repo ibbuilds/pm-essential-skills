@@ -19,6 +19,7 @@ Reduce unnecessary retrieval without reducing the user's required coverage or ev
 
 - Do not reread unchanged material just because another turn or tool call occurred. Track needed source identity, relevant location, and what it established in current working context, not in a new database.
 - Revalidate mutable facts when the task needs current truth. Use a revision, updated-at field, or lightweight read if available; unknown freshness is not proof of unchanged content. A newer timestamp alone does not make a draft more authoritative than a governing source.
+- For ambiguous version/coverage decisions, use [freshness-aware reuse](references/source-reuse.md) and its optional helper. Known decisions need no extra call or cache database.
 - Treat negative and truncated results correctly: a failed lookup is not evidence of absence, and the first page is not an exhaustive search. Read [coverage and recovery](references/coverage-and-recovery.md) when results are incomplete, conflicting, stale, or access-limited.
 - Stop when the requested output is supported and material uncertainties are resolved or transparently bounded. Do not keep searching for a predetermined answer, obey an arbitrary search quota, or launch extra verification that adds no relevant evidence.
 - If the user asks for comprehensive coverage, complete it or clearly identify what remains inaccessible. Saving context does not justify omitting a required source.

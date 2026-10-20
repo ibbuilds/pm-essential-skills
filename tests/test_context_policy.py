@@ -155,6 +155,45 @@ class ValidationTests(unittest.TestCase):
                     POLICY.assess(observation)
 
 
+class SettingsTests(unittest.TestCase):
+    def test_suggest_only_never_dispatches(self):
+        result = POLICY.assess({"context": context(), "safe_checkpoint": True,
+                                "settings": {"mode": "suggest-only"}})
+        self.assertEqual(result["action"], "suggest_rollover")
+        self.assertFalse(result["requires_transfer_checks"])
+        self.assertEqual(result["notice"], "rollover")
+
+    def test_stay_mode_preserves_thread_and_suppresses_pressure_notice(self):
+        for extra in [{"context": context()}, {"new_outcome": True},
+                      {"project_mode": "standalone", "substantive_turns": 30}]:
+            with self.subTest(extra=extra):
+                result = POLICY.assess({"safe_checkpoint": True, "settings": {"mode": "stay"}, **extra})
+                self.assertEqual(result["action"], "continue")
+                self.assertEqual(result["notice"], "none")
+
+    def test_completion_is_still_completion_in_stay_mode(self):
+        self.assertEqual(POLICY.assess({"completed": True, "settings": {"mode": "stay"}})["action"],
+                         "complete")
+
+    def test_project_specific_thresholds(self):
+        settings = {"review_ratio": 0.9, "rollover_ratio": 0.95}
+        for used, expected in [(85000, "continue"), (90000, "review"), (95000, "rollover")]:
+            with self.subTest(used=used):
+                result = POLICY.assess({"context": context(used), "safe_checkpoint": True,
+                                        "settings": settings})
+                self.assertEqual(result["action"], expected)
+
+    def test_settings_are_validated_instead_of_silently_ignored(self):
+        cases = [None, [], {"mode": "automatic"}, {"unknown": True},
+                 {"review_ratio": True}, {"review_ratio": float("nan")},
+                 {"rollover_ratio": float("inf")}, {"review_ratio": 0.9, "rollover_ratio": 0.8},
+                 {"review_ratio": 0}, {"rollover_ratio": 10**500}]
+        for settings in cases:
+            with self.subTest(settings=settings):
+                with self.assertRaises(ValueError):
+                    POLICY.assess({"settings": settings})
+
+
 class ExistingChatTests(unittest.TestCase):
     def test_existing_project_chat_is_assessed_without_future_turns(self):
         result = POLICY.assess({"project_mode": "project", "admission_check": True,

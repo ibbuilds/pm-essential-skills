@@ -50,9 +50,10 @@ The current authoring host can move chats to existing projects but exposes no ap
 
 ## Development
 
-Requires Python 3.10+ for the optional deterministic policy helper; the skill itself is instruction based. Runtime Python dependencies: none.
+Requires Python 3.10+ for optional deterministic helpers; the skills themselves are instruction based. Runtime helper dependencies: standard library only. Repository validation uses the development dependency PyYAML.
 
 ```powershell
+py -3 -m pip install -r requirements-dev.txt
 py -3 -m unittest discover -s tests -v
 py -3 scripts/validate_repository.py
 ```
@@ -68,6 +69,17 @@ The helper only assesses supplied observations. It neither reads chat histories 
 The [research and edge-case review](docs/research-and-edge-cases.md) explains source-based decisions, project setup, capability gaps, and failure handling.
 
 The agent execution path is deliberately small: a core skill under 700 words, conditional policy/adapter references, no extra management calls during unchanged same-task work, and compact JSON from the optional helper. Measured token savings still require a real project pilot.
+
+## Reliability helpers
+
+- **Intervention modes:** notify-and-transfer, suggest-only, or stay, with validated project-specific context thresholds. Automatic mode still requires trusted authorization.
+- **Readiness checks:** assess actual host capabilities, project/chat identity, destination skill availability, references, settings, and consent before operations. Missing facts remain missing.
+- **Recoverable transfers:** one journal per handoff, revision checks, exclusive locks, immutable-brief fingerprints, bounded retry, and idempotent destination confirmation. A lost response cannot silently trigger another create. See [runtime readiness and recovery](skills/context-management/references/runtime.md).
+- **Freshness-aware evidence:** reuse sufficient matching content at a known revision; revalidate uncertain current facts and fetch changed/missing/incomplete content. See [source reuse](skills/source-selection/references/source-reuse.md).
+
+Transfer journals record only bounded lifecycle events, attempts, IDs, and brief size. No transcript or credentials are logged. The helpers use declared observations rather than gaining new host access. If Python is unavailable, the skill preserves its instruction-based fallback and reports reduced runtime guarantees.
+
+The local tests include a simulated host-response-loss recovery, file locking, atomic-write failure, process restart, and source-reuse decisions. These are not live Codex transfer tests. CI checks both Windows and Linux; actual host integration and measured savings remain separate pilot work.
 
 ## Contributing
 

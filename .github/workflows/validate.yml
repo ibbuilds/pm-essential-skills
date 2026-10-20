@@ -9,14 +9,20 @@ permissions:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - name: Run policy tests
+      - name: Install validation dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run policy and runtime tests
         run: python -m unittest discover -s tests -v
       - name: Validate skill structure and references
         run: python scripts/validate_repository.py

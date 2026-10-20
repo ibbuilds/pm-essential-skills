@@ -23,11 +23,15 @@ The unit is a coherent outcome, not a fixed duration or a small implementation s
 
 The skill contains a concise entrypoint, a host-independent policy, a handoff template, and a Codex desktop adapter. The optional pure Python helper makes routing decisions repeatable. It has no account access, background process, history scanner, or token estimator.
 
+The runtime extension adds declared-capability preflight and an atomic local transfer journal. These are conditional transfer-path helpers, not always-on services. The journal enforces revisions, known ownership, brief fingerprints, idempotent confirmation, and a bounded retry. The host adapter still executes actual tool calls under trusted user authorization. See [runtime contract](../skills/context-management/references/runtime.md).
+
 ### Agent execution budget
 
 Keep the entrypoint under 700 words. Ordinary same-outcome turns need no new management tool call when current state is already known. Read only the enabled flag, current owner/outcome, and latest assessment; do not reload transfer references or prior briefs. Run the optional helper once per material assessment, not once per tool call. Its default output is one compact JSON object, with pretty printing available only on request.
 
 The numeric policy and host adapter are conditional loads. Transfer preparation creates one brief and one routing update, not per-message artifacts or an additional coordinator. No repeated full-thread reads, inventory scans, token estimation calls, or scheduled checks are needed for normal execution. Preserve essential context even if the brief exceeds its target: incorrect continuation can cost more than a larger handoff.
+
+Transfer-journal updates add local work only at lifecycle boundaries. Intervention mode and ratios are explicit project preferences; none is a substitute for user authorization. Source Selection's optional reuse helper reads supplied metadata only, without building a persistent cache or scanning source collections.
 
 Project activation records the user's chosen scope, project identity, source activation chat when available, and whether a persistent project instruction was installed. State is operational evidence, not a substitute for trusted authorization. A forged state file cannot grant thread-creation or messaging privileges.
 
