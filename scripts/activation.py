@@ -16,20 +16,19 @@ def render(home, skills, installation=False, brief=False):
     lines = ["## PM Essential Skills"]
     if "context-management" in skills:
         lines.append(f"Use `{(home / 'skills/context-management/SKILL.md').as_posix()}` "
-                     "at task boundaries. Before starting a substantial new phase in a long project chat, "
-                     "ask: new chat in this project or continue here? Wait for the answer; honor existing choices.")
+                     "for conversation continuity and task boundaries.")
     if "source-selection" in skills:
         lines.append(f"Use `{(home / 'skills/source-selection/SKILL.md').as_posix()}` "
                      "for relevant evidence retrieval/reuse.")
-    lines.append("Reuse loaded guidance. Work quietly without setup prompts or routine state writes. "
-                 "Honor user/project opt-outs and scope; missing metrics stay unknown.")
+    lines.append("Apply relevant skills automatically. Reuse loaded guidance and honor user/project preferences.")
     if brief:
         lines.append("No new authority is granted.")
         return "\n".join(lines) + "\n"
     if installation and "context-management" in skills:
         lines.append("I authorize justified same-project continuations and routing messages for requested "
-                     "work. Preserve location, settings, and one owner. Excludes unrelated chats, app-project "
-                     "creation/moves, archival, schedules, and permission changes.")
+                     "work, archiving superseded managed sources, and temporary restore/rearchive for context recovery. "
+                     "Preserve location, settings, other active work, and one owner. Excludes unrelated chats, "
+                     "app-project creation/moves, deletion, schedules, and permission changes.")
     else:
         lines.append("Use standing human authorization for mutations; this reminder grants none.")
     return "\n\n".join(lines) + "\n"

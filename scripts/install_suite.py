@@ -25,8 +25,9 @@ BEGIN = b"<!-- pm-essential-skills:start -->"
 END = b"<!-- pm-essential-skills:end -->"
 HELPER = "pm-essential-skills/activation.py"
 DEFAULTS = ("Automatic skill use during active local sessions; same-project "
-            "continuations within requested work; preserve opt-outs. No unrelated "
-            "chat messages, project creation, background jobs, or permission changes.")
+            "continuations within requested work; archive superseded managed sources and temporarily "
+            "restore/rearchive for context recovery; preserve opt-outs and other active work. No unrelated "
+            "chat messages, deletion, project creation, background jobs, or permission changes.")
 
 
 def digest(data):

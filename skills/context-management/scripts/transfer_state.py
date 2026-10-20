@@ -17,7 +17,7 @@ EVENTS = {"prepare", "request", "unknown", "failed", "confirm", "supersede", "ca
 SCHEMA = {"version", "revision", "phase", "handoff_id", "project_id", "source_thread_id",
           "destination_thread_id", "brief_path", "brief_sha256", "brief_bytes", "attempts", "events"}
 GATES = {"authorization_verified", "project_verified", "destination_skill_available",
-         "references_accessible", "settings_preserved", "safe_checkpoint", "execution_mode_allows_transfer"}
+         "references_accessible", "source_recovery_ready", "settings_preserved", "safe_checkpoint", "execution_mode_allows_transfer"}
 
 
 def text(value, name):
@@ -39,11 +39,14 @@ def read_json(path):
     return json.loads(path.read_text(encoding="utf-8-sig"), object_pairs_hook=unique)
 
 
-def digest(path):
+def digest(path, source_thread_id=None):
     raw = path.read_bytes()
     if not raw.strip():
         raise ValueError("Continuation brief is empty")
-    raw.decode("utf-8-sig")
+    content = raw.decode("utf-8-sig")
+    if source_thread_id is not None and not re.search(
+            r"(?<![\w-])" + re.escape(text(source_thread_id, "source_thread_id")) + r"(?![\w-])", content):
+        raise ValueError("Continuation brief must include the verified source_thread_id")
     return hashlib.sha256(raw).hexdigest(), len(raw)
 
 
@@ -195,7 +198,7 @@ def update(path, event, data, expected_revision=None):
             if set(data) != {"handoff_id", "project_id", "source_thread_id", "brief_path"}:
                 raise ValueError("Preparation needs handoff_id, project_id, source_thread_id, brief_path")
             brief = Path(text(data["brief_path"], "brief_path")).resolve()
-            fingerprint, size = digest(brief)
+            fingerprint, size = digest(brief, data["source_thread_id"])
             state = validate(dict(version=1, revision=0, phase="prepared", **data,
                                   destination_thread_id=None, brief_sha256=fingerprint,
                                   brief_bytes=size, attempts=0,
@@ -205,7 +208,7 @@ def update(path, event, data, expected_revision=None):
             state = validate(read_json(path))
             if expected_revision != state["revision"]:
                 raise ValueError("Stale revision; read current state before retrying")
-            if event == "request" and digest(Path(state["brief_path"]))[0] != state["brief_sha256"]:
+            if event == "request" and digest(Path(state["brief_path"]), state["source_thread_id"])[0] != state["brief_sha256"]:
                 raise ValueError("Brief changed after preparation; do not dispatch altered context")
             previous = state
             state = transition(state, event, data)

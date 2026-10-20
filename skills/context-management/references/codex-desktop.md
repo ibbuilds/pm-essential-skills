@@ -17,10 +17,12 @@ Use `create_thread` with:
 
 - `target.type: project` and the verified `projectId` from `list_projects`;
 - `target.environment.type: local`, unless the user explicitly requested a worktree;
-- a concise outcome title and a prompt containing the brief, handoff ID, skill invocation, verified project location, authorized next action, and instructions not to repeat the rollover;
+- a concise outcome title and a prompt containing the brief content, verified predecessor thread ID/host, supported retrieval route and omitted-context recovery map, handoff ID, skill invocation, verified project location, authorized next action, and instructions not to repeat the rollover;
 - no model/thinking override unless explicitly requested by the user.
 
 For remote projects, confirm the target resolves to the same execution host/location. Do not switch execution environments to make creation work. If the tool cannot preserve required settings, explain the limitation before moving work; do not claim equivalence. Do not use `fork_thread` for context reduction: it copies conversation history.
+
+Verify source recovery as described in [context recovery](context-recovery.md). The destination should receive enough context for its next action immediately and the actual `read_thread` source ID/host for later gaps. A brief pathname or the old chat's title alone is insufficient. Destination reads are bounded and demand-driven; never preload the entire predecessor by default.
 
 Check the returned status. A real `threadId` plus ready state confirms creation. If setup returns only `clientThreadId`, use a documented status mechanism if one is exposed, or reconcile through bounded project-thread listings until a real ID is available; do not invent a status endpoint or pass a client ID to tools expecting `threadId`. Keep the source in prepared state while setup is pending. If readiness cannot be established, disclose the pending transfer and avoid parallel implementation.
 
@@ -38,7 +40,7 @@ The destination starts with the creation prompt and continues the requested outc
 
 For a requested coordinator workflow, `wait_threads` gives compact status with cursors and `send_message_to_thread` delivers authorized follow-ups. Prefer bounded waits over repeated full transcript reads. These are not needed just to perform a normal one-way rollover. Never spawn a subagent as a replacement for a user-owned project chat.
 
-Do not archive automatically by default. Only use `set_thread_archived` when the user has authorized that behavior and the destination is confirmed. Never delete history or change user settings to reduce context.
+Within verified human scope, use `set_thread_archived` for the superseded source after confirmed/saved handoff and no other active work, following [archive lifecycle](archive-lifecycle.md). Check host cascade effects before archiving. For archived-context recovery, try `read_thread` first, temporarily restore only if required, then restore the original archived state. Never delete history or change user settings to reduce context.
 
 ## Measurement and unsupported hosts
 

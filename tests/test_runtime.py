@@ -34,7 +34,7 @@ class TransferTests(unittest.TestCase):
         root = Path(self.directory.name)
         self.path = root / "journal.json"
         self.brief = root / "brief.md"
-        self.brief.write_text("Confirmed goal, constraints, evidence and next action.\n", encoding="utf-8")
+        self.brief.write_text("Source thread: source-a\nConfirmed goal, constraints, evidence and next action.\n", encoding="utf-8")
         self.data = dict(handoff_id="task-001", project_id="project-a", source_thread_id="source-a",
                          brief_path=str(self.brief))
         self.gates = {key: True for key in STATE.GATES}
@@ -82,6 +82,23 @@ class TransferTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.change("request", self.gates | {key: False})
         self.assertEqual(STATE.update(self.path, "status", {})["attempts"], 0)
+
+    def test_brief_without_exact_source_reference_cannot_be_prepared(self):
+        for content in ("Goal and next step only", "Source title only", "Source ID: source-aa"):
+            with self.subTest(content=content):
+                self.brief.write_text(content, encoding="utf-8")
+                new_path = self.path.with_name("missing-source.json")
+                with self.assertRaisesRegex(ValueError, "source_thread_id"):
+                    STATE.update(new_path, "prepare", self.data)
+                self.assertFalse(new_path.exists())
+
+    def test_source_reference_without_recovery_gate_cannot_dispatch(self):
+        gates = {key: value for key, value in self.gates.items() if key != "source_recovery_ready"}
+        with self.assertRaises(ValueError):
+            self.change("request", gates)
+        unchanged = STATE.update(self.path, "status", {})
+        self.assertEqual(unchanged["phase"], "prepared")
+        self.assertEqual(unchanged["attempts"], 0)
 
     def test_brief_changes_block_dispatch(self):
         self.brief.write_text("Different constraints\n", encoding="utf-8")
@@ -202,6 +219,15 @@ class PreflightTests(unittest.TestCase):
         result = PREFLIGHT.assess({})
         self.assertFalse(result["transfer_ready"])
         self.assertEqual(result["status"], "unavailable")
+
+    def test_known_source_identity_does_not_establish_recoverable_context(self):
+        value = {key: True for key in PREFLIGHT.FLAGS}
+        value.update(membership="project", project_id="project-a", source_thread_id="source-a")
+        for state in ({}, {"source_recovery_ready": False}, {"source_recovery_ready": None}):
+            observed = {key: item for key, item in value.items() if key != "source_recovery_ready"} | state
+            result = PREFLIGHT.assess(observed)
+            self.assertFalse(result["transfer_ready"])
+            self.assertIn("source_recovery_ready", result["transfer_missing"])
 
     def test_project_setup_needs_real_tools_consent_and_name(self):
         value = dict(membership="standalone", source_thread_id="source-a", safe_checkpoint=True)

@@ -18,6 +18,10 @@ The installer finds Codex's bundled Python runtime when available. It installs o
 
 Each skill works independently. Installing one does not require the other. Existing user choices such as disabled, suggest-only, and stay remain binding. Short work should usually proceed without management notices or extra files.
 
+Workflow behavior is maintained inside each `skills/<name>/` folder. The installer and optional reminders point to those skills and record coordination scope; they do not hold a second copy of the decision rules. Bare folders can also be installed in a host's native discovery location, such as `~/.agents/skills` for current local Codex. Avoid installing a second copy with the same name.
+
+Context Management's disclosed installation scope includes archiving superseded source chats after confirmed handoff and temporarily restoring/rearchiving them when required to recover context. It preserves other active work and keep-visible choices; it never deletes history or scans unrelated chats. Every handoff carries the needed working context plus a verified predecessor reference and a recovery map for useful omitted detail.
+
 For other systems, or an advanced installation:
 
 ```sh

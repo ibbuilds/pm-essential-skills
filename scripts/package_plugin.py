@@ -6,10 +6,16 @@ import json
 from pathlib import Path
 import zipfile
 
+from skill_resources import resource_errors
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def build(output, root=ROOT):
+    for skill in sorted((root / "skills").glob("*/SKILL.md")):
+        errors = resource_errors(skill.parent)
+        if errors:
+            raise ValueError("; ".join(errors))
     manifest = json.loads((root / "plugin.json").read_text(encoding="utf-8"))
     entries = {"plugin.json": root / "plugin.json"}
     for entry in sorted((root / "skills").rglob("*")):

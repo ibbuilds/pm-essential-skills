@@ -8,6 +8,8 @@ from pathlib import Path
 
 import yaml
 
+from skill_resources import resource_errors
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -32,6 +34,7 @@ def main():
     except (ValueError, OSError, KeyError, TypeError) as exc:
         errors.append(f"plugin.json: {exc}")
     for path in skills:
+        errors.extend(resource_errors(path.parent))
         text = path.read_text(encoding="utf-8")
         match = re.match(r"\A---\n(.*?)\n---\n", text, re.DOTALL)
         try:

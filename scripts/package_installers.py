@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 import zipfile
 
+from skill_resources import resource_errors
+
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ("context-management", "source-selection")
 
@@ -20,6 +22,9 @@ def build(output, skills, root=ROOT):
         folder = root / "skills" / name
         if not (folder / "SKILL.md").is_file():
             raise ValueError(f"Missing skill: {name}")
+        errors = resource_errors(folder)
+        if errors:
+            raise ValueError("; ".join(errors))
         for source in sorted(folder.rglob("*")):
             if source.is_symlink():
                 raise ValueError("Linked package files are not supported")
@@ -31,8 +36,8 @@ def build(output, skills, root=ROOT):
     guide = ("PM Essential Skills\n\nExtract this download, open Install.cmd, then use Codex normally.\n"
              "Included: " + ", ".join(skills) + ".\n\n"
              "Installation copies only the included skills and adds their automatic user-level guidance.\n"
-             "Context Management installation selects same-project continuation/routing defaults for requested work.\n"
-             "Before a substantial new phase in a long project chat, it asks new same-project chat or continue here.\n"
+             "Context Management selects same-project routing, superseded-source archival, and temporary recovery defaults.\n"
+             "Each skill contains its own workflow; the activation rule only points to it and records scope.\n"
              "Existing user preferences are preserved. No project activation prompt, Git account, or plugin is needed.\n"
              "Guidance takes effect when Codex next reloads instructions; existing sessions may retain an old snapshot.\n\n"
              "Check: Install.cmd status\nRemove and restore originals: Install.cmd uninstall\n\n"

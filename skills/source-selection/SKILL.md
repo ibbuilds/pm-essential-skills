@@ -1,6 +1,6 @@
 ---
 name: source-selection
-description: Find and read sufficient task-relevant evidence without repeatedly loading whole collections or unchanged sources. Use for retrieval-heavy project work across files, documents, connected systems, or web sources. Respect exhaustive coverage and exact source requests; skip retrieval when available context already suffices.
+description: Find sufficient evidence for retrieval-heavy tasks; skip retrieval when context already suffices. Reuse sources and bound reads without narrowing requested coverage.
 ---
 
 # Source Selection
@@ -11,9 +11,9 @@ Retrieve sufficient evidence with less repeated work. Apply on relevant ordinary
 
 1. Identify the outcome and missing facts. Reuse applicable evidence already available. When context suffices, make no retrieval, helper, or planning call.
 2. Honor exact sources, full-read requests, dates, exhaustive coverage, and source-specific access rules. Never narrow required work to reduce usage.
-3. Use the existing native tool at a known path/ID/URL. Otherwise search relevant filenames, headings, or terms; prefer `rg`/`rg --files` locally. Stay within the authorized project/source scope. Do not install services or scan unrelated collections.
+3. Use the existing native tool at a known path/ID/URL. Otherwise search relevant filenames, headings, or terms; prefer `rg`/`rg --files` locally. For tool discovery, inspect matching names/descriptions, then the selected schema; avoid dumping the full catalog. Stay within authorized scope.
 4. Read the smallest sufficient unit, including definitions, exceptions, neighboring context, and table headers/footnotes. Bound native results by ranges/pages. Search snippets locate evidence; fetch unresolved context or authority before relying on it. Partial reads are not complete reviews.
-5. Batch independent reads/searches when supported. Keep dependent follow-ups sequential. Broaden for missing coverage, conflicts, or dependencies; stop once the requested result is supported. No arbitrary search quota.
+5. Batch independent reads/searches when supported; bound both individual results and combined output. Keep dependent follow-ups sequential. Broaden for missing coverage, conflicts, or dependencies; stop once the requested result is supported. No arbitrary search quota.
 
 ## Reuse and bounded output
 

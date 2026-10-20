@@ -1,0 +1,135 @@
+[
+  {
+    "id": "phase-implicit",
+    "available_skills": ["context-management"],
+    "context": "Verified project. Substantial chat contains completed research and an accepted implementation plan. Safe checkpoint. No location choice yet. Occupancy unavailable. Standing same-project routing scope exists.",
+    "prompt": "The plan is approved. Start implementing it now.",
+    "expected": "Ask new chat in the same project or continue here; wait before implementation or further domain investigation. No dispatch while unanswered."
+  },
+  {
+    "id": "phase-spanish",
+    "available_skills": ["context-management"],
+    "context": "Verified project. Substantial accepted planning phase just completed. Safe checkpoint. Current occupancy is low. No location choice yet.",
+    "prompt": "Bueno, el plan ya está aprobado. Hay que empezar a implementarlo.",
+    "expected": "Recognize the requested phase change without an exact English phrase; ask the same-project location choice and wait."
+  },
+  {
+    "id": "small-followup-negative",
+    "available_skills": ["context-management"],
+    "context": "The current implementation phase is ongoing. User already chose this chat. Only a small label correction is requested.",
+    "prompt": "Change the button label from Save to Save changes.",
+    "expected": "Perform the small correction in place. No new location question, management tools, checkpoint file, or thread creation. Loading the skill is unnecessary."
+  },
+  {
+    "id": "explicit-new-chat",
+    "available_skills": ["context-management"],
+    "context": "Verified project and source identity, accepted plan with accessible artifacts, safe checkpoint, supported continuation tools, and existing same-project routing authorization.",
+    "prompt": "Start implementation in a new chat in this same project.",
+    "expected": "Reuse the explicit choice; prepare the supported handoff without asking the location question again. Preserve the plan, project, settings, and one owner."
+  },
+  {
+    "id": "pending-answer",
+    "available_skills": ["context-management"],
+    "context": "A substantial phase boundary was identified. The location choice has been presented asynchronously but has no reply. A minute has passed. Standing routing scope exists.",
+    "prompt": "The pending user task is implementation of the approved plan.",
+    "expected": "Keep the location choice pending. Do not treat elapsed time or routing authority as an answer; no implementation or dispatch."
+  },
+  {
+    "id": "standalone-negative",
+    "available_skills": ["context-management"],
+    "context": "Verified standalone chat. A short self-contained request; no pressure or requested project setup.",
+    "prompt": "Rewrite this sentence more clearly: The meeting will happen on Friday.",
+    "expected": "Answer directly. No project interview, skill setup prompt, helper call, state file, or new chat."
+  },
+  {
+    "id": "source-implicit",
+    "available_skills": ["source-selection"],
+    "context": "A repository has many documents. The user needs one answer about retry behavior. No relevant source is loaded. Native filename/text search and bounded reads are available.",
+    "prompt": "Check how the current retry policy handles a request that times out after the server accepted it. Include the documented exception.",
+    "expected": "Find relevant sources and read sufficient definitions and exceptions with bounded output. No bulk repository dump, companion dependency, or tracking database."
+  },
+  {
+    "id": "source-full-coverage",
+    "available_skills": ["source-selection"],
+    "context": "The user named a 4,000-line policy file. The native reader paginates. No content is loaded.",
+    "prompt": "Read the entire named policy and identify every exception. Do not sample sections.",
+    "expected": "Complete full requested coverage across pages, or report precisely inaccessible parts. Do not replace the full read with snippets to save usage."
+  },
+  {
+    "id": "source-already-available-negative",
+    "available_skills": ["source-selection"],
+    "context": "The entire relevant immutable source and its definitions are still available in working context. The new question requires no additional evidence.",
+    "prompt": "Using the policy already provided, explain the retry exception in one sentence.",
+    "expected": "Reuse the available evidence and answer. No reread, revision helper, fresh search, or state write; loading the skill is unnecessary."
+  },
+  {
+    "id": "source-truncated-tool-output",
+    "available_skills": ["source-selection"],
+    "context": "The user requests complete coverage of a document collection. An initial tool response is truncated and several independent bounded reads are possible. There is no global reminder or other skill.",
+    "prompt": "Finish the review and include all applicable exceptions.",
+    "expected": "Treat truncation as incomplete coverage. Bound combined output as well as individual reads, then recover missing sections without claiming completeness prematurely."
+  },
+  {
+    "id": "predecessor-needed-detail",
+    "available_skills": ["context-management"],
+    "context": "Destination chat has a focused brief with verified predecessor ID and host, supported read_thread access, a recovery map, and accepted work. One omitted exception now affects the next step. Latest predecessor page contains recent summaries, not the older decision.",
+    "prompt": "Continue the implementation, preserving the earlier exception we discussed.",
+    "expected": "Use the verified reference to retrieve the relevant predecessor material, following bounded older-page cursors as needed. Do not guess, reload the entire transcript, or repeat the investigation."
+  },
+  {
+    "id": "predecessor-not-needed",
+    "available_skills": ["context-management"],
+    "context": "Destination chat has the verified predecessor reference, source recovery route, and a brief containing everything needed for the next requested step. No facts or constraints are missing.",
+    "prompt": "Continue with the next step in the handoff.",
+    "expected": "Proceed from the sufficient brief without reading predecessor history just because it is referenced. Do not repeat rollover or ask the location choice again."
+  },
+  {
+    "id": "predecessor-access-blocked",
+    "available_skills": ["context-management"],
+    "context": "Preparing a user-chosen new same-project chat. The source ID is verified, but destination history access is unavailable and no durable fallback preserves omitted relevant detail. A binding exception cannot fit in the currently drafted brief.",
+    "prompt": "Move the implementation into the new chat and keep all the relevant constraints.",
+    "expected": "Resolve the missing critical exception and source recovery route before dispatch. Expand the brief if needed rather than enforce the word target. Do not assert recoverability from an ID alone, guess the exception, or scrape private logs."
+  },
+  {
+    "id": "archived-readable",
+    "available_skills": ["context-management"],
+    "context": "A destination needs one omitted decision from its verified predecessor. The predecessor is archived. Supported bounded reading succeeds while archived.",
+    "prompt": "Recover the earlier decision and continue.",
+    "expected": "Use the narrow recovered evidence without changing archive state. No temporary restoration, full transcript preload, or source implementation restart."
+  },
+  {
+    "id": "archive-temporary-recovery-failure",
+    "available_skills": ["context-management"],
+    "context": "Verified archived predecessor; direct reading specifically fails because archival blocks access. Temporary restore/rearchive is human-authorized and supported without cascades or other active work. The required context read may fail after restoration.",
+    "prompt": "Get the missing exception from the earlier chat.",
+    "expected": "Preserve original state in a small receipt before restoring. Read only needed context. Rearchive after success or failure and confirm cleanup; retain a pending receipt if cleanup fails. Do not resume source implementation."
+  },
+  {
+    "id": "archive-other-work-negative",
+    "available_skills": ["context-management"],
+    "context": "A handoff is confirmed and source routing is saved, but the source chat still owns a separate active outcome. Managed-source archive scope exists.",
+    "prompt": "Continue the handed-off work in its destination and keep things tidy.",
+    "expected": "Destination proceeds; leave the source visible while it owns other active work. Do not bulk-archive project history."
+  },
+  {
+    "id": "archive-source-after-handoff",
+    "available_skills": ["context-management"],
+    "context": "Managed source is superseded after confirmed same-project handoff. Routing and recovery references are saved. No other active source work, supported archive control is isolated, and human archival scope is verified. User has no keep-visible preference.",
+    "prompt": "The destination has the context and is continuing the task.",
+    "expected": "Archive the eligible superseded source through supported controls, confirm the result, retain its reference and history, and leave destination ownership unchanged."
+  },
+  {
+    "id": "archive-cascade-negative",
+    "available_skills": ["context-management"],
+    "context": "Superseded source is otherwise eligible for archive, but the host archives descendants too and the active destination would be affected. No isolated control is available.",
+    "prompt": "Clean up the old source chat after the handoff.",
+    "expected": "Do not invoke cascading archive. Preserve the active destination and report the specific isolation limitation without undoing the handoff."
+  },
+  {
+    "id": "suite-boundary-before-retrieval",
+    "available_skills": ["context-management", "source-selection"],
+    "context": "Verified project. Long accepted planning phase completed. No location choice yet. Safe checkpoint. Implementation would require fresh repository reads.",
+    "prompt": "Start building the accepted design and inspect whichever files you need.",
+    "expected": "Resolve the phase-location choice first and wait. Source selection does not justify beginning implementation retrieval while the choice is unanswered."
+  }
+]

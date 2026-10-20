@@ -1,6 +1,6 @@
 # Runtime readiness and recoverable transfers
 
-Read on activation, material capability changes, or an actual transfer. Ordinary unchanged work requires no helper calls. These helpers have no account access and never perform a host operation; supplied observations are not authorization grants.
+Read when a readiness question, material capability change, or actual transfer requires it. Ordinary activation and unchanged work require no helper calls or runtime-reference read. These helpers have no account access and never perform a host operation; supplied observations are not authorization grants.
 
 ## Readiness
 
@@ -19,11 +19,14 @@ Read on activation, material capability changes, or an actual transfer. Ordinary
   "execution_mode_allows_transfer": true,
   "safe_checkpoint": true,
   "references_accessible": true,
+  "source_recovery_ready": true,
   "settings_preserved": true
 }
 ```
 
 Verify destination skill availability from the same project's installed skill path or a verified personal installation on the target host. Do not assume that a skill mentioned in a prompt is installed. Preserve exact host/project identity and settings; if they cannot be established, readiness is degraded.
+
+`source_recovery_ready` requires a verified predecessor reference in the brief/prompt plus a destination-accessible supported history route or sufficient durable fallback; see [context recovery](context-recovery.md). It is not established merely because a source ID is known. Reuse known access facts without mandatory extra calls. The journal checks that the brief contains the exact source ID and requires this declared recovery gate before dispatch; it cannot prove semantic completeness or host access on its own.
 
 `transfer_ready` means the supplied gates passed, not that the script independently discovered or authorized them. Report unsupported capabilities once, with the manual fallback; never claim full automatic management is active when gates are missing. For standalone setup, flags `create_project_available`, `move_chat_available`, `verify_membership_available`, `setup_consent_verified`, and `chosen_project_name` distinguish unsupported, consent/name requirements, and readiness. They do not perform creation.
 
@@ -38,7 +41,7 @@ Every command takes `--state PATH --event EVENT`; mutations after preparation re
 | Event | Required observation/data | Next step |
 | --- | --- | --- |
 | `prepare` | Unique `handoff_id`, verified `project_id`, `source_thread_id`, and UTF-8 `brief_path` | Records fingerprint and prepared state; never overwrites an existing journal. |
-| `request` | True gates: `authorization_verified`, `project_verified`, `destination_skill_available`, `references_accessible`, `settings_preserved`, `safe_checkpoint`, `execution_mode_allows_transfer` | Saves requesting state **before** calling the host create tool. Pause source implementation. |
+| `request` | True gates: `authorization_verified`, `project_verified`, `destination_skill_available`, `references_accessible`, `source_recovery_ready`, `settings_preserved`, `safe_checkpoint`, `execution_mode_allows_transfer` | Saves requesting state **before** calling the host create tool. Pause source implementation. |
 | `unknown` | Empty object after lost/ambiguous creation result | Preserve uncertain state; reconcile through the host. No blind retry. |
 | `failed` | `definite_failure: true` from an authoritative host outcome | Source can remain usable; one resolved retry is permitted. |
 | `absent` | `definitive_absence: true` after an uncertain result | Same bounded retry path. A missing item in a partial/eventually consistent listing is not proof of absence. |

@@ -26,6 +26,8 @@ Record the observation source, fresh current-context occupancy when known, obser
 
 - Handoff ID and brief path:
 - Source thread:
+- Source recovery route/map and destination access evidence:
+- Confirmed source archive state and any temporary-recovery receipt (`rearchive_pending`, original state, target/host, owner):
 - Lifecycle: prepared / destination-confirmed / superseded
 - Destination thread ID and readiness evidence (unknown until confirmed):
 - Recovery action, if needed:

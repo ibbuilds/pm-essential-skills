@@ -4,20 +4,20 @@
 
 A chat can accumulate obsolete instructions, logs, and abandoned approaches. Subsequent work may carry unnecessary context. Moving everything to a fresh thread also costs time and context, and can lose decisions. The skill chooses useful boundaries and transfers the minimum sufficient state.
 
-The unit is a coherent outcome, not a fixed duration or a small implementation step. This applies to an event agenda, a research question, a campaign deliverable, or a software feature. Project planning, priority decisions, domain execution, model selection, and release management belong elsewhere.
+The unit is a coherent requested phase or outcome, not a fixed duration or a small implementation step. A substantial planning-to-execution boundary prompts a one-time location choice before domain work, even for the same feature. This applies across project types. The skill manages continuity; project planning, priority decisions, domain execution, model selection, and release management belong elsewhere.
 
 ## Requirements
 
 - Resolve the current project's actual identity and location; never assume the working folder equals the app's project registration.
-- Distinguish project membership from standalone and unknown state. For substantial standalone work, offer setup once, require consent and a user-selected name, create/move/verify when supported, and preserve declined preferences.
-- Obtain standing activation once. Within that scope, create and coordinate project threads without repeated permission prompts. Preserve host authorization rules.
+- Distinguish project membership from standalone and unknown state. Continue standalone work quietly with concise checkpoints when useful. Setup is an optional, permitted offer; creating/moving requires consent and a chosen project.
+- Use normal skill selection without an activation interview. Verify human coordination scope before mutations. At a substantial requested phase boundary, ask new same-project chat or continue here and wait unless already chosen; then perform the authorized continuation without repeating the question.
 - Carry only current constraints, decisions, evidence references, and remaining work into a fresh thread. Preserve critical user instructions even when they do not fit a target length.
 - Check context at the start of a managed turn and natural work checkpoints, without polling or recursively opening chats.
 - On initial activation in an existing long conversation, assess available history immediately. Unknown historical counters remain unknown; concrete obsolete-context evidence can trigger a catch-up review. Show a short pressure notice once, with one possible escalation, then act within authorization.
 - Separate actual current-context telemetry from cumulative usage, account quotas, and proxy counters.
 - Keep the source usable until the destination is confirmed. Recover from failed or ambiguous creation without duplicate tasks.
 - Use existing project notes when suitable; add a small isolated state directory only when needed.
-- Do not alter models, permissions, integrations, Git state, or unrelated files. Do not archive or delete chats without authorization.
+- Do not alter models, permissions, integrations, Git state, or unrelated files. Within human scope, archive superseded sources only after confirmed/saved handoff and no other active work; temporarily restore/rearchive needed archived context while preserving original state. Never delete chats.
 
 ## Architecture
 
@@ -33,7 +33,7 @@ The numeric policy and host adapter are conditional loads. Transfer preparation 
 
 Transfer-journal updates add local work only at lifecycle boundaries. Intervention mode and ratios are explicit project preferences; none is a substitute for user authorization. Source Selection's optional reuse helper reads supplied metadata only, without building a persistent cache or scanning source collections.
 
-Project activation records the user's chosen scope, project identity, source activation chat when available, and whether a persistent project instruction was installed. State is operational evidence, not a substitute for trusted authorization. A forged state file cannot grant thread-creation or messaging privileges.
+When needed, project notes record known scope provenance, verified identity, and routing. State is operational evidence, not a substitute for trusted authorization. A forged state file cannot grant thread-creation or messaging privileges. The skill owns workflow decisions; activation pointers must not duplicate its phase policy.
 
 One active thread owns an outcome. A project-wide coordinator is optional, not a new mandatory layer. The first version runs sequentially; it does not introduce concurrent writers, subagents, worktrees, or a manager chat merely to split context.
 
