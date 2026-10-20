@@ -1,0 +1,30 @@
+# Project context index
+
+- Management: enabled / disabled
+- Project ID and host (when exposed):
+- Confirmed project root or workspace identity:
+- Standing activation: source user instruction reference and authorized scope
+- Persistent discovery rule location (if installed):
+- User routing preferences:
+- Standalone setup status/reference, if this project was created from a chat:
+
+## Current outcomes
+
+| Outcome | Status | Active thread ID if known | Latest handoff ID/path | Superseded source |
+| --- | --- | --- | --- | --- |
+
+Keep only current outcomes and routing needed to find their owners. Link existing project records for completed work instead of growing this table into a transcript.
+
+## Latest assessment per active thread
+
+Record the observation source, fresh current-context occupancy when known, observed counters when known, decision reason, last pressure notice actually shown (none / review / rollover), initial catch-up assessment status, and any deferred transfer. Missing data is unknown. Historical usage is not current occupancy.
+
+## Pending transfer, if any
+
+- Handoff ID and brief path:
+- Source thread:
+- Lifecycle: prepared / destination-confirmed / superseded
+- Destination thread ID and readiness evidence (unknown until confirmed):
+- Recovery action, if needed:
+
+This file records operational state. It does not grant user authorization. Keep it concise, omit credentials and transcripts, and preserve the user's original scope.

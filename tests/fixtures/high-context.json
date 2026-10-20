@@ -1,0 +1,10 @@
+{
+  "safe_checkpoint": true,
+  "context": {
+    "kind": "current_context",
+    "used_tokens": 85000,
+    "window_tokens": 100000,
+    "source": "synthetic test fixture, not live telemetry",
+    "fresh": true
+  }
+}
