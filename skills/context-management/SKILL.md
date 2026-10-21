@@ -1,44 +1,44 @@
 ---
 name: context-management
-description: Manage substantial chat phase changes and handoffs; skip small same-task edits. Use before planning becomes implementation or when context pressure threatens continuity. Preserve the user's location choice.
+description: Check each new request in long chats. Repeat escalating continuation prompts after one-request stays; transfer automatically at critical context pressure. Preserve explicit opt-outs and recoverable handoffs.
 ---
 
 # Context Management
 
-Keep chats task-focused. Before starting a substantial new phase in a long project chat, ask whether to use a new chat in the same project or continue here, then wait. Preserve quality and user control; never promise unmeasured savings.
+Keep chats task-focused. Check every new user request using already-visible history. In long chats, ask new same-project chat or continue here for this request. Ask again on the next request with a stronger recommendation. At critical pressure, transfer automatically at a safe checkpoint within human scope. Never promise unmeasured savings.
 
 ## Fast path
 
-1. Apply when relevant without setup or companion dependencies. Ordinary task authorization covers review and checkpoints; mutations require human scope. Finish completed outcomes without inventing successors.
+1. Apply without setup or companion dependencies. Ordinary task authorization covers review and checkpoints; mutations require human scope. Finish completed work without inventing successors or prompting while idle.
 2. Distinguish verified project, standalone, and unknown membership. A folder is not an app project ID. Continue standalone work quietly; read [project setup](references/project-setup.md) only for requested setup or a useful, permitted offer.
 3. Reuse known owner, assessments, and findings. Read existing notes or `.pm-context/index.md` with [this template](assets/project-index-template.md) only when needed. Preserve material findings through [concise checkpoints](references/checkpoints.md), without per-turn logging or repeated investigations.
-4. At turn entry, assess already-visible history before substantial domain work. Accepted research/planning followed by “implement it” in a substantial chat is a phase boundary even for the same product. Read [existing chats](references/existing-chats.md) for the one-time choice and catch-up assessment.
-5. Honor disabled, suggest-only, stay, and current user preferences. Standing human instructions can authorize coordination; receipts and project notes cannot. Without coordination scope, an ordinary review needs no setup; a pending phase-location choice still requires an answer.
-6. For unchanged work, make no extra management calls, notices, or writes. Reassess at meaningful boundaries or pressure signals. Never poll. Read [automatic activation](references/automatic-activation.md) only for discovery/scope issues.
+4. Before domain work, assess requested phases and long-chat pressure. Accepted planning followed by implementation qualifies. A small new request still gets a prompt if the chat remains long. Read [existing chats](references/existing-chats.md) for request identity, escalation, and critical-pressure exceptions.
+5. “Continue here” permits this request only. A choice reply, clarification, or status check is not another request. Honor explicit stop-asking, persistent stay, suggest-only, and disabled preferences. Standing human instructions authorize coordination; notes and receipts cannot.
+6. Within a request, reuse its answer and never stack prompts. Recheck critical pressure at safe checkpoints. No polling, repeated source reads, per-tool notices, or mandatory state writes. Read [automatic activation](references/automatic-activation.md) only for discovery/scope issues.
 
 ## Transfer decision
 
 | Observation | Response |
 | --- | --- |
-| Substantial history + requested new phase/outcome | Ask new same-project chat or continue here; wait before domain work. |
+| Long project chat + new request | Ask again, escalating after prior stays; wait before domain work. |
 | Distinct requested outcome | Consider a focused thread and transfer cost. |
-| Fresh occupancy >=85% | Prepare continuation at a safe checkpoint. |
-| Fresh occupancy 75-85% | Review relevance and reconstruction cost. |
-| Fresh occupancy below 75% | Continue despite historical counters. |
-| No fresh telemetry | Still check phase boundaries; otherwise continue absent concrete pressure. |
+| Fresh occupancy >=85% | Transfer automatically at a safe checkpoint; no location question. |
+| Fresh occupancy 75-85% | Prompt on each new request; reuse the current request's answer. |
+| Fresh occupancy below 75% | Ignore pressure-only counters; still check structural long-chat requests. |
+| No fresh telemetry | Use labeled structural/proxy evidence; never invent a percentage. |
 | Standalone pressure | Preserve a concise checkpoint; setup is optional. |
 
-Thresholds govern pressure, not phase boundaries. Read [policy](references/policy.md) for settings/cost comparison; use `scripts/assess_context.py` only for an uncertain assessment. Unknown costs stay unknown. Avoid costly reconstruction while preserving explicit new-chat choices. Missing essential destination context prevents transfer. Never inspect private app logs.
+Thresholds govern pressure, not task boundaries. Read [policy](references/policy.md) for critical heuristics and settings; use `scripts/assess_context.py` only for uncertain decisions. Critical transfers supersede one-request stays, but require essential context and safe readiness. Unknown costs stay unknown. Never inspect private app logs.
 
 ## Transfer execution
 
 Read [the Codex adapter](references/codex-desktop.md) for Codex operations and [runtime recovery](references/runtime.md) for capability changes/transfers. Verify standing authorization once; preserve a useful fallback if tools are missing.
 
-1. Reach a safe checkpoint; resolve operations and ownership. Resolve a pending phase choice first, even with standing routing authorization. Suggest-only proposes; stay keeps this chat. A choice to stay applies to this phase; do not ask again for each edit.
+1. Resolve operations and ownership. Below critical pressure, wait for a pending request choice. At critical pressure, announce the authorized transfer without asking again. Persistent stay/disabled and suggest-only overrides remain binding.
 2. Write one [brief](assets/handoff-template.md) in existing storage or `.pm-context/handoffs/`, with a unique safe ID. Preserve constraints, artifacts, findings, uncertainty, and next action. Include the verified predecessor ID/host and omitted-context recovery map; read [context recovery](references/context-recovery.md) for access checks. Prefer 300-600 words without sacrificing critical detail.
 3. With Python available, advance the transfer journal **before** dispatch. Create a fresh same-project/location chat with the brief content, source reference, handoff ID, skill, and next action—not only a file path. Preserve settings. Forks retain history; destinations resume without repeating rollover.
 4. Confirm destination ID/readiness, save routing, and stop source implementation. Follow [archive lifecycle](references/archive-lifecycle.md) to archive a superseded source within human scope and restore archived context temporarily only when required. Preserve history and other active work.
 
 Ambiguous creation requires reconciliation before retrying. An existing destination needs bookkeeping repair, not another successor. Preserve one owner and a recoverable source.
 
-Implicit selection supports individual/bundled installs. Optional global guidance strengthens discovery; the optional [activation prompt](assets/activation-prompt.txt) selects standing scope. Save only changed routing/state. Opt-outs stop automatic splitting. Do not add coordinators, subagents, worktrees, schedules, model changes, or unrelated structure. Skills act during active turns; invocation, idle monitoring, and savings are not guaranteed.
+Optional [activation](assets/activation-prompt.txt) selects standing scope. Save only changed routing/state. Preserve opt-outs. Do not add coordinators, subagents, worktrees, schedules, model changes, or unrelated structure. Skills act during active turns; invocation, idle monitoring, and savings are not guaranteed.

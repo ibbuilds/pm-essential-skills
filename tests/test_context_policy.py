@@ -57,7 +57,7 @@ class RoutingTests(unittest.TestCase):
 
     def test_user_preference_overrides_pressure_and_new_outcome(self):
         result = POLICY.assess({"user_keep_thread": True, "new_outcome": True,
-                                "safe_checkpoint": True, "context": context()})
+                                "safe_checkpoint": True, "context": context(80000)})
         self.assertEqual(result["action"], "continue")
         self.assertEqual(result["reason"], "user_prefers_current_thread")
 
@@ -96,7 +96,7 @@ class RoutingTests(unittest.TestCase):
 
     def test_stale_telemetry_allows_proxy_fallback(self):
         result = POLICY.assess({"context": context(1000, fresh=False), "large_outputs": 6})
-        self.assertEqual(result["action"], "review")
+        self.assertEqual(result["action"], "defer")
         self.assertEqual(result["measurement"], "heuristic")
 
     def test_null_unknown_counters_are_supported(self):
@@ -118,12 +118,12 @@ class RoutingTests(unittest.TestCase):
             self.assertGreaterEqual(rank[result["action"]], previous)
             previous = rank[result["action"]]
 
-    def test_user_stays_for_all_measured_pressures(self):
+    def test_one_request_stay_expires_at_critical_pressure(self):
         for used in range(0, 100001, 1000):
             result = POLICY.assess({"context": context(used), "safe_checkpoint": True,
                                     "user_keep_thread": True})
-            self.assertEqual(result["action"], "continue")
-            self.assertFalse(result["requires_transfer_checks"])
+            self.assertEqual(result["action"], "continue" if used < 85000 else "rollover")
+            self.assertEqual(result["requires_transfer_checks"], used >= 85000)
 
     def test_no_rollover_without_safe_checkpoint_across_signal_types(self):
         scenarios = [{"new_outcome": True}, {"context": context()},
@@ -201,15 +201,16 @@ class ExistingChatTests(unittest.TestCase):
         self.assertEqual(result["action"], "rollover")
         self.assertEqual(result["notice"], "rollover")
 
-    def test_unknown_old_counts_with_concrete_evidence_trigger_review(self):
+    def test_unknown_old_counts_with_concrete_evidence_trigger_request_choice(self):
         result = POLICY.assess({"project_mode": "project", "admission_check": True,
                                 "safe_checkpoint": True, "obsolete_context_evidence": [
                                     "Superseded launch plan", "Output from resolved import issue"]})
-        self.assertEqual(result["action"], "review")
-        self.assertEqual(result["reason"], "existing_history_review")
+        self.assertEqual(result["action"], "ask_thread_choice")
+        self.assertEqual(result["reason"], "long_chat_new_request")
         self.assertEqual(result["measurement"], "heuristic")
         self.assertIsNone(result["context_ratio"])
-        self.assertEqual(result["notice"], "review")
+        self.assertEqual(result["notice"], "none")
+        self.assertEqual(result["prompt_level"], 1)
 
     def test_unsubstantiated_first_use_does_not_invent_pressure(self):
         result = POLICY.assess({"admission_check": True, "safe_checkpoint": True})
@@ -238,7 +239,7 @@ class ExistingChatTests(unittest.TestCase):
 
     def test_no_notice_for_unsafe_or_user_overridden_pressure(self):
         for extra in [{"safe_checkpoint": False},
-                      {"safe_checkpoint": True, "user_keep_thread": True},
+                      {"safe_checkpoint": True, "settings": {"mode": "stay"}},
                       {"safe_checkpoint": True, "completed": True}]:
             with self.subTest(extra=extra):
                 self.assertEqual(POLICY.assess({"context": context(), **extra})["notice"], "none")

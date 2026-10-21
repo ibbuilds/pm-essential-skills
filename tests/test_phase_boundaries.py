@@ -18,7 +18,7 @@ class PhaseChoiceTests(unittest.TestCase):
                      unit="tokens", scope="remaining_requested_work", fresh=True,
                      continue_=1, handoff=10, startup=20, reconstruction=30)
         costs["continue"] = costs.pop("continue_")
-        for extra in ({}, {"context": context(10000)}, {"context": context()},
+        for extra in ({}, {"context": context(10000)}, {"context": context(80000)},
                       {"transfer_cost": costs}, {"transfer_context_ready": False},
                       {"reconstruction_repeats_work": True}):
             with self.subTest(extra=extra):
@@ -40,13 +40,13 @@ class PhaseChoiceTests(unittest.TestCase):
         result = POLICY.assess(self.phase | {"new_phase": False, "new_outcome": True})
         self.assertEqual(result["action"], "ask_thread_choice")
 
-    def test_small_work_and_same_phase_do_not_ask(self):
-        for extra in ({"new_phase": False}, {"substantial_history": False}):
-            self.assertEqual(POLICY.assess(self.phase | extra)["action"], "continue")
+    def test_same_phase_still_asks_in_long_chat_but_short_work_stays_quiet(self):
+        self.assertEqual(POLICY.assess(self.phase | {"new_phase": False})["action"], "ask_thread_choice")
+        self.assertEqual(POLICY.assess(self.phase | {"substantial_history": False})["action"], "continue")
 
     def test_user_stays_without_pressure_prompt(self):
         result = POLICY.assess(self.phase | {"boundary_choice": "current-thread",
-                                             "context": context()})
+                                             "context": context(80000)})
         self.assertEqual(result["action"], "continue")
         self.assertEqual(result["notice"], "none")
 

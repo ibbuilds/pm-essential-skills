@@ -36,6 +36,14 @@ The archive lifecycle follows the user's requested managed-source scope. [Projec
 
 ## Cases beyond the initial idea
 
+### Request escalation revision, October 21, 2026
+
+The human changed the earlier non-intrusive preference: a stay now applies to one request, and the next qualifying request must prompt again with a stronger recommendation. At critical pressure, perform the safe authorized continuation without another location question. The skill owns this behavior; no installer-specific threshold or chat-name condition was introduced. Explicit persistent stay, disabled, stop-asking, and suggest-only preferences remain separate opt-outs.
+
+The optional helper distinguishes stable request IDs, answered/prompted request IDs, pending choices, and known stay counts. It deduplicates inside a request while expiring old answers across requests. Warning strength saturates without inventing token waste. Critical pressure uses existing configurable measured thresholds or concrete labeled heuristics, with unchanged context-readiness, safe-checkpoint, predecessor-recovery, ownership, and archive gates. Tests cover request sequences and the critical transition separately from live model obedience.
+
+A five-case independent forward pass, with expected answers withheld, distinguished new requests from clarifications and critical automatic continuation from unsafe dispatch. It identified stale adapter wording and an overly broad low-occupancy table row; both were corrected. The policy also clarifies that estimated transfer cost cannot veto critical continuation, while missing essential context still blocks it. These controlled findings do not establish live host dispatch or token savings.
+
 | Case | Required response |
 | --- | --- |
 | Chat is standalone | Continue quietly; offer a project only when useful and permitted, obtain name/consent, then create/move/verify through real capabilities. |

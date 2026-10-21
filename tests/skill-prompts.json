@@ -126,6 +126,41 @@
     "expected": "Do not invoke cascading archive. Preserve the active destination and report the specific isolation limitation without undoing the handoff."
   },
   {
+    "id": "next-request-after-stay",
+    "available_skills": ["context-management"],
+    "context": "Long verified project chat below critical pressure. The last request is complete; the user stayed here once for that request. A new substantive request arrives, even though it is only a small edit. No persistent stay or stop-asking preference exists.",
+    "prompt": "Now change the next button label too.",
+    "expected": "Ask new same-project chat or continue here for this new request, with a firmer recommendation after the earlier stay. Wait before the new edit; do not treat the prior request's answer as permanent."
+  },
+  {
+    "id": "same-request-clarification",
+    "available_skills": ["context-management"],
+    "context": "Long verified project chat below critical pressure. User has just chosen to stay for the current unfinished request. This message clarifies the same request; its request ID is unchanged.",
+    "prompt": "By that label I mean the primary button, not the secondary one.",
+    "expected": "Apply the clarification within the current answered request without asking again or incrementing the stay count."
+  },
+  {
+    "id": "critical-automatic-continuation",
+    "available_skills": ["context-management"],
+    "context": "Verified project and human continuation scope. Fresh host-supplied occupancy is 90%, above the configured 85% critical threshold. Safe checkpoint. User stayed for a prior request. Destination context, source recovery, settings, and supported continuation tools are ready.",
+    "prompt": "Start the next implementation task.",
+    "expected": "Announce and execute the supported same-project handoff without another location question. Include needed context and predecessor reference, confirm/safely route ownership, then apply eligible source archival."
+  },
+  {
+    "id": "critical-heuristic-continuation",
+    "available_skills": ["context-management"],
+    "context": "Verified project with standing continuation scope and safe checkpoint. No current occupancy telemetry. The current assessment identifies severe structural pressure: an approved constraint was repeatedly lost and a resolved investigation was reconstructed again. Destination context and recovery route are ready; supported creation and ownership controls exist.",
+    "prompt": "Continue with the next requested task.",
+    "expected": "Use a labeled, concretely supported critical heuristic to prepare automatic continuation, preserving the known constraint and investigation findings. Do not invent a percentage or ask another location question."
+  },
+  {
+    "id": "critical-unsafe-checkpoint",
+    "available_skills": ["context-management"],
+    "context": "Fresh occupancy is above the critical threshold in a verified project. An in-flight transaction cannot safely pause. A required artifact is also not yet accessible in a destination. Standing continuation scope exists.",
+    "prompt": "Proceed with the requested work.",
+    "expected": "Defer actual creation until a safe checkpoint and resolve missing context readiness. Preserve one owner and do not replace these gates with another repeated location question or pretend a handoff succeeded."
+  },
+  {
     "id": "suite-boundary-before-retrieval",
     "available_skills": ["context-management", "source-selection"],
     "context": "Verified project. Long accepted planning phase completed. No location choice yet. Safe checkpoint. Implementation would require fresh repository reads.",

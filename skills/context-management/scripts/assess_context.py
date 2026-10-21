@@ -15,9 +15,10 @@ PROXY_LIMITS = {"substantive_turns": 20, "large_outputs": 6, "compactions": 2}
 BOOLEAN_FIELDS = {"completed", "new_outcome", "safe_checkpoint", "user_keep_thread",
                   "project_offer_dismissed", "project_setup_allowed", "admission_check",
                   "transfer_context_ready", "reconstruction_repeats_work", "user_requested_new_thread",
-                  "new_phase", "substantial_history"}
+                  "new_phase", "substantial_history", "critical_history", "management_disabled", "choice_pending"}
 FIELDS = BOOLEAN_FIELDS | set(PROXY_LIMITS) | {"context", "obsolete_context_evidence", "project_mode",
-                                             "last_notice_level", "settings", "transfer_cost", "boundary_choice"}
+                                             "last_notice_level", "settings", "transfer_cost", "boundary_choice",
+                                             "request_id", "choice_request_id", "last_prompt_request_id", "stay_count"}
 NOTICE_RANK = {"none": 0, "review": 1, "rollover": 2}
 
 
@@ -72,6 +73,11 @@ def _validate(observation: Any) -> tuple[dict, float | None, int]:
         raise ValueError(f"Unknown observation fields: {', '.join(sorted(unknown))}")
     if "boundary_choice" in observation and observation["boundary_choice"] not in ("new-thread", "current-thread"):
         raise ValueError("boundary_choice must be new-thread or current-thread")
+    for key in ("request_id", "choice_request_id", "last_prompt_request_id"):
+        if key in observation and (not isinstance(observation[key], str) or not observation[key].strip()):
+            raise ValueError(f"{key} must be a nonempty string")
+    if "stay_count" in observation:
+        _integer(observation["stay_count"], "stay_count")
     project_mode = observation.get("project_mode", "unknown")
     if not isinstance(project_mode, str) or project_mode not in {"project", "standalone", "unknown"}:
         raise ValueError("project_mode must be project, standalone, or unknown")
@@ -124,8 +130,9 @@ def assess(observation: Any) -> dict:
         for name, limit in PROXY_LIMITS.items()
     )
     existing_history_signal = obs.get("admission_check", False) and evidence_count >= 2
+    critical_history = obs.get("critical_history", False) and evidence_count >= 2
     measurement = "measured" if ratio is not None else (
-        "heuristic" if proxy_triggered or existing_history_signal else "unavailable"
+        "heuristic" if proxy_triggered or existing_history_signal or critical_history else "unavailable"
     )
     result = {
         "action": "continue",
@@ -144,7 +151,8 @@ def assess(observation: Any) -> dict:
                       requires_transfer_checks=action in {"rollover", "defer"})
         levels = {"measured_context_review": "review", "proxy_pressure_only": "review",
                   "existing_history_review": "review", "measured_context_high": "rollover",
-                  "proxy_pressure_with_obsolete_context": "rollover"}
+                  "proxy_pressure_with_obsolete_context": "rollover",
+                  "critical_history_with_obsolete_context": "rollover"}
         level = levels.get(reason, "none")
         if (action in {"review", "rollover"} and obs.get("safe_checkpoint", False)
                 and NOTICE_RANK[level] > NOTICE_RANK[obs.get("last_notice_level", "none")]):
@@ -152,14 +160,17 @@ def assess(observation: Any) -> dict:
         return result
 
     def transfer(reason: str) -> dict:
+        critical_reason = reason in {"measured_context_high", "proxy_pressure_with_obsolete_context",
+                                     "critical_history_with_obsolete_context"}
         if obs.get("transfer_context_ready") is False:
-            explicit_destination = obs.get("user_requested_new_thread", False) or reason == "user_chose_new_thread"
+            explicit_destination = (obs.get("user_requested_new_thread", False)
+                                    or reason == "user_chose_new_thread" or critical_reason)
             return finish("blocked_transfer" if explicit_destination else "continue", "transfer_context_unavailable")
         if not obs.get("user_requested_new_thread", False) and reason != "user_chose_new_thread":
             if obs.get("reconstruction_repeats_work", False):
                 return finish("checkpoint" if obs.get("safe_checkpoint", False) else "continue",
                               "transfer_would_repeat_investigation")
-            if cost and cost["fresh"] and cost["transfer"] >= cost["continue"]:
+            if not critical_reason and cost and cost["fresh"] and cost["transfer"] >= cost["continue"]:
                 return finish("continue", "transfer_cost_not_beneficial")
         if settings["mode"] == "suggest-only" and obs.get("safe_checkpoint", False):
             result = finish("rollover", reason)
@@ -170,24 +181,14 @@ def assess(observation: Any) -> dict:
     if (obs.get("completed", False) and not obs.get("new_outcome", False)
             and not obs.get("new_phase", False) and not obs.get("user_requested_new_thread", False)):
         return finish("complete", "outcome_finished")
-    if obs.get("user_keep_thread", False):
-        return finish("continue", "user_prefers_current_thread")
+    if obs.get("management_disabled", False):
+        return finish("continue", "management_disabled")
     if settings["mode"] == "stay":
         return finish("continue", "intervention_mode_stay")
     if obs.get("user_requested_new_thread", False):
         return transfer("user_requested_new_thread")
-    if (obs.get("new_phase", False) or obs.get("new_outcome", False)) and obs.get("substantial_history", False):
-        if obs.get("boundary_choice") == "current-thread":
-            return finish("continue", "user_chose_current_thread")
-        if obs.get("boundary_choice") == "new-thread":
-            return transfer("user_chose_new_thread")
-        if not obs.get("safe_checkpoint", False):
-            return finish("defer", "phase_choice_at_checkpoint")
-        if obs.get("project_mode") == "project":
-            return finish("ask_thread_choice", "requested_phase_boundary")
-        if obs.get("project_mode", "unknown") == "unknown":
-            return finish("review", "phase_project_unverified")
-    pressure = ratio >= settings["review_ratio"] if ratio is not None else proxy_triggered or existing_history_signal
+    pressure = (ratio >= settings["review_ratio"] if ratio is not None
+                else proxy_triggered or existing_history_signal or critical_history)
     if obs.get("project_mode") == "standalone" and pressure:
         if not obs.get("project_setup_allowed", False):
             return finish("checkpoint" if obs.get("safe_checkpoint", False) else "continue",
@@ -197,6 +198,38 @@ def assess(observation: Any) -> dict:
         if not obs.get("safe_checkpoint", False):
             return finish("defer", "standalone_project_offer_at_checkpoint")
         return finish("offer_project", "standalone_context_pressure")
+    if obs.get("project_mode") != "standalone":
+        if ratio is not None and ratio >= settings["rollover_ratio"]:
+            return transfer("measured_context_high")
+        if ratio is None and proxy_triggered and evidence_count >= 2:
+            return transfer("proxy_pressure_with_obsolete_context")
+        if ratio is None and critical_history:
+            return transfer("critical_history_with_obsolete_context")
+
+    # A choice belongs to one substantive request, not the rest of the phase/chat.
+    choice_current = (obs.get("request_id") == obs.get("choice_request_id"))
+    if choice_current and obs.get("user_keep_thread", False):
+        return finish("continue", "user_prefers_current_thread")
+    if choice_current and obs.get("boundary_choice") == "current-thread":
+        return finish("continue", "user_chose_current_thread")
+    if choice_current and obs.get("boundary_choice") == "new-thread":
+        return transfer("user_chose_new_thread")
+    phase_boundary = ((obs.get("new_phase", False) or obs.get("new_outcome", False))
+                      and obs.get("substantial_history", False))
+    long_chat = obs.get("substantial_history", False) or pressure
+    if long_chat and obs.get("project_mode") != "standalone":
+        if not obs.get("safe_checkpoint", False):
+            return finish("defer", "phase_choice_at_checkpoint")
+        if obs.get("project_mode", "unknown") == "unknown" and (phase_boundary or obs.get("substantial_history", False)):
+            return finish("review", "phase_project_unverified")
+        if obs.get("project_mode") == "project":
+            already_prompted = (obs.get("request_id") is not None
+                                and obs.get("last_prompt_request_id") == obs["request_id"])
+            if obs.get("choice_pending", False) or already_prompted:
+                return finish("await_thread_choice", "request_choice_pending")
+            result = finish("ask_thread_choice", "requested_phase_boundary" if phase_boundary else "long_chat_new_request")
+            result["prompt_level"] = min(3, obs.get("stay_count", 0) + 1)
+            return result
     if obs.get("new_outcome", False):
         return transfer("distinct_requested_outcome")
     if ratio is not None:

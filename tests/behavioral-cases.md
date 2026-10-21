@@ -7,7 +7,7 @@ These are acceptance scenarios for an instruction-following evaluation, not clai
 | Relevant continuity | A long but coherent event-planning discussion; no telemetry or obsolete material | Continue the same outcome without a timer-based warning. |
 | Existing project catch-up | Skill is activated in an already-long project chat | Assess available pre-activation context now, notify once on substantiated pressure, and prepare same-project continuation without waiting for more turns. |
 | Catch-up with unknown counters | Historical totals are unavailable, but two concrete obsolete-context sources are visible | Trigger a heuristic review without claiming measured occupancy or wasted tokens. |
-| Repeated assessment | Same pressure notice was already shown | Do not repeat it; notify once only if review escalates to justified rollover. |
+| Repeated assessment | Same request's location question is already pending or answered | Do not stack prompts or recount the stay; ask again only on a distinct new qualifying request, unless critical pressure requires automatic handoff. |
 | Fresh outcome | A completed research summary followed by a user request for an independent survey | Prepare a focused new task thread in the same project, within standing authorization. |
 | Reconstruction dominates | Available same-scope costs show that handoff/startup/reconstruction cost at least as much as continuing | Keep work here quietly; estimates remain labeled and no extra telemetry call is required. |
 | Reusable investigation | A resolved finding and its applicable evidence/version are available | Reuse it; reopen only for a material change, missing support, or a new question. |
@@ -16,7 +16,7 @@ These are acceptance scenarios for an instruction-following evaluation, not clai
 | Unknown telemetry | Only cumulative tokens or account quota is exposed | Do not label them context occupancy. Use supported observations or continue. |
 | Proxy pressure | 25 observed substantive turns plus replaced requirements and resolved logs | Explain a heuristic rollover reason; do not claim measured token savings. |
 | Successful compaction | Current occupancy is 30% after compaction, with many historical turns | Continue if still working on the same outcome. |
-| User override | User says to stay in this chat despite pressure | Respect the preference without repeatedly seeking approval. |
+| One-request stay | User chooses this chat below critical pressure | Finish this request here; prompt again more firmly on the next request if it remains long. Explicit stop-asking/persistent stay remains a separate opt-out. |
 | Suggest-only mode | High pressure with project mode set to suggest-only | Propose continuation without creating a thread; suppress repeated suggestions. |
 | Explicit threshold override | Project preferences specify more conservative thresholds | Use those validated values without silently reverting to defaults. |
 | Readiness degraded | Destination skill or required settings cannot be verified | Explain the actual missing gate once; preserve source work and use the supported fallback. |
@@ -54,7 +54,7 @@ These are acceptance scenarios for an instruction-following evaluation, not clai
 | Opt-out | User disables management | Stop automatic splitting; preserve their artifacts and work normally. |
 | Plan to implementation | Long project chat contains an accepted plan; user says to implement | Before substantial domain work, ask new chat in this project or continue here; wait for the answer. Unknown or low occupancy does not suppress the choice. |
 | Pending phase choice | Asynchronous location question has no answer yet | No creation, routing, or implementation while waiting; elapsed time and standing routing scope do not choose for the user. |
-| Phase choice reused | User chooses this chat, then requests a related edit | Continue in this chat without asking again; a new substantial phase can warrant another choice. |
+| Phase choice reused | User answers the location question, then clarifies unfinished work | Reuse the answer for that process. After completion, a new request in the long chat gets another prompt even if its edit is small. |
 | Chosen destination unavailable | User chooses new chat, but essential context or tools are missing | Explain the specific blocker once and preserve the source; do not silently begin implementation here or claim a handoff. |
 | Discovery failure | Persistent rule exists but skill is not installed in destination | Explain once; preserve notes and continue without claiming the automation is active. |
 

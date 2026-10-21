@@ -6,6 +6,7 @@
 - Standing activation: source user instruction reference and authorized scope
 - Persistent discovery rule location (if installed):
 - User routing preferences:
+- Current request ID (host-provided or labeled local), answer and choice-request ID, last actually prompted request ID, pending-choice status, and known count of stay answers. Keep only current state; a stay is request-scoped unless explicitly persistent.
 - Assessment settings, if explicitly configured: mode (notify-and-transfer / suggest-only / stay), review_ratio, rollover_ratio. Defaults: notify-and-transfer, 0.75, 0.85.
 - Standalone setup status/reference, if this project was created from a chat:
 

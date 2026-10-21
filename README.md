@@ -16,7 +16,7 @@ The installer finds Codex's bundled Python runtime when available. It installs o
 | Context Management | Keep related work together, preserve continuity, and perform justified handoffs with supported tools. |
 | Source Selection | Find, read, and revalidate sufficient evidence while avoiding unnecessary repeated retrieval. |
 
-Each skill works independently. Installing one does not require the other. Existing user choices such as disabled, suggest-only, and stay remain binding. Short work should usually proceed without management notices or extra files.
+Each skill works independently. Installing one does not require the other. Explicit disabled, suggest-only, and persistent-stay preferences remain binding. Short chats normally proceed without management notices or extra files; a one-request stay in a long chat expires at the next request.
 
 Workflow behavior is maintained inside each `skills/<name>/` folder. The installer and optional reminders point to those skills and record coordination scope; they do not hold a second copy of the decision rules. Bare folders can also be installed in a host's native discovery location, such as `~/.agents/skills` for current local Codex. Avoid installing a second copy with the same name.
 
@@ -51,7 +51,7 @@ Reminders make no model calls, read no transcripts, write no per-turn project st
 
 ## What to expect
 
-Context Management checks task boundaries before substantial work. At a requested new phase in a long project chat—for example, implementing an accepted plan—it asks once whether to start a new chat in the same project or continue here, then waits for the answer. It honors existing choices and keeps small follow-up fixes together. It uses concise checkpoints for standalone chats and transfers only when justified, authorized, and supported. Source Selection retrieves enough evidence for the actual task and preserves explicit full-read or exhaustive-coverage requirements.
+Context Management checks each new request using available context. In a long project chat, it asks new same-project chat or continue here for this request, then waits. Choosing to stay completes that request in place; the next request gets another prompt with a stronger recommendation. At critical pressure, it announces and performs a safe authorized handoff without another location question. Explicit stop-asking, persistent stay, suggest-only, and disabled preferences remain binding. Short chats stay quiet; standalone chats use concise checkpoints. Source Selection preserves the actual task's required evidence and coverage.
 
 Available cost comparisons can keep work in place when a handoff would repeat an investigation or cost more than continuing. Concise findings reuse evidence at known versions. An optional local reader hashes UTF-8 sources, returns bounded pages, and omits already-available unchanged text. These helpers need no persistent cache, per-turn report, or new service; native tools remain available.
 
