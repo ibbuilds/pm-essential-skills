@@ -44,6 +44,14 @@ python3 scripts/install_suite.py uninstall
 
 Uninstall restores preexisting skill files and removes only the managed activation rule. It preserves user text added outside that rule and refuses to overwrite customized installed files. Another installer or an interrupted operation leaves a lock that must be reconciled before retrying.
 
+Optional copy diagnostics (Python installer only):
+
+```sh
+python3 scripts/install_suite.py status --check-skill-root ~/.agents/skills
+```
+
+Repeat `--check-skill-root PATH` for other skills directories you want checked. This read-only check looks only for `<installed-name>/SKILL.md` in the managed installation and supplied roots, reporting resolved candidate paths, possible duplicates, and inspection errors. Symlink aliases of the same path count once. It does not search recursively, inspect other skills, change files, or affect status's exit code. [Codex's skill-loading documentation](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills) says same-name skills are not merged and both can appear. Distinct candidate files do not prove both are active; no duplicates found does not prove discovery or complete coverage. Activation remains unknown. Normal status checks remain unchanged without this option.
+
 `CODEX_HOME` selects a profile for either installer. Advanced options belong to the Python installer, not `Install.cmd`: for example, `python3 scripts/install_suite.py install --skill source-selection --codex-home PATH`. Use `python` or `py -3` on Windows with a suitable Python runtime. In a full source download, `--skill context-management` or `--skill execution-efficiency` selects the corresponding skill; installing another later keeps the first. Repeating installation updates unchanged managed files without duplicating guidance.
 
 ## Stronger automatic reminders

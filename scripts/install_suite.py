@@ -10,6 +10,7 @@ import base64
 import hashlib
 import json
 import os
+import stat
 from pathlib import Path, PurePosixPath
 import sys
 import tempfile
@@ -125,6 +126,40 @@ def active_instructions(home):
 
 def selected_skills(state):
     return [name for name in SKILLS if f"skills/{name}/SKILL.md" in state.get("files", {})]
+
+
+def skill_copy_diagnostics(home, state, extra_roots):
+    """Inspect explicit roots only; candidate files do not establish host discovery."""
+    candidates = {name: [] for name in selected_skills(state or {})}
+    roots, errors = [], []
+    for supplied in [home / "skills", *extra_roots]:
+        root = Path(supplied).expanduser()
+        try:
+            root = root.resolve()
+            if str(root) in roots:
+                continue
+            roots.append(str(root))
+            if not stat.S_ISDIR(root.stat().st_mode):
+                raise NotADirectoryError(str(root))
+        except (OSError, RuntimeError) as exc:
+            errors.append({"path": str(root), "error": str(exc)})
+            continue
+        for name, paths in candidates.items():
+            path = root / name / "SKILL.md"
+            try:
+                mode = path.stat().st_mode
+                if stat.S_ISREG(mode):
+                    physical = str(path.resolve())
+                    if physical not in paths:
+                        paths.append(physical)
+            except FileNotFoundError:
+                pass
+            except (OSError, RuntimeError) as exc:
+                errors.append({"path": str(path), "error": str(exc)})
+    return {"roots": roots, "candidates": candidates,
+            "possible_duplicates": [name for name, paths in candidates.items() if len(paths) > 1],
+            "inspection_errors": errors, "activation": "unknown",
+            "coverage": "receipt-installed names in managed and explicitly supplied roots only"}
 
 
 def installed_block(home, skills):
@@ -291,6 +326,8 @@ def main():
     parser.add_argument("command", choices=("install", "status", "uninstall"))
     parser.add_argument("--skill", choices=SKILLS, action="append", help="Install only this skill; repeat to select several")
     parser.add_argument("--hooks", action="store_true", help="Also register per-turn reminders; Codex trust is still required")
+    parser.add_argument("--check-skill-root", type=Path, action="append",
+                        help="Status only: check an additional skills directory for candidate copies; repeat as needed")
     parser.add_argument("--codex-home", type=Path,
                         default=Path(os.environ.get("CODEX_HOME", Path.home() / ".codex")))
     args = parser.parse_args()
@@ -299,6 +336,8 @@ def main():
     try:
         if args.command != "install" and (args.skill or args.hooks):
             raise ValueError("--skill and --hooks apply to installation only")
+        if args.command != "status" and args.check_skill_root:
+            raise ValueError("--check-skill-root applies to status only")
         if args.command != "status":
             lock = safe_path(home, "pm-essential-skills/install.lock")
             lock.parent.mkdir(parents=True, exist_ok=True)
@@ -321,6 +360,8 @@ def main():
                       "skills": selected_skills(state or {}),
                       "hooks": "registered_trust_unverified" if (state or {}).get("hooks") else "not_requested",
                       "live_invocation_verified": False}
+            if args.check_skill_root:
+                result["skill_copy_diagnostics"] = skill_copy_diagnostics(home, state, args.check_skill_root)
         print(json.dumps(result))
         return 0 if result["status"] != "degraded" else 1
     except (OSError, ValueError, KeyError, TypeError) as exc:
