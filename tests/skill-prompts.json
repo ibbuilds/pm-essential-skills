@@ -161,6 +161,20 @@
     "expected": "Defer actual creation until a safe checkpoint and resolve missing context readiness. Preserve one owner and do not replace these gates with another repeated location question or pretend a handoff succeeded."
   },
   {
+    "id": "testing-reply-requests-new-work",
+    "available_skills": ["context-management"],
+    "context": "Long verified project chat below critical pressure. A build was delivered and the assistant asked whether it works. The user stayed for the completed build request. This is a testing question, not a location question. There is no persistent opt-out.",
+    "prompt": "<send_user_message_question_reply>It works. Now improve the snapping, change the menu label, and fix the duplicated icons.</send_user_message_question_reply>",
+    "expected": "Treat the requested changes after the delivered build as a new request despite the asynchronous wrapper. Reassess and ask the stronger continuation question before investigating or implementing the new changes. Do not keep the entire unfinished feature as one perpetual request."
+  },
+  {
+    "id": "testing-reply-without-new-work",
+    "available_skills": ["context-management"],
+    "context": "Long verified project chat. The requested build is delivered and the assistant asked whether it works. No requested work remains after confirmation.",
+    "prompt": "<send_user_message_question_reply>Yes, it works now.</send_user_message_question_reply>",
+    "expected": "Acknowledge completion without inventing a new task, a location question, or an empty successor."
+  },
+  {
     "id": "suite-boundary-before-retrieval",
     "available_skills": ["context-management", "source-selection"],
     "context": "Verified project. Long accepted planning phase completed. No location choice yet. Safe checkpoint. Implementation would require fresh repository reads.",

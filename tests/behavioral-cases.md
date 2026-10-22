@@ -55,6 +55,8 @@ These are acceptance scenarios for an instruction-following evaluation, not clai
 | Plan to implementation | Long project chat contains an accepted plan; user says to implement | Before substantial domain work, ask new chat in this project or continue here; wait for the answer. Unknown or low occupancy does not suppress the choice. |
 | Pending phase choice | Asynchronous location question has no answer yet | No creation, routing, or implementation while waiting; elapsed time and standing routing scope do not choose for the user. |
 | Phase choice reused | User answers the location question, then clarifies unfinished work | Reuse the answer for that process. After completion, a new request in the long chat gets another prompt even if its edit is small. |
+| Testing feedback requests more changes | User replies to a delivered-build test question with “works, now fix/change…” | Allocate a new request and reassess before the new work, even inside an asynchronous reply. A product-testing answer is not a location answer; an unfinished feature does not keep request scope open forever. |
+| Testing feedback confirms completion only | User replies “yes, it works” without more work | Finish without inventing a new request, location prompt, or successor. |
 | Chosen destination unavailable | User chooses new chat, but essential context or tools are missing | Explain the specific blocker once and preserve the source; do not silently begin implementation here or claim a handoff. |
 | Discovery failure | Persistent rule exists but skill is not installed in destination | Explain once; preserve notes and continue without claiming the automation is active. |
 

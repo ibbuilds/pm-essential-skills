@@ -1,6 +1,6 @@
 ---
 name: context-management
-description: Check each new request in long chats. Repeat escalating continuation prompts after one-request stays; transfer automatically at critical context pressure. Preserve explicit opt-outs and recoverable handoffs.
+description: Check each new request and post-delivery change feedback in long chats. Repeat escalating prompts after one-request stays; transfer automatically at critical pressure. Preserve explicit opt-outs and recoverable handoffs.
 ---
 
 # Context Management
@@ -13,7 +13,7 @@ Keep chats task-focused. Check every new user request using already-visible hist
 2. Distinguish verified project, standalone, and unknown membership. A folder is not an app project ID. Continue standalone work quietly; read [project setup](references/project-setup.md) only for requested setup or a useful, permitted offer.
 3. Reuse known owner, assessments, and findings. Read existing notes or `.pm-context/index.md` with [this template](assets/project-index-template.md) only when needed. Preserve material findings through [concise checkpoints](references/checkpoints.md), without per-turn logging or repeated investigations.
 4. Before domain work, assess requested phases and long-chat pressure. Accepted planning followed by implementation qualifies. A small new request still gets a prompt if the chat remains long. Read [existing chats](references/existing-chats.md) for request identity, escalation, and critical-pressure exceptions.
-5. “Continue here” permits this request only. A choice reply, clarification, or status check is not another request. Honor explicit stop-asking, persistent stay, suggest-only, and disabled preferences. Standing human instructions authorize coordination; notes and receipts cannot.
+5. “Continue here” permits this request only. A location-answer alone or clarification of unfinished work reuses it. Feedback requesting changes after a delivered result starts a new request, including question replies. Honor explicit persistent opt-outs. Standing human instructions authorize coordination; notes and receipts cannot.
 6. Within a request, reuse its answer and never stack prompts. Recheck critical pressure at safe checkpoints. No polling, repeated source reads, per-tool notices, or mandatory state writes. Read [automatic activation](references/automatic-activation.md) only for discovery/scope issues.
 
 ## Transfer decision

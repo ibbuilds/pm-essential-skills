@@ -44,6 +44,8 @@ The optional helper distinguishes stable request IDs, answered/prompted request 
 
 A five-case independent forward pass, with expected answers withheld, distinguished new requests from clarifications and critical automatic continuation from unsafe dispatch. It identified stale adapter wording and an overly broad low-occupancy table row; both were corrected. The policy also clarifies that estimated transfer cost cannot veto critical continuation, while missing essential context still blocks it. These controlled findings do not establish live host dispatch or token savings.
 
+A subsequent deployment check verified that remote `main`, local sources, and the installed skill files matched. A bounded supported read of the active continuation showed skill-file reads after publication, followed by post-delivery testing feedback requesting more changes without a location prompt. This establishes a behavior gap rather than a missing-push explanation; it does not reveal the model's internal reason. Guidance now distinguishes a location answer from a product-testing reply containing new work and forbids treating an unfinished feature as one perpetual request. Two expected-answer-withheld forward cases correctly separated additional requested changes from confirmation-only feedback. Live behavior after this clarification remains unverified until observed in the active host.
+
 | Case | Required response |
 | --- | --- |
 | Chat is standalone | Continue quietly; offer a project only when useful and permitted, obtain name/consent, then create/move/verify through real capabilities. |
