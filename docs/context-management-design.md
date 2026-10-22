@@ -99,3 +99,9 @@ Checked October 20, 2026:
 - [Pricing](https://developers.openai.com/codex/pricing): context, reasoning, tool use, and caching affect usage. Subscription allowance is not inferred from a raw API rate.
 
 The bundled adapter documents the tools exposed in this authoring session. Hosts and tool schemas can change; discover current schemas instead of treating this file as an API contract.
+
+## Handoff economics
+
+See [context handoff evidence](context-handoff-evidence.md) for current primary
+sources, the full remaining-work comparison and why neither percentages nor
+message counts establish a universal savings threshold.
