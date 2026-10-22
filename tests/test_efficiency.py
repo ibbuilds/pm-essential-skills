@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -38,6 +39,20 @@ class BoundedReaderTests(unittest.TestCase):
     def known(self, result):
         return {"loaded_source_id": result["source_id"], "loaded_revision": result["revision"],
                 "loaded_spans": result["coverage_spans"], "content_available": True}
+
+    def test_directory_is_not_a_regular_source(self):
+        with self.assertRaisesRegex(ValueError, "requires a regular file"):
+            READ.read_source({"path": str(self.path.parent)})
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "POSIX named pipe")
+    def test_named_pipe_is_rejected_without_waiting_for_a_writer(self):
+        pipe = self.path.parent / "source.pipe"
+        os.mkfifo(pipe)
+        result = subprocess.run([sys.executable, str(Path(READ.__file__))],
+                                input=json.dumps({"path": str(pipe)}), text=True,
+                                capture_output=True, timeout=3)
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn("requires a regular file", result.stderr)
 
     def test_unchanged_available_source_returns_no_duplicate_content(self):
         first = self.read()
