@@ -64,7 +64,9 @@ both the ZIP and checksum. Obtain both from a trusted distribution channel.
    include it automatically. Lack of a license does not block a private build.
 5. The validation workflow builds and uploads these exact ten files after tests
    and validation succeed. Artifact names include OS, source SHA, and run attempt;
-   repository permissions remain `contents: read`. Artifacts expire after 14 days
+   repository permissions remain `contents: read`. Pull requests and pushes to
+   `main` run the checks; a feature-branch push does not duplicate its PR run.
+   Use the manual workflow trigger for a branch build before opening a PR. Artifacts expire after 14 days
    and require a signed-in GitHub user to download. They are candidate build
    outputs, not public versioned releases. The
    [official upload action documentation](https://github.com/actions/upload-artifact/blob/v7.0.2/README.md)
