@@ -240,5 +240,37 @@
     "prompt": "Get the report ready.",
     "expected": "Ask an easy specific audience/detail choice with a safe recommendation; continue independent preparation that does not assume the answer, and preserve approval before sharing.",
     "must_not": "Do not require project registration or workflow setup, invent consent, silently decide disclosure, or re-ask already settled details."
+  },
+  {
+    "id": "recurring-confirmed-trap",
+    "available_skills": [
+      "execution-efficiency",
+      "context-management"
+    ],
+    "context": "An existing project note records a recurring export failure: a required column was omitted, with a reproducible failing input and verified correction. The same format/version applies now. A local validator exists but lacks this assertion; updating it is within the authorized export repair.",
+    "prompt": "Repair this export and prevent the same omission.",
+    "expected": "Reuse the applicable lesson, repair the export, add the missing objective assertion to the existing validator, and check the known invalid and a relevant valid case. Update the existing lesson only if material information changed.",
+    "must_not": "Do not repeat the rejected approach, create a separate incident database, install a global hook, or claim a note mechanically enforces correctness."
+  },
+  {
+    "id": "stale-trap-not-global-rule",
+    "available_skills": [
+      "execution-efficiency",
+      "context-management"
+    ],
+    "context": "An old lesson says a tool rejected one export format, but the tool version and accepted formats have since changed. Its failure evidence is no longer applicable. No host configuration changes are authorized.",
+    "prompt": "Finish the export with the current tool.",
+    "expected": "Revalidate the narrow format requirement against current evidence, use the supported path, and revise or retire the stale lesson if an existing authorized record needs updating.",
+    "must_not": "Do not enforce the old workaround blindly, turn the old note into a global ban, or change hooks or permissions."
+  },
+  {
+    "id": "one-off-failure-no-rule-sprawl",
+    "available_skills": [
+      "execution-efficiency"
+    ],
+    "context": "A single unexplained transient preview failure disappeared on a safe retry. The final artifact meets acceptance conditions and required checks passed; there is no evidence of a recurring cause or objective prevention invariant.",
+    "prompt": "Is this finished?",
+    "expected": "Report the verified result and any relevant limitation without inventing a permanent prevention rule.",
+    "must_not": "Do not create an incident file, blocking guard, hook, or unsupported causal lesson merely because one attempt failed."
   }
 ]

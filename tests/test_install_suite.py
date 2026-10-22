@@ -142,6 +142,79 @@ class InstallSuiteTests(unittest.TestCase):
                        capture_output=True, text=True, check=True)
         self.assertEqual((self.home / INSTALL.RECEIPT).stat().st_mtime_ns, before)
 
+    def test_optional_copy_diagnostics_are_read_only_and_do_not_degrade_status(self):
+        INSTALL.install(self.home, None, skills=["source-selection"])
+        extra = self.home / "other-skills"
+        copy = extra / "source-selection/SKILL.md"
+        copy.parent.mkdir(parents=True)
+        copy.write_text("Candidate copy", encoding="utf-8")
+        # Neither uninstalled names nor nested roots are searched.
+        for relative in ("context-management/SKILL.md", "nested/source-selection/SKILL.md"):
+            path = extra / relative
+            path.parent.mkdir(parents=True)
+            path.write_text("Not in scope", encoding="utf-8")
+        before = {path: path.read_bytes() for path in self.home.rglob("*") if path.is_file()}
+        command = [sys.executable, str(ROOT / "scripts/install_suite.py"),
+                   "status", "--codex-home", str(self.home)]
+        plain = json.loads(subprocess.run(command, capture_output=True, text=True, check=True).stdout)
+        self.assertNotIn("skill_copy_diagnostics", plain)
+        result = subprocess.run(command + ["--check-skill-root", str(extra)],
+                                capture_output=True, text=True, check=True)
+        data = json.loads(result.stdout)
+        diagnostics = data.pop("skill_copy_diagnostics")
+        self.assertEqual(data, plain)
+        self.assertEqual(diagnostics["possible_duplicates"], ["source-selection"])
+        self.assertEqual(diagnostics["candidates"], {"source-selection": [
+            str(self.home / "skills/source-selection/SKILL.md"), str(copy)]})
+        self.assertEqual(diagnostics["activation"], "unknown")
+        self.assertEqual(diagnostics["inspection_errors"], [])
+        self.assertEqual(before, {path: path.read_bytes() for path in self.home.rglob("*") if path.is_file()})
+
+    def test_copy_diagnostics_deduplicate_root_and_skill_symlink_aliases(self):
+        self.install()
+        root = self.home / "skills"
+        alias = self.home / "alias"
+        extra = self.home / "other-skills"
+        extra.mkdir()
+        try:
+            alias.symlink_to(root, target_is_directory=True)
+            (extra / "source-selection").symlink_to(root / "source-selection", target_is_directory=True)
+        except OSError as exc:
+            self.skipTest(f"Symlinks unavailable: {exc}")
+        result = INSTALL.skill_copy_diagnostics(self.home, INSTALL.load_receipt(self.home),
+                                                [root, alias, extra])
+        self.assertEqual(result["possible_duplicates"], [])
+        self.assertEqual(result["roots"], [str(root), str(extra)])
+        self.assertTrue(all(len(paths) == 1 for paths in result["candidates"].values()))
+
+    def test_copy_diagnostics_report_missing_and_inaccessible_roots(self):
+        self.install()
+        missing = self.home / "missing"
+        denied = self.home / "denied"
+        denied.mkdir()
+        original_stat = Path.stat
+
+        def checked_stat(path, *args, **kwargs):
+            if path == denied:
+                raise PermissionError("Simulated inaccessible root")
+            return original_stat(path, *args, **kwargs)
+
+        with patch.object(Path, "stat", checked_stat):
+            result = INSTALL.skill_copy_diagnostics(self.home, INSTALL.load_receipt(self.home),
+                                                    [missing, denied])
+        self.assertEqual([item["path"] for item in result["inspection_errors"]],
+                         [str(missing), str(denied)])
+        self.assertEqual(result["possible_duplicates"], [])
+
+    def test_copy_option_rejected_before_install_writes(self):
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/install_suite.py"),
+                                 "install", "--codex-home", str(self.home),
+                                 "--check-skill-root", str(self.home / "skills")],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("status only", json.loads(result.stderr)["error"])
+        self.assertEqual(list(self.home.iterdir()), [])
+
 
 if __name__ == "__main__":
     unittest.main()
