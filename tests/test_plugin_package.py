@@ -36,13 +36,13 @@ class PluginPackageTests(unittest.TestCase):
         self.assertEqual({p.name for p in (ROOT / "skills").iterdir() if p.is_dir()}, expected)
         for name in expected:
             folder = ROOT / "skills" / name
-            text = (folder / "SKILL.md").read_text()
+            text = (folder / "SKILL.md").read_text(encoding="utf-8")
             metadata = yaml.safe_load(text.split("---", 2)[1])
             self.assertEqual(metadata["name"], name)
             self.assertLessEqual(len(name), 64)
             label = name.removeprefix("ibbuilds-pm-").replace("-", " ").title()
             display = f"ibbuilds PM Essentials / {label}"
-            ui = yaml.safe_load((folder / "agents/openai.yaml").read_text())["interface"]
+            ui = yaml.safe_load((folder / "agents/openai.yaml").read_text(encoding="utf-8"))["interface"]
             self.assertEqual(ui["display_name"], display)
             self.assertIn("$" + name, ui["default_prompt"])
             self.assertIn("# " + display, text)

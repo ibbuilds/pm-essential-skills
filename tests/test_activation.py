@@ -298,7 +298,7 @@ class ActivationTests(unittest.TestCase):
                                     env=environment, text=True, capture_output=True, timeout=45)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             if command == "status":
-                self.assertIn("Disabled in inspected user configuration: source-selection", result.stdout)
+                self.assertIn("Disabled in inspected user configuration: ibbuilds-pm-source-selection", result.stdout)
                 self.assertIn("Host activation: not verified", result.stdout)
                 self.assertIn("Skill instruction inclusion is disabled", result.stdout)
         self.assertFalse((self.home / "AGENTS.md").exists())
