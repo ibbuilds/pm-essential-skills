@@ -5,7 +5,7 @@ description: Check each new request and post-delivery change feedback in long ch
 
 # Context Management
 
-Keep chats task-focused. Check every new user request using already-visible history. In long chats, ask new same-project chat or continue here for this request. Ask again on the next request with a stronger recommendation. At critical pressure, transfer automatically at a safe checkpoint within human scope. Never promise unmeasured savings.
+Keep chats task-focused. Check every new user request using already-visible history. In long chats, ask new same-project chat or continue here for this request. Never promise unmeasured savings.
 
 ## Fast path
 

@@ -7,7 +7,7 @@ description: Coordinate intake, scope, lightweight planning, ownership, handoffs
 
 ## Establish the outcome
 
-Reuse the user's goal, accepted scope, decisions, constraints, and context. Do not ask them to repeat answers. Define observable completion against the full currently accepted scope, including still-open original requirements, not existing implementation or the latest milestone. Keep later agreed scope changes explicit.
+Reuse the user's goal, accepted scope, decisions, constraints, and context without re-asking settled questions. Define observable completion against the full currently accepted scope, including still-open original requirements, not existing implementation or the latest milestone. Keep later agreed scope changes explicit.
 
 Infer safe, reversible details. Ask a focused question with a recommended choice only when a missing material user decision affects the outcome, authorization, or costly rework. Continue independent work while awaiting that answer. Do not impose a planning or approval gate on already authorized work.
 
@@ -26,7 +26,5 @@ Own active operations through their terminal result or the user's stopping condi
 ## Close the actual loop
 
 Compare delivered results with every accepted requirement. Report the artifact or outcome, relevant evidence, material risks, and remaining gaps. A passing test, draft, or opened PR is insufficient when the accepted goal includes more. Once the goal is met, stop rather than inventing endless optional work.
-
-For example: finish a report's analysis and delivery, not its outline; integrate design and copy into the requested asset; distinguish code implementation from a requested release.
 
 This skill does not prescribe apps, services, Git policies, or models. Context-management owns actual conversation transfer; execution-efficiency owns technical verification and recovery. Do not load either automatically.

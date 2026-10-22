@@ -70,7 +70,7 @@ class ActivationTests(unittest.TestCase):
         for event in ("SessionStart", "UserPromptSubmit"):
             context = activation.handle({"hook_event_name": event}, self.home)["hookSpecificOutput"]["additionalContext"]
             for name in install_suite.SKILLS:
-                self.assertIn(f"/{name}/SKILL.md", context)
+                self.assertIn(f"{name}/SKILL.md", context)
         install_suite.uninstall(self.home, install_suite.load_receipt(self.home))
         self.assertEqual((self.home / "AGENTS.md").read_bytes(), original)
         self.assertFalse((self.home / "hooks.json").exists())
@@ -105,12 +105,39 @@ class ActivationTests(unittest.TestCase):
             response = activation.handle({"hook_event_name": event, "prompt": "UNTRUSTED_PROMPT"}, self.home)
             self.assertEqual(response["hookSpecificOutput"]["hookEventName"], event)
             context = response["hookSpecificOutput"]["additionalContext"]
-            self.assertIn("/source-selection/SKILL.md", context)
-            self.assertNotIn("/context-management/SKILL.md", context)
+            self.assertIn("source-selection/SKILL.md", context)
+            self.assertNotIn("context-management/SKILL.md", context)
             self.assertNotIn("UNTRUSTED_PROMPT", context)
             self.assertLess(len(context.split()), 220)
             self.assertEqual(set(response), {"hookSpecificOutput"})
         self.assertEqual(before, {path: path.stat().st_mtime_ns for path in self.home.rglob("*") if path.is_file()})
+
+    def test_prompt_reminder_is_self_contained_with_one_shared_directory(self):
+        # No SessionStart or earlier prompt is needed to resolve selected skills.
+        selected = ["source-selection", "concise-communication"]
+        install_suite.install(self.home, None, selected, with_hooks=True)
+        context = activation.handle({"hook_event_name": "UserPromptSubmit"}, self.home)["hookSpecificOutput"]["additionalContext"]
+        directory = (self.home / "skills").as_posix()
+        self.assertIn(f"Skill paths relative to `{directory}`:", context)
+        self.assertEqual(context.count(directory), 1)
+        for name in selected:
+            self.assertIn(f"`{name}/SKILL.md`", context)
+            self.assertIn(activation.PURPOSES[name], context)
+        for name in set(activation.NAMES) - set(selected):
+            self.assertNotIn(f"`{name}/SKILL.md`", context)
+        for preference in ("disabled", "suggest-only", "stay", "user/project preferences"):
+            self.assertIn(preference, context)
+        self.assertIn("not the whole suite", context)
+        self.assertIn("Reuse loaded guidance", context)
+        self.assertIn("No new authority is granted.", context)
+        # Deleted entrypoints must not survive in a cached or stale prompt catalog.
+        (self.home / "skills/source-selection/SKILL.md").unlink()
+        context = activation.handle({"hook_event_name": "UserPromptSubmit"}, self.home)["hookSpecificOutput"]["additionalContext"]
+        self.assertNotIn("source-selection/SKILL.md", context)
+        self.assertIn("concise-communication/SKILL.md", context)
+        # A shared-directory preamble would add overhead for a single skill.
+        self.assertNotIn("Skill paths relative", context)
+        self.assertIn(f"`{self.home.as_posix()}/skills/concise-communication/SKILL.md`", context)
 
     def test_prompt_reminder_is_smaller_than_session_guidance(self):
         install_suite.install(self.home, None, with_hooks=True)
@@ -183,7 +210,7 @@ class ActivationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         context = json.loads(result.stdout)["hookSpecificOutput"]["additionalContext"]
         for name in install_suite.SKILLS:
-            self.assertIn(f"/{name}/SKILL.md", context)
+            self.assertIn(f"{name}/SKILL.md", context)
         self.assertIn("Select only relevant skills", context)
         self.assertIn("disabled", context)
         install_suite.uninstall(self.home, install_suite.load_receipt(self.home))
