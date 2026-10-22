@@ -106,9 +106,58 @@ class BoundedReaderTests(unittest.TestCase):
             if result["coverage_sufficient"]:
                 break
             self.assertFalse(result["full_read_complete"])
-            options.update(self.known(result), cursor=result["next_cursor"], expected_revision=result["revision"])
+            options.update(self.known(result), cursor=result["next_cursor"], expected_revision=result["revision"],
+                           reread_spans=result["reread_spans"])
         self.assertEqual("".join(reread), self.path.read_text(encoding="utf-8"))
         self.assertTrue(result["full_read_complete"])
+
+    def test_forced_cursor_cannot_use_old_coverage_or_skip_unread_prefix(self):
+        first = self.read()
+        for cursor in (1, first["total_chars"]):
+            for available in (True, False):
+                with self.subTest(cursor=cursor, available=available), self.assertRaises(ValueError):
+                    self.read(**(self.known(first) | {
+                        "required_full_read": True, "force_read": True,
+                        "cursor": cursor, "expected_revision": first["revision"],
+                        "content_available": available}))
+
+    def test_forced_pass_coverage_is_distinct_from_old_full_coverage(self):
+        old = self.read()
+        first = self.read(**self.known(old), force_read=True, max_chars=5)
+        self.assertEqual(first["coverage_spans"], old["coverage_spans"])
+        self.assertEqual(first["reread_spans"], [[0, 5]])
+        self.assertFalse(first["coverage_sufficient"])
+        with self.assertRaises(ValueError):
+            self.read(**self.known(first), force_read=True, cursor=first["total_chars"],
+                      expected_revision=first["revision"], reread_spans=first["reread_spans"])
+        with self.assertRaises(ValueError):
+            self.read(**(self.known(first) | {"content_available": False}), force_read=True,
+                      cursor=5, expected_revision=first["revision"], reread_spans=first["reread_spans"])
+
+    def test_reread_spans_are_validated_and_reset_for_new_pass(self):
+        old = self.read()
+        for spans in (None, [[-1, 3]], [[0, True]], [[0, old["total_chars"] + 1]]):
+            with self.subTest(spans=spans), self.assertRaises(ValueError):
+                self.read(**self.known(old), force_read=True, reread_spans=spans)
+        result = self.read(**self.known(old), force_read=True, max_chars=5,
+                           reread_spans=old["coverage_spans"])
+        self.assertEqual(result["reread_spans"], [[0, 5]])
+        self.assertFalse(result["full_read_complete"])
+
+    def test_line_navigation_uses_physical_lf_lines_and_preserves_offsets(self):
+        for separator in ("\n", "\r\n"):
+            for embedded in ("\u2028", "\f", "\r"):
+                with self.subTest(separator=separator, embedded=embedded):
+                    prefix = 'x = "first' + embedded + 'still first"' + separator
+                    suffix = "print(x)" + separator
+                    self.path.write_bytes((prefix + suffix).encode("utf-8"))
+                    result = self.read(start_line=2, end_line=2)
+                    self.assertEqual(result["total_lines"], 2)
+                    self.assertEqual(result["content"], [{"start": len(prefix),
+                                     "end": len(prefix + suffix), "text": suffix}])
+                    full = self.read()
+                    self.assertEqual(full["content"][0]["text"], prefix + suffix)
+                    self.assertEqual(result["revision"], full["revision"])
 
     def test_empty_source_is_a_complete_read(self):
         self.path.write_text("", encoding="utf-8")

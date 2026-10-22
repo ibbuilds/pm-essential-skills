@@ -1,6 +1,7 @@
 """Exercise real hook contracts and the extracted user download in isolated profiles."""
 
 import importlib.util
+import base64
 import json
 import os
 from pathlib import Path
@@ -8,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -215,6 +217,45 @@ class ActivationTests(unittest.TestCase):
         self.assertIn("disabled", context)
         install_suite.uninstall(self.home, install_suite.load_receipt(self.home))
         self.assertFalse(helper.exists())
+
+    def test_windows_hook_payload_quotes_paths_as_literal_data(self):
+        # Inspect generated Windows payload without launching a Windows shell.
+        home = self.home / "O'Brien&Co"
+        home.mkdir(parents=True)
+        with patch.object(install_suite.os, "name", "nt"), patch.object(
+                install_suite.sys, "executable", "C:\\Program Files\\O'Brien&Co\\python.exe"):
+            _, owned = install_suite.hooks_content(home, add=True)
+        command = owned["groups"]["SessionStart"]["hooks"][0]["command"]
+        prefix = "powershell.exe -NoProfile -NonInteractive -EncodedCommand "
+        self.assertTrue(command.startswith(prefix))
+        script = base64.b64decode(command[len(prefix):], validate=True).decode("utf-16le")
+        self.assertIn("O''Brien&Co", script)
+        self.assertTrue(script.startswith("$input | & '"))
+        self.assertTrue(script.endswith("; exit $LASTEXITCODE"))
+
+    @unittest.skipUnless(os.name == "nt", "Windows hook shell execution")
+    def test_windows_registered_hook_executes_through_cmd_and_powershell(self):
+        home = self.home / "O'Brien&Co"
+        install_suite.install(home, None, ["source-selection"], with_hooks=True)
+        state = install_suite.load_receipt(home)
+        command = state["hooks"]["groups"]["UserPromptSubmit"]["hooks"][0]["command"]
+        for shell in (["cmd.exe", "/d", "/s", "/c"],
+                      ["powershell.exe", "-NoProfile", "-NonInteractive", "-Command"]):
+            with self.subTest(shell=shell[0]):
+                result = subprocess.run(shell + [command],
+                                        input=json.dumps({"hook_event_name": "UserPromptSubmit"}),
+                                        text=True, capture_output=True, timeout=45)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                output = json.loads(result.stdout)
+                context = output["hookSpecificOutput"]["additionalContext"]
+                self.assertIn("source-selection/SKILL.md", context)
+                self.assertIn(home.as_posix(), context)
+        # The launcher exposes recovery without requiring users to locate Python.
+        environment = dict(os.environ, CODEX_HOME=str(home))
+        result = subprocess.run(["cmd.exe", "/d", "/c", "Install.cmd", "recover"],
+                                cwd=ROOT, env=environment, text=True, capture_output=True, timeout=45)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("nothing_to_recover", result.stdout)
 
     @unittest.skipUnless(os.name == "nt", "Windows installer launch")
     def test_windows_launcher_rejects_extra_options_before_installing(self):

@@ -14,13 +14,13 @@ import stat
 from pathlib import Path, PurePosixPath
 import sys
 import tempfile
-import subprocess
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from activation import NAMES as SKILLS, render
 
 ROOT = Path(__file__).resolve().parents[1]
 RECEIPT = "pm-essential-skills/install.json"
+JOURNAL = "pm-essential-skills/transaction.json"
 BEGIN = b"<!-- pm-essential-skills:start -->"
 END = b"<!-- pm-essential-skills:end -->"
 HELPER = "pm-essential-skills/activation.py"
@@ -70,15 +70,30 @@ def read(path):
     return path.read_bytes() if path.exists() else None
 
 
-def atomic_write(path, data):
+def file_mode(path):
+    # Windows chmod does not represent POSIX access bits or ACLs.
+    return stat.S_IMODE(path.stat().st_mode) if os.name != "nt" and path.exists() else None
+
+
+def target_mode(path, data, preferred=None):
+    if data is None or os.name == "nt":
+        return None
+    current = file_mode(path)
+    return preferred if preferred is not None else (current if current is not None else 0o600)
+
+
+def atomic_write(path, data, mode=None):
     if data is None:
         path.unlink(missing_ok=True)
         return
+    mode = target_mode(path, data, mode)
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temporary = tempfile.mkstemp(prefix=".pm-install-", dir=path.parent)
     try:
         with os.fdopen(descriptor, "wb") as stream:
             stream.write(data)
+            if mode is not None:
+                os.fchmod(stream.fileno(), mode)
             stream.flush()
             os.fsync(stream.fileno())
         os.replace(temporary, path)
@@ -86,19 +101,74 @@ def atomic_write(path, data):
         Path(temporary).unlink(missing_ok=True)
 
 
-def apply(changes):
-    """Roll back handled write failures; a process crash is not transactional."""
+def pending_transaction(home):
+    return read(safe_path(home, JOURNAL)) is not None
+
+
+def owned_target(relative):
+    return (relative in (RECEIPT, HELPER, "AGENTS.md", "AGENTS.override.md", "hooks.json")
+            or any(relative.startswith(f"skills/{name}/") for name in SKILLS))
+
+
+def recover(home):
+    """Explicitly roll back an interrupted operation without replacing later edits."""
+    journal = safe_path(home, JOURNAL)
+    raw = read(journal)
+    if raw is None:
+        return {"status": "nothing_to_recover"}
+    transaction = json.loads(raw)
+    if (not isinstance(transaction, dict) or transaction.get("version") != 1
+            or not isinstance(transaction.get("files"), dict)):
+        raise ValueError("Invalid recovery journal; preserve it for manual recovery")
+    originals = {}
+    for relative, record in transaction["files"].items():
+        if not owned_target(relative) or not isinstance(record, dict):
+            raise ValueError("Invalid recovery target; preserve journal for manual recovery")
+        path = safe_path(home, relative)
+        before, after = decode(record["before"]), decode(record["after"])
+        current = read(path)
+        current_mode = file_mode(path)
+        before_mode, after_mode = record.get("before_mode"), record.get("after_mode")
+        for mode in (before_mode, after_mode):
+            if mode is not None and (type(mode) is not int or not 0 <= mode <= 0o7777):
+                raise ValueError("Invalid recovery mode; preserve journal for manual recovery")
+        before_matches = current == before and (before_mode is None or current_mode == before_mode)
+        after_matches = current == after and (after_mode is None or current_mode == after_mode)
+        if not (before_matches or after_matches):
+            raise ValueError(f"Recovery would overwrite later changes: {relative}; preserve the journal")
+        originals[path] = (before, before_mode)
+    # Validate every target before writing any. The journal remains until rollback
+    # finishes, so another interruption can safely resume this same recovery.
+    for path, (content, mode) in reversed(list(originals.items())):
+        if read(path) != content or (mode is not None and file_mode(path) != mode):
+            atomic_write(path, content, mode=mode)
+    journal.unlink()
+    return {"status": "recovered", "result": "restored_pre_operation_state"}
+
+
+def apply(changes, home, modes=None):
+    """Persist all before/after bytes before touching any managed target."""
+    journal = safe_path(home, JOURNAL)
+    if pending_transaction(home):
+        raise ValueError("Interrupted installation needs recovery; run recover before retrying")
     originals = {path: read(path) for path in changes}
-    attempted = []
+    modes = modes or {}
+    before_modes = {path: file_mode(path) for path in changes}
+    after_modes = {path: target_mode(path, content, modes.get(path)) for path, content in changes.items()}
+    transaction = {"version": 1, "files": {
+        path.relative_to(home).as_posix(): {"before": encode(originals[path]), "after": encode(content),
+                                          "before_mode": before_modes[path], "after_mode": after_modes[path]}
+        for path, content in changes.items()}}
+    atomic_write(journal, (json.dumps(transaction, indent=2) + "\n").encode("utf-8"))
     try:
         for path, content in changes.items():
-            if content != originals[path]:
-                attempted.append(path)
-                atomic_write(path, content)
+            if content != originals[path] or before_modes[path] != after_modes[path]:
+                atomic_write(path, content, mode=after_modes[path])
     except OSError:
-        for path in reversed(attempted):
-            atomic_write(path, originals[path])
+        # If rollback itself fails, do not discard its durable recovery evidence.
+        recover(home)
         raise
+    journal.unlink()
 
 
 def load_receipt(home):
@@ -113,6 +183,9 @@ def load_receipt(home):
             raise ValueError("Receipt contains an unowned package path")
         safe_path(home, relative)
         decode(record["original"])
+        for mode in (record.get("mode"), record.get("original_mode")):
+            if mode is not None and (type(mode) is not int or not 0 <= mode <= 0o7777):
+                raise ValueError("Invalid receipt mode; preserve it for recovery")
     if state["instructions"] not in ("AGENTS.md", "AGENTS.override.md"):
         raise ValueError("Invalid global instruction target")
     return state
@@ -184,7 +257,13 @@ def hooks_content(home, owned=None, add=False):
     if add:
         helper = safe_path(home, HELPER)
         if os.name == "nt":
-            command = subprocess.list2cmdline([sys.executable, str(helper)])
+            # Hooks execute in the session shell, not through CreateProcess argv.
+            # An ASCII encoded wrapper works through both PowerShell and cmd;
+            # paths are literal PowerShell strings, never interpolated code.
+            quoted = ["'" + value.replace("'", "''") + "'" for value in (sys.executable, str(helper))]
+            script = "$input | & " + " ".join(quoted) + "; exit $LASTEXITCODE"
+            payload = base64.b64encode(script.encode("utf-16le")).decode("ascii")
+            command = "powershell.exe -NoProfile -NonInteractive -EncodedCommand " + payload
         else:
             import shlex
             command = shlex.join([sys.executable, str(helper)])
@@ -217,7 +296,8 @@ def inspect(home, state):
         return ["suite_not_installed"]
     for relative, record in state["files"].items():
         data = read(safe_path(home, relative))
-        if data is None or digest(data) != record["sha256"]:
+        if (data is None or digest(data) != record["sha256"]
+                or (record.get("mode") is not None and file_mode(safe_path(home, relative)) != record["mode"])):
             problems.append(f"changed_or_missing:{relative}")
     guidance = read(safe_path(home, state["instructions"])) or b""
     block = decode(state["block"])
@@ -234,6 +314,8 @@ def inspect(home, state):
 
 
 def install(home, state, skills=None, with_hooks=False):
+    if pending_transaction(home):
+        raise ValueError("Interrupted installation needs recovery; run recover before retrying")
     if state is not None:
         problems = inspect(home, state)
         if problems:
@@ -242,7 +324,7 @@ def install(home, state, skills=None, with_hooks=False):
         name for name in SKILLS if (ROOT / "skills" / name / "SKILL.md").is_file())
     if not requested or set(requested) - set(SKILLS):
         raise ValueError("Choose at least one available skill")
-    changes, files = {}, dict((state or {}).get("files", {}))
+    changes, modes, files = {}, {}, dict((state or {}).get("files", {}))
     for name in requested:
         source = ROOT / "skills" / name
         if not (source / "SKILL.md").is_file():
@@ -260,18 +342,21 @@ def install(home, state, skills=None, with_hooks=False):
             data = path.read_bytes()
             previous = (state or {}).get("files", {}).get(relative)
             files[relative] = {"original": previous["original"] if previous else encode(read(target)),
-                               "sha256": digest(data)}
+                               "sha256": digest(data), "mode": target_mode(target, data),
+                               "original_mode": previous.get("original_mode") if previous else file_mode(target)}
             changes[target] = data
     if with_hooks or (state or {}).get("hooks"):
         target = safe_path(home, HELPER)
         data = (ROOT / "scripts/activation.py").read_bytes()
         previous = (state or {}).get("files", {}).get(HELPER)
         files[HELPER] = {"original": previous["original"] if previous else encode(read(target)),
-                         "sha256": digest(data)}
+                         "sha256": digest(data), "mode": target_mode(target, data),
+                         "original_mode": previous.get("original_mode") if previous else file_mode(target)}
         changes[target] = data
     for relative, record in (state or {}).get("files", {}).items():
         if relative not in files:
             changes[safe_path(home, relative)] = decode(record["original"])
+            modes[safe_path(home, relative)] = record.get("original_mode")
     instructions = state["instructions"] if state else active_instructions(home)
     target = safe_path(home, instructions)
     original = read(target)
@@ -290,10 +375,11 @@ def install(home, state, skills=None, with_hooks=False):
         hook_bytes, owned = hooks_content(home, (state or {}).get("hooks"), add=True)
         changes[safe_path(home, "hooks.json")] = hook_bytes
         receipt["hooks"] = owned
-    # Record backups first so interrupted installs can be inspected, not blindly retried.
+    # The durable journal retains retired-file backups and the previous receipt
+    # until every write succeeds, including during interrupted upgrades.
     ordered = {safe_path(home, RECEIPT): (json.dumps(receipt, indent=2) + "\n").encode("utf-8")}
     ordered.update(changes)
-    apply(ordered)
+    apply(ordered, home, modes)
     return {"status": "installed", "package_files": len(files), "instructions": str(target),
             "activation": "next_host_instruction_reload", "live_invocation_verified": False,
             "skills": skills, "hooks": "registered_trust_unverified" if receipt.get("hooks") else "not_requested",
@@ -301,6 +387,8 @@ def install(home, state, skills=None, with_hooks=False):
 
 
 def uninstall(home, state):
+    if pending_transaction(home):
+        raise ValueError("Interrupted installation needs recovery; run recover before retrying")
     if state is None:
         return {"status": "not_installed"}
     problems = inspect(home, state)
@@ -310,19 +398,21 @@ def uninstall(home, state):
         raise ValueError("Preserving modified installation: " + ", ".join(problems))
     changes = {safe_path(home, relative): decode(record["original"])
                for relative, record in state["files"].items()}
+    modes = {safe_path(home, relative): record.get("original_mode")
+             for relative, record in state["files"].items()}
     target = safe_path(home, state["instructions"])
     remaining = target.read_bytes().replace(decode(state["block"]), b"", 1)
     changes[target] = remaining if remaining or state["instructions_existed"] else None
     if state.get("hooks"):
         changes[safe_path(home, "hooks.json")] = hooks_content(home, state["hooks"])[0]
     changes[safe_path(home, RECEIPT)] = None
-    apply(changes)
+    apply(changes, home, modes)
     return {"status": "uninstalled", "user_instructions_preserved": True}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, epilog=DEFAULTS)
-    parser.add_argument("command", choices=("install", "status", "uninstall"))
+    parser.add_argument("command", choices=("install", "status", "uninstall", "recover"))
     parser.add_argument("--skill", choices=SKILLS, action="append", help="Install only this skill; repeat to select several")
     parser.add_argument("--hooks", action="store_true", help="Also register per-turn reminders; Codex trust is still required")
     parser.add_argument("--check-skill-root", type=Path, action="append",
@@ -348,6 +438,12 @@ def main():
             os.close(descriptor)
         elif safe_path(home, "pm-essential-skills/install.lock").exists():
             raise ValueError("Installation is in progress or needs recovery; preserving its lock")
+        if args.command == "recover":
+            result = recover(home)
+            print(json.dumps(result))
+            return 0
+        if pending_transaction(home):
+            raise ValueError("Interrupted installation needs recovery; run recover before retrying")
         state = load_receipt(home)
         if args.command == "install":
             result = install(home, state, args.skill, args.hooks)

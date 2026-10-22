@@ -1,6 +1,6 @@
 ---
 name: execution-efficiency
-description: Calibrate verification and retries during implementation or repair tasks, especially repeated failed attempts or checks that no longer add evidence. Not for simple answers or retrieval-only work.
+description: For implementation or repair, not simple answers or retrieval-only work. Calibrate verification and retries, especially repeated failed attempts or checks that no longer add evidence.
 ---
 
 # Execution Efficiency
