@@ -2,6 +2,10 @@
 
 Seven independent skills that help AI assistants coordinate complete outcomes, preserve context, choose resources and evidence, execute efficiently, improve recurring workflows, and communicate clearly. They work across project types and preserve the user's goals, preferences, and required quality.
 
+See [first-version readiness](docs/v1-readiness.md) for complete scope, inspected
+procedures, work-saving mechanisms, verified mechanics and the user's later trial.
+The candidate is not a published release or a claim of measured savings.
+
 ## Install, then work normally
 
 This tree is an unreleased **0.4.0 candidate** with seven skills. The download link tracks published `main`, not a versioned release.
