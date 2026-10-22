@@ -50,7 +50,7 @@ A subsequent deployment check verified that remote `main`, local sources, and th
 | --- | --- |
 | Chat is standalone | Continue quietly; offer a project only when useful and permitted, obtain name/consent, then create/move/verify through real capabilities. |
 | Membership is unknown | Resolve identity; do not assume standalone or choose the newest chat. |
-| User declines or defers | Record the scoped preference and continue helping; no repeated prompts. |
+| User declines setup or explicitly opts out of repeated location prompts | Preserve that scoped dismissal or persistent preference. A one-request stay is different: the next qualifying request still receives its location prompt. |
 | Existing project has the same display name | Use IDs/paths; ask reuse vs new before creating a duplicate. |
 | Project creation succeeds; chat move fails | Keep the new project; recover the move only. Never delete or recreate blindly. |
 | Move succeeds | Verify membership; remember that context has not shrunk. Evaluate a fresh-thread handoff separately. |
@@ -69,6 +69,12 @@ A subsequent deployment check verified that remote `main`, local sources, and th
 | User disables management | Respect the disabled state even if a persistent project rule still references the skill. |
 
 ## Validation boundary
+
+### Selection and composition audit, October 22, 2026
+
+Rechecked the official [skill-selection documentation](https://learn.chatgpt.com/docs/build-skills) and [skill-evaluation guidance](https://developers.openai.com/blog/eval-skills) on October 22, 2026. Hosts can shorten descriptions or omit entries under discovery budgets; no universal truncation length is assumed. Resource Selection, Task Coordination, and Execution Efficiency now lead with their conditional scope and no-op boundary rather than placing the exclusion after a capability list. This improves the information retained in a shortened prefix; it does not demonstrate better live selection.
+
+The new [cross-skill cases](../tests/integration-cases.json) exercise pending location choices, explicitly independent review, consequential resource choices with exhaustive evidence, complete deliverables despite concise defaults, and reuse of a workflow correction after compaction. They describe observable ordering, artifacts, and negative outcomes rather than treating a promise to comply as success. Schema validation checks fixture integrity only: these cases have not been executed as model evaluations. Actual selection, adherence, task quality, and overhead remain separate evidence requirements. The authored 75/85 thresholds and repeated-request prompts are unchanged; policy compliance is not proof of net efficiency.
 
 Deterministic tests cover observation validation, routing, configurable intervention modes/thresholds, standalone offers, capability preflight, transfer persistence, source identity/revision/coverage, and recovery. A local host simulation exercises creation-response loss followed by reconciliation without duplicate creation. Storage tests exercise process restart, stale revisions, locks, and atomic-write failure. These tests do not call real project/chat tools. Structural checks cover skill YAML/UI metadata, entrypoint budget, local links, and Python syntax. Live-host cases remain separate and have not been run against real user projects.
 

@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from assess_source import assess, unique
 
 FIELDS = {"path", "start_line", "end_line", "max_chars", "cursor", "expected_revision",
-          "loaded_source_id", "loaded_revision", "loaded_spans", "content_available",
+          "loaded_source_id", "loaded_revision", "loaded_spans", "reread_spans", "content_available",
           "required_full_read", "force_read"}
 MAX_BYTES = 16 * 1024 * 1024
 
@@ -75,7 +75,12 @@ def read_source(value):
     text = raw.decode("utf-8-sig")
     if "\x00" in text:
         raise ValueError("Binary source; use a specialized reader")
-    lines = text.splitlines(keepends=True)
+    # Match physical LF-delimited source lines used by rg and native code tools.
+    # Keep CR (including CRLF) and Unicode separators in the original offsets.
+    parts = text.split("\n")
+    lines = [part + "\n" for part in parts[:-1]]
+    if parts[-1]:
+        lines.append(parts[-1])
     source_id = path.as_uri()
     result = {"source_id": source_id, "revision": revision, "total_chars": len(text),
               "total_lines": len(lines)}
@@ -107,6 +112,20 @@ def read_source(value):
     if matching and any(right > len(text) for _, right in known):
         raise ValueError("Loaded span exceeds matching source length")
     known = merge(known) if matching else []
+    # Forced passes keep independent coverage: old loaded content is not evidence
+    # that the explicit reread happened. As with loaded_spans, callers must only
+    # supply spans whose content is still available from this pass.
+    reread = value.get("reread_spans", [])
+    if not isinstance(reread, list):
+        raise ValueError("reread_spans must be an array")
+    for span in reread:
+        if not isinstance(span, list) or len(span) != 2:
+            raise ValueError("Each reread span must be [start, end)")
+        if integer(span[1], "reread span end") < integer(span[0], "reread span start"):
+            raise ValueError("Invalid reread span")
+    if matching and any(right > len(text) for _, right in reread):
+        raise ValueError("Reread span exceeds matching source length")
+    reread = merge(reread) if matching and value.get("cursor") is not None else []
     sufficient = not missing(start, end, known)
     decision = assess({"source_id": source_id, "loaded_source_id": value.get("loaded_source_id"),
                        "loaded_revision": value.get("loaded_revision"), "current_revision": revision,
@@ -119,8 +138,11 @@ def read_source(value):
     cursor = integer(value.get("cursor", start), "cursor")
     if not start <= cursor <= end:
         raise ValueError("Cursor is outside the requested range")
-    if not value.get("force_read", False) and missing(start, cursor, known):
-        raise ValueError("Cursor would skip unread content; include prior matching coverage")
+    cursor_coverage = reread if value.get("force_read", False) else known
+    if missing(start, cursor, cursor_coverage):
+        raise ValueError("Cursor would skip unread content; include prior matching "
+                         + ("reread_spans for this forced pass" if value.get("force_read", False)
+                            else "coverage"))
     gaps = [[start, end]] if value.get("force_read", False) else missing(start, end, known)
     content, remaining = [], budget
     for left, right in gaps:
@@ -134,8 +156,9 @@ def read_source(value):
     pending = missing(start, end, coverage)
     # A forced reread must complete its newly emitted page sequence, even if old content exists.
     if value.get("force_read", False):
-        emitted_end = content[-1]["end"] if content else cursor
-        pending = [[emitted_end, end]] if emitted_end < end else []
+        reread = merge(reread + [[item["start"], item["end"]] for item in content])
+        pending = missing(start, end, reread)
+        result["reread_spans"] = reread
     return result | {"action": "read", "content": content, "coverage_spans": coverage,
                      "coverage_sufficient": not pending, "next_cursor": pending[0][0] if pending else None,
                      "full_read_complete": not missing(0, len(text), coverage)

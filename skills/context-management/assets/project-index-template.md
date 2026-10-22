@@ -29,7 +29,8 @@ Record the observation source, fresh current-context occupancy when known, obser
 - Source thread:
 - Source recovery route/map and destination access evidence:
 - Confirmed source archive state and any temporary-recovery receipt (`rearchive_pending`, original state, target/host, owner):
-- Lifecycle: prepared / destination-confirmed / superseded
+- Lifecycle: prepared / requesting / uncertain / confirmed / superseded / cancelled / failed
+- Implementation owner: source before dispatch or after definite failure; none while requesting/uncertain; confirmed destination thereafter. Never resume the source merely because destination readiness is pending.
 - Destination thread ID and readiness evidence (unknown until confirmed):
 - Recovery action, if needed:
 - Transfer journal path and latest revision, when available:

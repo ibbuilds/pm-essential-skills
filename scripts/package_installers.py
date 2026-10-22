@@ -4,7 +4,7 @@
 import argparse
 import json
 from pathlib import Path
-import zipfile
+from archive_builder import write_archive
 
 from skill_resources import resource_errors
 from activation import NAMES as SKILLS
@@ -32,7 +32,6 @@ def build(output, skills, root=ROOT):
                 entries[source.relative_to(root).as_posix()] = source
     if output.resolve().is_relative_to((root / "skills").resolve()):
         raise ValueError("Download must be outside skill sources")
-    output.parent.mkdir(parents=True, exist_ok=True)
     guide = ("PM Essential Skills\n\nExtract this download, open Install.cmd, then use Codex normally.\n"
              "Included: " + ", ".join(skills) + ".\n\n"
              "Installation copies only the included skills and adds their automatic user-level guidance.\n"
@@ -45,16 +44,7 @@ def build(output, skills, root=ROOT):
              "Other systems: run python3 scripts/install_suite.py install with Python 3.10+.\n"
              "Optional per-turn reminders: add --hooks to that command; Codex still requires hook trust.\n"
              "Installation checks do not prove live model invocation or measured savings.\n")
-    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr("START-HERE.txt", guide)
-        for relative, source in entries.items():
-            archive.writestr(relative, source.read_bytes())
-    with zipfile.ZipFile(output) as archive:
-        if archive.testzip() is not None:
-            raise ValueError("Download integrity check failed")
-        for relative, source in entries.items():
-            if archive.read(relative) != source.read_bytes():
-                raise ValueError(f"Packaged content differs: {relative}")
+    write_archive(output, entries, {"START-HERE.txt": guide})
     return {"archive": str(output.resolve()), "skills": list(skills), "files": len(entries) + 1}
 
 

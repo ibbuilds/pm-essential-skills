@@ -199,15 +199,6 @@ def assess(observation: Any) -> dict:
             return transfer("user_chose_new_thread")
     pressure = (ratio >= settings["review_ratio"] if ratio is not None
                 else proxy_triggered or existing_history_signal or critical_history)
-    if obs.get("project_mode") == "standalone" and pressure:
-        if not obs.get("project_setup_allowed", False):
-            return finish("checkpoint" if obs.get("safe_checkpoint", False) else "continue",
-                          "standalone_without_setup")
-        if obs.get("project_offer_dismissed", False):
-            return finish("review", "standalone_offer_dismissed")
-        if not obs.get("safe_checkpoint", False):
-            return finish("defer", "standalone_project_offer_at_checkpoint")
-        return finish("offer_project", "standalone_context_pressure")
     if obs.get("project_mode") != "standalone":
         if ratio is not None and ratio >= settings["rollover_ratio"]:
             return transfer("measured_context_high")
@@ -223,6 +214,23 @@ def assess(observation: Any) -> dict:
         return finish("continue", "user_chose_current_thread")
     if choice_current and obs.get("boundary_choice") == "new-thread":
         return transfer("user_chose_new_thread")
+    # An unanswered question survives compaction or changed membership evidence.
+    # A historical prompt is pending only for a known matching request; an explicit
+    # choice_pending observation represents a still-live question, including new
+    # work incorporated into that pending decision.
+    already_prompted = (obs.get("request_id") is not None
+                        and obs.get("last_prompt_request_id") == obs["request_id"])
+    if obs.get("choice_pending", False) or already_prompted:
+        return finish("await_thread_choice", "request_choice_pending")
+    if obs.get("project_mode") == "standalone" and pressure:
+        if not obs.get("project_setup_allowed", False):
+            return finish("checkpoint" if obs.get("safe_checkpoint", False) else "continue",
+                          "standalone_without_setup")
+        if obs.get("project_offer_dismissed", False):
+            return finish("review", "standalone_offer_dismissed")
+        if not obs.get("safe_checkpoint", False):
+            return finish("defer", "standalone_project_offer_at_checkpoint")
+        return finish("offer_project", "standalone_context_pressure")
     phase_boundary = ((obs.get("new_phase", False) or obs.get("new_outcome", False))
                       and obs.get("substantial_history", False))
     long_chat = obs.get("substantial_history", False) or pressure
@@ -232,10 +240,6 @@ def assess(observation: Any) -> dict:
         if obs.get("project_mode", "unknown") == "unknown" and (phase_boundary or obs.get("substantial_history", False)):
             return finish("review", "phase_project_unverified")
         if obs.get("project_mode") == "project":
-            already_prompted = (obs.get("request_id") is not None
-                                and obs.get("last_prompt_request_id") == obs["request_id"])
-            if obs.get("choice_pending", False) or already_prompted:
-                return finish("await_thread_choice", "request_choice_pending")
             result = finish("ask_thread_choice", "requested_phase_boundary" if phase_boundary else "long_chat_new_request")
             result["prompt_level"] = min(3, obs.get("stay_count", 0) + 1)
             return result

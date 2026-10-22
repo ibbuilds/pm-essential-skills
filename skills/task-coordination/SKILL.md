@@ -1,6 +1,6 @@
 ---
 name: task-coordination
-description: Coordinate intake, scope, lightweight planning, ownership, handoffs, and completion for multi-step, ambiguous, or delegated work across domains. Not product strategy or conversation rollover; handle trivial clear tasks directly.
+description: For multi-step, ambiguous, or delegated work; handle trivial clear tasks directly. Coordinate intake, scope, lightweight planning, ownership, handoffs, and completion across domains, not product strategy or conversation rollover.
 ---
 
 # Task Coordination

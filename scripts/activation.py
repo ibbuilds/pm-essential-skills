@@ -21,6 +21,9 @@ PURPOSES = {
     "concise-communication": "clear, brief plain-language replies without losing required substance",
 }
 NAMES = tuple(PURPOSES)
+# UserPromptSubmit contains the full prompt, not just event metadata. Permit
+# ordinary pasted source/documents while bounding malformed or extreme input.
+MAX_INPUT_BYTES = 16 * 1024 * 1024
 
 
 def render(home, skills, installation=False, brief=False):
@@ -74,9 +77,9 @@ def main():
     parser.add_argument("--codex-home", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
     try:
-        raw = sys.stdin.buffer.read(65537)
-        result = {} if len(raw) > 65536 else handle(json.loads(raw.decode("utf-8-sig")), args.codex_home.resolve())
-    except (OSError, ValueError, TypeError, AttributeError):
+        raw = sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
+        result = {} if len(raw) > MAX_INPUT_BYTES else handle(json.loads(raw.decode("utf-8-sig")), args.codex_home.resolve())
+    except (OSError, ValueError, TypeError, AttributeError, RecursionError):
         result = {}  # A broken reminder must not interrupt the user's task.
     print(json.dumps(result))
     return 0

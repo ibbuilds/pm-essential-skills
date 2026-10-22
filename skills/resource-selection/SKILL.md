@@ -1,6 +1,6 @@
 ---
 name: resource-selection
-description: Choose an execution approach, tools, supported model or reasoning capabilities, and agent use when choices materially affect quality or cost, especially for complex or costly work. Skip routine tasks when current capabilities suffice.
+description: For complex or costly execution choices; skip routine work when current capabilities suffice. Choose tools, supported model or reasoning capabilities, and agents only when choices materially affect quality or cost.
 ---
 
 # Resource Selection

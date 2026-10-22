@@ -30,6 +30,33 @@ class RequestEscalationTests(unittest.TestCase):
             self.assertNotIn("prompt_level", result)
         self.assertEqual(POLICY.assess(self.long | {"choice_pending": True})["action"], "await_thread_choice")
 
+    def test_pending_choice_survives_compaction_and_new_work(self):
+        initial = {"project_mode": "project", "safe_checkpoint": True,
+                   "request_id": "r", "context": context(80000)}
+        self.assertEqual(POLICY.assess(initial)["action"], "ask_thread_choice")
+        for pending in ({"choice_pending": True}, {"last_prompt_request_id": "r"}):
+            for extra in ({}, {"new_outcome": True}, {"safe_checkpoint": False},
+                          {"project_mode": "unknown"}, {"project_mode": "standalone"}):
+                with self.subTest(pending=pending, extra=extra):
+                    result = POLICY.assess(initial | {"context": context(10000)} | pending | extra)
+                    self.assertEqual(result["action"], "await_thread_choice")
+                    self.assertFalse(result["requires_transfer_checks"])
+
+    def test_old_prompt_without_matching_known_identity_is_not_pending(self):
+        for ids in ({}, {"last_prompt_request_id": "old"},
+                    {"request_id": "new", "last_prompt_request_id": "old"}):
+            with self.subTest(ids=ids):
+                result = POLICY.assess({"project_mode": "project", "safe_checkpoint": True,
+                                       "context": context(10000)} | ids)
+                self.assertEqual(result["action"], "continue")
+
+    def test_current_answers_override_pending_marker_after_compaction(self):
+        value = {"project_mode": "project", "safe_checkpoint": True, "context": context(10000),
+                 "request_id": "r", "choice_request_id": "r", "last_prompt_request_id": "r",
+                 "choice_pending": True}
+        for choice, expected in (("current-thread", "continue"), ("new-thread", "rollover")):
+            self.assertEqual(POLICY.assess(value | {"boundary_choice": choice})["action"], expected)
+
     def test_matching_choice_is_required_for_current_request(self):
         current = {"user_keep_thread": True, "choice_request_id": "request-1"}
         self.assertEqual(POLICY.assess(self.long | current)["action"], "continue")

@@ -4,7 +4,7 @@
 import argparse
 import json
 from pathlib import Path
-import zipfile
+from archive_builder import write_archive
 
 from skill_resources import resource_errors
 
@@ -27,16 +27,7 @@ def build(output, root=ROOT):
         raise ValueError("No usable skill entrypoints")
     if output.resolve().is_relative_to((root / "skills").resolve()):
         raise ValueError("Archive must be outside packaged skills")
-    output.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
-        for relative, path in entries.items():
-            archive.writestr(f"{manifest['name']}/{relative}", path.read_bytes())
-    with zipfile.ZipFile(output) as archive:
-        if archive.testzip() is not None:
-            raise ValueError("Archive verification failed")
-        for relative, source in entries.items():
-            if archive.read(f"{manifest['name']}/{relative}") != source.read_bytes():
-                raise ValueError(f"Packaged content differs: {relative}")
+    write_archive(output, {f"{manifest['name']}/{relative}": path for relative, path in entries.items()})
     return {"archive": str(output.resolve()), "files": len(entries),
             "skills": sorted(name.split("/")[1] for name in entries if name.endswith("/SKILL.md"))}
 

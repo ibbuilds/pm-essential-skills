@@ -4,11 +4,13 @@ Seven independent skills that help AI assistants coordinate complete outcomes, p
 
 ## Install, then work normally
 
-This tree is an unreleased **0.4.0 candidate** with seven skills. The download link tracks published `main`, so it includes this expansion only after publication.
+This tree is an unreleased **0.4.0 candidate** with seven skills. The download link tracks published `main`, not a versioned release.
 
 1. Download the [full suite source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip), with the skills and installer published on `main`.
 2. Extract it, open the extracted **pm-essential-skills-main** folder, and open **Install.cmd** on Windows.
 3. Continue using Codex normally when it next loads its instructions. No project activation prompt is needed.
+
+Installation is checked independently of host activation. Native skill listing, instruction loading, trusted hook execution, and model adherence are distinct: this candidate has no certified Codex-version compatibility matrix. See the [critical audit and evidence limits](docs/audit-2026-10-22.md). An installed file is not proof that your host invoked it.
 
 The installer finds Codex's bundled Python runtime when available. It installs only the included skills and adds a small activation rule to your existing user-level instructions. It preserves existing preferences and saves originals for uninstall. It needs no Git account, plugin, server, project registration, or tracking service. It does not create project files or alter tool permissions.
 
@@ -50,7 +52,7 @@ python3 scripts/install_suite.py status
 python3 scripts/install_suite.py uninstall
 ```
 
-Uninstall restores preexisting skill files and removes only the managed activation rule. It preserves user text added outside that rule and refuses to overwrite customized installed files. Another installer or an interrupted operation leaves a lock that must be reconciled before retrying.
+Uninstall restores preexisting skill files and removes only the managed activation rule. It preserves user text added outside that rule and refuses to overwrite customized installed files. Interrupted operations retain a recovery journal. Run `Install.cmd recover` on Windows or `python3 scripts/install_suite.py recover` with the same profile to restore the pre-operation state, then retry. Recovery refuses to replace later user edits. If a force-killed installer left a lock, confirm no installer is running before removing only the stale `pm-essential-skills/install.lock`; keep the receipt and journal. See [recovery details](skills/context-management/references/automatic-activation.md#recovery-and-checks).
 
 Optional copy diagnostics (Python installer only):
 
@@ -64,9 +66,9 @@ Repeat `--check-skill-root PATH` for other skills directories you want checked. 
 
 ## Stronger automatic reminders
 
-For local Codex hosts supporting hooks, run `python3 scripts/install_suite.py install --hooks` (Windows: `py -3 scripts/install_suite.py install --hooks` with Python 3.10+). `Install.cmd` accepts only `install`, `status`, or `uninstall`, not extra options. This registers compact reminders on session start and user prompt submission. Existing hook definitions are preserved. **Codex still requires review and trust before these reminders run.** Registration is reported separately from trust and live invocation.
+For local Codex hosts supporting hooks, run `python3 scripts/install_suite.py install --hooks` (Windows: `py -3 scripts/install_suite.py install --hooks` with Python 3.10+). `Install.cmd` accepts only `install`, `status`, `uninstall`, or `recover`, not extra options. This registers compact reminders on session start and user prompt submission. Existing hook definitions are preserved. **Codex still requires review and trust before these reminders run.** Registration is reported separately from trust and live invocation.
 
-Reminders make no model calls, read no transcripts, write no per-turn project state, and make no tool-approval decisions. They use only installed-skill metadata. Ordinary skills and the user-level rule remain useful without them. See [automatic activation and recovery](skills/context-management/references/automatic-activation.md).
+Reminders make no model calls, read no stored transcripts, write no per-turn project state, and make no tool-approval decisions. They route only from installed-skill metadata; prompt contents never become instructions. The host input envelope includes the prompt: malformed or over-16-MiB envelopes deliberately receive no reminder. Reminder text still adds model-input context, so hooks are optional, not a guaranteed saving. Ordinary skills and the user-level rule remain useful without them. See [automatic activation and recovery](skills/context-management/references/automatic-activation.md).
 
 ## What to expect
 
