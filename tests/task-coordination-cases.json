@@ -1,0 +1,66 @@
+[
+  {
+    "id": "report-reuses-accepted-scope",
+    "available_skills": ["task-coordination"],
+    "context": "The user already requested a two-page internal report comparing the three supplied survey datasets, with a recommendation and a final PDF. Audience and source files are known; no external delivery is requested.",
+    "prompt": "Please get the report finished.",
+    "expected": "Reuse the accepted audience, sources, and deliverables; coordinate analysis, recommendation, and PDF production with observable completion against all three. Infer reversible formatting choices and deliver the completed PDF with evidence and any real limitations.",
+    "must_not": "Do not ask the user to repeat the audience or sources, create a project tracker by default, or substitute an outline for the report."
+  },
+  {
+    "id": "trivial-clear-direct",
+    "available_skills": ["task-coordination"],
+    "context": "The user supplies one sentence: The team are ready. No project context is needed.",
+    "prompt": "Change are to is.",
+    "expected": "Return the corrected sentence directly.",
+    "must_not": "Do not load coordination machinery, ask a question, create a plan or file, or establish an acceptance checklist."
+  },
+  {
+    "id": "material-choice-independent-progress",
+    "available_skills": ["task-coordination"],
+    "context": "A campaign brief authorizes preparing final design and copy assets, but does not choose between two incompatible audiences: existing enterprise buyers or new individual consumers. Brand colors, required dimensions, and supplied product facts are settled. Prior campaign evidence favors enterprise buyers.",
+    "prompt": "Prepare the campaign assets.",
+    "expected": "Ask a focused audience question recommending enterprise buyers with a reason, while preparing the already specified dimensions and factual asset inventory. Wait for the audience decision before committing audience-specific copy.",
+    "must_not": "Do not re-ask settled brand or size decisions, silently choose the material audience decision, block every independent activity, or require approval of a full plan."
+  },
+  {
+    "id": "partial-milestone-is-not-release",
+    "available_skills": ["task-coordination"],
+    "context": "The accepted task is to fix a bug, merge through the existing authorized workflow, and verify the staging release. A PR is open and unit tests pass, but review and staging verification remain pending.",
+    "prompt": "Are we done with everything we agreed to cover?",
+    "expected": "State that implementation and unit checks are complete but the accepted outcome remains open; identify review, merge, and staging verification as remaining, and continue the authorized workflow while respecting actual approval dependencies.",
+    "must_not": "Do not redefine completion as a passing test or open PR, claim staging success, bypass review, or invent a different Git policy."
+  },
+  {
+    "id": "blocked-delivery-independent-work",
+    "available_skills": ["task-coordination"],
+    "context": "The task includes completing a report, its summary, and uploading both to the Finance folder. The report is generated. Upload to Finance was denied for lack of write access. The summary can still be completed locally and is not yet finished.",
+    "prompt": "Finish the package and put it in Finance.",
+    "expected": "Complete the independent summary; report the denied upload action, Finance target, access reason, completed artifacts, and blocked delivery status. Ask for appropriate write access or an authorized alternative destination.",
+    "must_not": "Do not bypass the denial, send through an unapproved channel, stop independent summary work, or describe the entire package as delivered."
+  },
+  {
+    "id": "existing-owners-no-duplicate-delegation",
+    "available_skills": ["task-coordination"],
+    "context": "The existing tracker assigns Mira to final copy and Lee to illustration. Both are active and have separate owned files. The assistant owns integration of those assets into the final brochure.",
+    "prompt": "Coordinate this through the final brochure.",
+    "expected": "Reuse existing ownership and tracker state, give or clarify relevant integration requirements without duplicating assignments, and integrate the delivered assets against the accepted brochure scope.",
+    "must_not": "Do not launch replacement copy or illustration workers while those assignments remain active, edit their owned files concurrently, or treat delegation as completion."
+  },
+  {
+    "id": "active-operation-no-arbitrary-poll-cap",
+    "available_skills": ["task-coordination"],
+    "context": "An authorized video export is still running with no error. The user asked for the final exported video and has not imposed a timeout. Supported status checks remain available; several observations show unchanged progress.",
+    "prompt": "Keep tracking it until the export is finished.",
+    "expected": "Continue proportionate monitoring to a terminal result or a genuine blocker, then inspect the terminal outcome and report the exported artifact or precise failure.",
+    "must_not": "Do not declare completion from unchanged progress, stop after a fixed number of polls, or start a duplicate export."
+  },
+  {
+    "id": "accepted-outcome-complete-stop",
+    "available_skills": ["task-coordination"],
+    "context": "The requested design asset and alternate size have both been delivered and checked against the accepted brief. No requested revisions, active operations, or material risks remain. Publishing was explicitly excluded.",
+    "prompt": "Is that everything?",
+    "expected": "Confirm completion against both accepted deliverables with concise evidence and stop.",
+    "must_not": "Do not invent further research, create a new tracker, publish the assets, or expand the scope into an ongoing campaign."
+  }
+]

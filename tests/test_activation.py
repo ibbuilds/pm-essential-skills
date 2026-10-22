@@ -54,15 +54,15 @@ class ActivationTests(unittest.TestCase):
         self.assertEqual(sorted(package_installers.SKILLS), shipped)
         self.assertEqual(sorted(activation.NAMES), shipped)
 
-    def test_adding_execution_skill_preserves_existing_install_and_hook_selection(self):
+    def test_three_skill_upgrade_preserves_existing_install_and_hook_selection(self):
         original = b"Keep my existing preferences.\n"
         self.home.mkdir(parents=True)
         (self.home / "AGENTS.md").write_bytes(original)
-        install_suite.install(self.home, None, ["context-management", "source-selection"], with_hooks=True)
+        install_suite.install(self.home, None, ["context-management", "execution-efficiency", "source-selection"], with_hooks=True)
         state = install_suite.load_receipt(self.home)
         before = {name: (self.home / "skills" / name / "SKILL.md").read_bytes()
                   for name in state["skills"]}
-        result = install_suite.install(self.home, state, ["execution-efficiency"])
+        result = install_suite.install(self.home, state)
         self.assertEqual(result["skills"], list(install_suite.SKILLS))
         self.assertEqual(install_suite.inspect(self.home, install_suite.load_receipt(self.home)), [])
         for name, content in before.items():
@@ -164,6 +164,30 @@ class ActivationTests(unittest.TestCase):
                 if command != "uninstall":
                     self.assertEqual(json.loads(result.stdout)["skills"], [skill])
             self.assertFalse((home / "AGENTS.md").exists())
+
+    def test_extracted_full_download_installs_selected_catalog_and_runs_hook(self):
+        package = self.directory / "full-suite.zip"
+        package_installers.build(package, install_suite.SKILLS)
+        extracted = self.directory / "full download"
+        with zipfile.ZipFile(package) as archive:
+            archive.extractall(extracted)
+        script = extracted / "scripts/install_suite.py"
+        result = subprocess.run([sys.executable, str(script), "install", "--hooks",
+                                 "--codex-home", str(self.home)], text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["skills"], list(install_suite.SKILLS))
+        helper = self.home / install_suite.HELPER
+        result = subprocess.run([sys.executable, str(helper)],
+                                input=json.dumps({"hook_event_name": "UserPromptSubmit"}),
+                                text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        context = json.loads(result.stdout)["hookSpecificOutput"]["additionalContext"]
+        for name in install_suite.SKILLS:
+            self.assertIn(f"/{name}/SKILL.md", context)
+        self.assertIn("Select only relevant skills", context)
+        self.assertIn("disabled", context)
+        install_suite.uninstall(self.home, install_suite.load_receipt(self.home))
+        self.assertFalse(helper.exists())
 
     @unittest.skipUnless(os.name == "nt", "Windows installer launch")
     def test_windows_launcher_rejects_extra_options_before_installing(self):

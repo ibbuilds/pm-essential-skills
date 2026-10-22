@@ -9,21 +9,27 @@ import json
 from pathlib import Path
 import sys
 
-NAMES = ("context-management", "execution-efficiency", "source-selection")
+# The shared selection catalog lives in the already-bundled standalone helper.
+# These are routing hints, not copies of the skills' conditional procedures.
+PURPOSES = {
+    "task-coordination": "multi-step task intake, dependencies, and complete requested outcomes",
+    "context-management": "conversation continuity and task boundaries",
+    "resource-selection": "initial tool, skill, and supported model/agent choices",
+    "source-selection": "relevant evidence retrieval and reuse",
+    "execution-efficiency": "proportionate verification and evidence-driven recovery",
+    "workflow-improvement": "recurring friction, reusable lessons, and authorized workflow changes",
+    "concise-communication": "clear, brief plain-language replies without losing required substance",
+}
+NAMES = tuple(PURPOSES)
 
 
 def render(home, skills, installation=False, brief=False):
     lines = ["## PM Essential Skills"]
-    if "context-management" in skills:
-        lines.append(f"Use `{(home / 'skills/context-management/SKILL.md').as_posix()}` "
-                     "for conversation continuity and task boundaries.")
-    if "execution-efficiency" in skills:
-        lines.append(f"Use `{(home / 'skills/execution-efficiency/SKILL.md').as_posix()}` "
-                     "for proportionate verification and evidence-driven retries during implementation or repair.")
-    if "source-selection" in skills:
-        lines.append(f"Use `{(home / 'skills/source-selection/SKILL.md').as_posix()}` "
-                     "for relevant evidence retrieval/reuse.")
-    lines.append("Apply relevant skills automatically. Reuse loaded guidance and honor user/project preferences.")
+    for name in NAMES:
+        if name in skills:
+            lines.append(f"Use `{(home / 'skills' / name / 'SKILL.md').as_posix()}` for {PURPOSES[name]}.")
+    lines.append("Select only relevant skills and conditional references; do not load the whole suite for every request. "
+                 "Reuse loaded guidance. Honor disabled, suggest-only, stay, and user/project preferences.")
     if brief:
         lines.append("No new authority is granted.")
         return "\n".join(lines) + "\n"

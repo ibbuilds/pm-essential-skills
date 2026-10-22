@@ -17,10 +17,9 @@ import tempfile
 import subprocess
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from activation import render
+from activation import NAMES as SKILLS, render
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ("context-management", "execution-efficiency", "source-selection")
 RECEIPT = "pm-essential-skills/install.json"
 BEGIN = b"<!-- pm-essential-skills:start -->"
 END = b"<!-- pm-essential-skills:end -->"

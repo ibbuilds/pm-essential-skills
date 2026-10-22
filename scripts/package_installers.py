@@ -7,9 +7,9 @@ from pathlib import Path
 import zipfile
 
 from skill_resources import resource_errors
+from activation import NAMES as SKILLS
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ("context-management", "execution-efficiency", "source-selection")
 
 
 def build(output, skills, root=ROOT):
