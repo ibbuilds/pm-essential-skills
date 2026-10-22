@@ -19,7 +19,8 @@ class ActivationInputTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.home = Path(self.temp.name) / "profile"
+        # Match the CLI's canonical home, including Windows short TEMP aliases.
+        self.home = (Path(self.temp.name) / "profile").resolve()
 
     def invoke(self, payload):
         output = io.StringIO()
