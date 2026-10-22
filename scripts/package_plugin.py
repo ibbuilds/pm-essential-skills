@@ -18,6 +18,8 @@ def build(output, root=ROOT):
             raise ValueError("; ".join(errors))
     manifest = json.loads((root / "plugin.json").read_text(encoding="utf-8"))
     entries = {"plugin.json": root / "plugin.json"}
+    if (root / "LICENSE").exists():
+        entries["LICENSE"] = root / "LICENSE"
     for entry in sorted((root / "skills").rglob("*")):
         if entry.is_symlink():
             raise ValueError("Linked package sources are not supported")

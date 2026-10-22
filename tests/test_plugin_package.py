@@ -36,9 +36,18 @@ class PluginPackageTests(unittest.TestCase):
             self.assertEqual(manifest["name"], "pm-essential-skills")
             for path in names:
                 relative = Path(path).relative_to("pm-essential-skills")
-                self.assertTrue(relative.as_posix() == "plugin.json" or relative.parts[0] == "skills")
+                self.assertTrue(relative.as_posix() in {"plugin.json", "LICENSE"} or relative.parts[0] == "skills")
                 self.assertEqual(archive.read(path), (ROOT / relative).read_bytes())
             self.assertFalse(any(".pm-context" in path or "__pycache__" in path for path in names))
+
+    def test_independent_skill_folders_retain_canonical_license(self):
+        canonical = (ROOT / "LICENSE").read_bytes()
+        for skill in NAMES:
+            self.assertEqual((ROOT / "skills" / skill / "LICENSE").read_bytes(), canonical)
+        output = self.directory / "licensed-plugin.zip"
+        PACKAGE.build(output)
+        with zipfile.ZipFile(output) as archive:
+            self.assertEqual(archive.read("pm-essential-skills/LICENSE"), canonical)
 
     def test_each_skill_packages_without_companion(self):
         for skill in NAMES:

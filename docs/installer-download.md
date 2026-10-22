@@ -65,6 +65,7 @@ its bytes and contents. A matching checksum detects changed downloads; it is not
 a publisher signature, release approval, or proof of safe/live host behavior.
 Use checksums obtained through a trusted channel.
 
-A `LICENSE` file is included only when one exists in the source used to build this
-download. Its absence does not grant an open-source license. The repository owner
-must decide licensing before advertising reuse rights.
+This project is MIT licensed. Retain the supplied copyright and permission notice
+when copying, modifying, or redistributing it. The license disclaims warranties;
+it is not a guarantee of compatibility or measured savings. Each independent skill
+folder retains its own copy so copying one folder does not drop the notice.
