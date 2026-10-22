@@ -21,6 +21,12 @@ List relevant paths or accessible document IDs and what is authoritative. Includ
 
 Record unresolved issues, dependencies, rejected approaches worth avoiding, and the exact next action. Preserve reusable findings with evidence/version and invalidation conditions so completed investigations are not repeated. Include material reconstruction/access costs that affected the transfer decision, labeling estimates.
 
+Carry outstanding applicable skill requirements with their owner, status and
+blocking condition, pending decisions, and the scope of temporary exceptions.
+A blocked requirement remains outstanding, not passed. Preserve applicable
+completion evidence so the next owner does not repeat satisfied checks merely
+because the conversation changed.
+
 ## Recovery map for omitted context
 
 List only useful omitted topics and where to recover them in the predecessor or authoritative sources (known turn/page, file/section, revision). Unknown locations stay unknown. The immediate next action must have enough context in this brief; the predecessor is available for additional details, not a replacement for transferring critical constraints. Include this source reference and brief content in the destination prompt.

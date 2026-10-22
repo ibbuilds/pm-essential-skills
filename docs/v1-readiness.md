@@ -8,6 +8,22 @@ manifest remains the unreleased 0.4.0 candidate; this document does not change i
 
 ## Conclusion
 
+Subsequent reinforcement pass (22 October 2026): applicable skill requirements
+now explicitly enter Task Coordination's completion and handoff state. The
+installer's guidance and both supported hook reminders carry the same required
+workflow contract; context briefs retain outstanding obligations and scoped
+exceptions. Optional methods/no-op paths, explicit opt-outs and authorization
+boundaries remain intact. These changes strengthen emitted instructions and
+continuity; they are not a live-model compliance result. Earlier test counts
+below identify the earlier candidate, not this later change's final gate.
+
+For this reinforcement change, the local required suite passed **238 tests total,
+including 3 skipped**, and repository validation passed all seven skills. The
+new activation test exercises installation plus both hook-handler events; seven
+additional behavioral scenarios remain specifications, not model trials. Review
+confirmed that routing thresholds, hook opt-in, permissions and standalone skill
+dependencies were not changed. The user's two live chats were not inspected.
+
 The implemented foundation covers the accepted **domain-independent** PM scope.
 It does not need an eighth skill, a mandatory orchestrator, or engineering-specific
 methods to be a first version. Static inspection found concrete procedures for

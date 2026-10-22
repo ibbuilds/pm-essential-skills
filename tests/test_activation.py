@@ -50,6 +50,20 @@ class ActivationTests(unittest.TestCase):
         result = install_suite.install(self.home, install_suite.load_receipt(self.home), ["execution-efficiency"])
         self.assertIn("same-project", result["defaults"])
 
+    def test_required_workflow_contract_reaches_install_and_both_hook_events(self):
+        selected = ["task-coordination", "context-management"]
+        install_suite.install(self.home, None, selected, with_hooks=True)
+        rule = (self.home / "AGENTS.md").read_text()
+        self.assertEqual(rule.count(activation.WORKFLOW_CONTRACT), 1)
+        for event in ("SessionStart", "UserPromptSubmit"):
+            context = activation.handle({"hook_event_name": event}, self.home)["hookSpecificOutput"]["additionalContext"]
+            self.assertEqual(context.count(activation.WORKFLOW_CONTRACT), 1)
+            self.assertIn("disabled", context)
+            self.assertIn("suggest-only", context)
+            self.assertIn("stay", context)
+            self.assertNotIn("source-selection/SKILL.md", context)
+            self.assertNotIn("I authorize", context)
+
     def test_skill_catalogs_cover_every_shipped_entrypoint(self):
         shipped = sorted(path.parent.name for path in (ROOT / "skills").glob("*/SKILL.md"))
         self.assertEqual(sorted(install_suite.SKILLS), shipped)

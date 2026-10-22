@@ -2,6 +2,14 @@
 
 Seven independent skills that help AI assistants coordinate complete outcomes, preserve context, choose resources and evidence, execute efficiently, improve recurring workflows, and communicate clearly. They work across project types and preserve the user's goals, preferences, and required quality.
 
+Selection is conditional; following an applicable enabled workflow is not
+discretionary. Its unmet requirements stay outstanding through delegation and
+chat changes until satisfied or explicitly changed within authority; blocked
+requirements remain outstanding. Installation does not require every skill on every request, turn
+optional methods into compulsory work, override explicit preferences, or create
+permission through repeated prompts. Instructions and reminders reinforce this
+contract; they are not a deterministic enforcement boundary for the host model.
+
 See [first-version readiness](docs/v1-readiness.md) for complete scope, inspected
 procedures, work-saving mechanisms, verified mechanics and the user's later trial.
 The candidate is not a published release or a claim of measured savings.

@@ -24,6 +24,11 @@ NAMES = tuple(PURPOSES)
 # UserPromptSubmit contains the full prompt, not just event metadata. Permit
 # ordinary pasted source/documents while bounding malformed or extreme input.
 MAX_INPUT_BYTES = 16 * 1024 * 1024
+WORKFLOW_CONTRACT = (
+    "Matching enabled skills define required workflows, not optional advice. "
+    "Retain unmet obligations and scoped exceptions across handoffs; blocked is not complete. "
+    "Preserve each skill's no-op paths and optional methods."
+)
 
 
 def render(home, skills, installation=False, brief=False):
@@ -39,6 +44,7 @@ def render(home, skills, installation=False, brief=False):
                 lines.append(f"- `{name}/SKILL.md`: {PURPOSES[name]}.")
             else:
                 lines.append(f"Use `{(home / 'skills' / name / 'SKILL.md').as_posix()}` for {PURPOSES[name]}.")
+    lines.append(WORKFLOW_CONTRACT)
     if brief:
         lines.append("Select only relevant skills/references, not the whole suite. Reuse loaded guidance; "
                      "honor disabled, suggest-only, stay, and user/project preferences.")
