@@ -9,3 +9,6 @@ The context-management skill owns phase choices, pressure assessment, and transf
 Avoid extra management calls, repeated source reads, or state writes when nothing material changed. Use only supported and authorized resources. Do not change unrelated project structure, models, permissions, integrations, or Git state merely to optimize usage. Explicit user limits on tests, benchmarks, and installation remain binding.
 
 For changes to this suite, run `python -m unittest discover -s tests` and `python scripts/validate_repository.py`. Keep skill entrypoints under 700 words and conditional details in their references. Never claim live integration success or token savings from local tests alone.
+
+Write every skill for direct, concise, professional, answer-first replies. Omit
+filler, but preserve necessary evidence, uncertainty and requested depth.

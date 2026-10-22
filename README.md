@@ -1,110 +1,86 @@
 # PM Essential Skills
 
-Seven independent skills that help AI assistants coordinate complete outcomes, preserve context, choose resources and evidence, execute efficiently, improve recurring workflows, and communicate clearly. They work across project types and preserve the user's goals, preferences, and required quality.
+Seven independent skills for AI assistants: coordinate outcomes, preserve context,
+choose resources and evidence, execute efficiently, improve recurring workflows,
+and communicate clearly. Install any one or any subset as regular skills.
 
-Selection is conditional; following an applicable enabled workflow is not
-discretionary. Its unmet requirements stay outstanding through delegation and
-chat changes until satisfied or explicitly changed within authority; blocked
-requirements remain outstanding. Installation does not require every skill on every request, turn
-optional methods into compulsory work, override explicit preferences, or create
-permission through repeated prompts. Instructions and reminders reinforce this
-contract; they are not a deterministic enforcement boundary for the host model.
+## Install as regular skills
 
-See [first-version readiness](docs/v1-readiness.md) for complete scope, inspected
-procedures, work-saving mechanisms, verified mechanics and the user's later trial.
-The candidate is not a published release or a claim of measured savings.
-
-## Install, then work normally
-
-This tree is an unreleased **0.4.0 candidate** with seven skills. The download link tracks published `main`, not a versioned release.
-
-1. Download the [full suite source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip), with the skills and installer published on `main`.
-2. Extract it, open the extracted **pm-essential-skills-main** folder, and open **Install.cmd** on Windows.
-3. Continue using Codex normally when it next loads its instructions. No project activation prompt is needed.
-
-Installation is checked independently of host activation. Native skill listing, instruction loading, trusted hook execution, and model adherence are distinct: this candidate has no certified Codex-version compatibility matrix. See the [critical audit and evidence limits](docs/audit-2026-10-22.md). An installed file is not proof that your host invoked it.
-
-The installer finds Codex's bundled Python runtime when available. It installs only the included skills and adds a small activation rule to your existing user-level instructions. It preserves existing preferences and saves originals for uninstall. It needs no Git account, plugin, server, project registration, or tracking service. It does not create project files or alter tool permissions.
-
-| Install option | What it helps with |
-| --- | --- |
-| [Full suite source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip) | Published suite source and installer; candidate builds contain all seven. |
-| Task Coordination | Clarify only material gaps, coordinate dependencies, and finish the full requested outcome. |
-| Context Management | Keep related work together, preserve continuity, and perform justified handoffs with supported tools. |
-| Execution Efficiency | Complete implementation and repair tasks with risk-based checks and evidence-driven retries. |
-| Resource Selection | Choose a suitable existing skill, tool, or supported model/agent route before substantial work. |
-| Source Selection | Find, read, and revalidate sufficient evidence while avoiding unnecessary repeated retrieval. |
-| Workflow Improvement | Address recurring friction through proportionate lessons, toolkit reuse, and authorized improvements. |
-| Concise Communication | Answer briefly in plain language while preserving required detail, uncertainty, and exact blockers. |
-
-Each skill works independently. Installing one does not require the others. Automatic selection means loading only relevant skills and conditional references, not all seven for every request. Simple requests proceed directly; no universal planning, delegation, logging, or evaluation pipeline is added. Explicit disabled, suggest-only, and persistent-stay preferences remain binding. Short chats normally proceed without management notices or extra files; a one-request stay in a long chat expires at the next request.
-
-For just one skill, use the source ZIP's Python installer with `--skill` as described below, or build the individual downloads under [Development and distribution](#development-and-distribution). The individual options above are not links to published downloads.
-
-Workflow behavior is maintained inside each `skills/<name>/` folder. The installer and optional reminders point to those skills and record coordination scope; they do not hold a second copy of the decision rules. Bare folders can also be installed in a host's native discovery location, such as `~/.agents/skills` for current local Codex. Reviewed Codex 0.163.0 source also explicitly supports this installer’s `$CODEX_HOME/skills` location as a backward-compatible user root; no migration or second copy is needed. Avoid installing a second copy with the same name.
-
-Context Management's disclosed installation scope includes archiving superseded source chats after confirmed handoff and temporarily restoring/rearchiving them when required to recover context. It preserves other active work and keep-visible choices; it never deletes history or scans unrelated chats. Every handoff carries the needed working context plus a verified predecessor reference and a recovery map for useful omitted detail.
-
-For local Codex on other operating systems, or an advanced installation:
+Use your usual skill manager. For example, with the Skills CLI:
 
 ```sh
-python3 scripts/install_suite.py install
+npx skills add ibbuilds/pm-essential-skills
 ```
 
-The installer and hooks target local Codex, not every host. Other skill-capable hosts can use individual folders through their own native discovery, subject to their capabilities and policies; neither universal automatic invocation nor API model controls are promised.
+Or download the [source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip)
+and copy each desired **complete** `skills/<skill-name>/` folder into your host's
+normal skill directory:
 
-The installer requires Python 3.10+; the skills themselves also work through ordinary host skill discovery without Python or the installer. You can install a skill folder directly in a supported skill location. The installer strengthens local activation; it does not make bare skills dependent on it.
-
-## Check or remove
-
-On Windows, run `Install.cmd status` or `Install.cmd uninstall`. On other systems:
-
-```sh
-python3 scripts/install_suite.py status
-python3 scripts/install_suite.py uninstall
-```
-
-Uninstall restores preexisting skill files and removes only the managed activation rule. It preserves user text added outside that rule and refuses to overwrite customized installed files. Interrupted operations retain a recovery journal. Run `Install.cmd recover` on Windows or `python3 scripts/install_suite.py recover` with the same profile to restore the pre-operation state, then retry. Recovery refuses to replace later user edits. If a force-killed installer left a lock, confirm no installer is running before removing only the stale `pm-essential-skills/install.lock`; keep the receipt and journal. See [recovery details](skills/context-management/references/automatic-activation.md#recovery-and-checks).
-
-Status also inspects the base user configuration for disabled installed skills and an explicit `skills.include_instructions` setting. To include a named Codex profile, use `python3 scripts/install_suite.py status --profile NAME` (add `--codex-home PATH` for a different home). This reads `config.toml` and `NAME.config.toml`; it changes neither. Python 3.10 still installs normally but reports TOML diagnostics unavailable; Python 3.11+ supplies the standard-library parser. Session overrides and actual activation remain unknown, and configuration warnings do not change the file-integrity exit code. See [source-backed activation compatibility and diagnostic limits](docs/activation-compatibility.md).
-
-Optional copy diagnostics (Python installer only):
-
-```sh
-python3 scripts/install_suite.py status --check-skill-root ~/.agents/skills
-```
-
-Repeat `--check-skill-root PATH` for other skills directories you want checked. This read-only check looks only for `<installed-name>/SKILL.md` in the managed installation and supplied roots, reporting resolved candidate paths, possible duplicates, and inspection errors. Symlink aliases of the same path count once. It does not search recursively, inspect other skills, change files, or affect status's exit code. [Codex's skill-loading documentation](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills) says same-name skills are not merged and both can appear. Distinct candidate files do not prove both are active; no duplicates found does not prove discovery or complete coverage. Activation remains unknown. Normal status checks remain unchanged without this option.
-
-`CODEX_HOME` selects a profile for either installer. Advanced options belong to the Python installer, not `Install.cmd`: for example, `python3 scripts/install_suite.py install --skill source-selection --codex-home PATH`. Use `python` or `py -3` on Windows with a suitable Python runtime. In a full source download, `--skill NAME` selects any name in the ownership table below; repeat it for a subset. For example, `--skill concise-communication` installs only the reply skill; installing another later keeps the first. Repeating installation updates unchanged managed files without duplicating guidance.
-
-## Stronger automatic reminders
-
-For local Codex hosts supporting hooks, run `python3 scripts/install_suite.py install --hooks` (Windows: `py -3 scripts/install_suite.py install --hooks` with Python 3.10+). `Install.cmd` accepts only `install`, `status`, `uninstall`, or `recover`, not extra options. This registers compact reminders on session start and user prompt submission. Existing hook definitions are preserved. **Codex still requires review and trust before these reminders run.** Registration is reported separately from trust and live invocation.
-
-Reminders make no model calls, read no stored transcripts, write no per-turn project state, and make no tool-approval decisions. They route only from installed-skill metadata; prompt contents never become instructions. The host input envelope includes the prompt: malformed or over-16-MiB envelopes deliberately receive no reminder. Reminder text still adds model-input context, so hooks are optional, not a guaranteed saving. Ordinary skills and the user-level rule remain useful without them. See [automatic activation and recovery](skills/context-management/references/automatic-activation.md).
-
-## What to expect
-
-| Skill name | Owns | Does not own |
+| Host | User-wide | Repository-local |
 | --- | --- | --- |
-| `task-coordination` | Requested outcome, acceptance, material gaps, dependencies, and completion | Chat placement or permission grants |
-| `context-management` | Continuity, chat boundaries, and authorized transfers | New project priorities |
-| `resource-selection` | Initial execution resources, supported agent/model options, division of work | Evidence coverage or settings changes without authority |
-| `source-selection` | Evidence selection, provenance, coverage, and freshness | A parallel project-memory system |
-| `execution-efficiency` | Risk-based verification and recovery during execution | Waiving required gates |
-| `workflow-improvement` | Conditional lessons, reusable toolkit changes, and evaluation governance | Automatic installs, background reviews, or unauthorized benchmarks |
-| `concise-communication` | Clear, concise replies with enough substance | Shrinking the user's requested deliverable |
+| Codex | `~/.agents/skills/<skill-name>/` | `.agents/skills/<skill-name>/` |
+| Claude Code | `~/.claude/skills/<skill-name>/` | `.claude/skills/<skill-name>/` |
 
-Resource choices use capabilities actually available and authorized; unsupported model switching stays a recommendation, not a claimed action. Delegation is conditional, with bounded ownership and integration, not a requirement. Workflow improvements follow recurring or consequential evidence; recording lessons, changing shared instructions, installing tools, and running evaluations remain subject to the user's scope and permissions. No routine request triggers new bookkeeping or benchmarks.
+Keep `SKILL.md`, references, scripts, and license files together. No custom
+installer, Python setup, hooks, global instruction edits, or project activation
+prompt is required. Avoid duplicate copies of a skill in different discovery
+locations. Let the host reload its skills; an existing session may need restarting.
 
-Context Management checks each new request using available context. In a long project chat, it asks new same-project chat or continue here for this request, then waits. Choosing to stay completes that request in place; the next request gets another prompt with a stronger recommendation. At critical pressure, it announces and performs a safe authorized handoff without another location question. Explicit stop-asking, persistent stay, suggest-only, and disabled preferences remain binding. Short chats stay quiet; standalone chats use concise checkpoints. Source Selection preserves the actual task's required evidence and coverage. Execution Efficiency uses known decisions before asking questions, matches verification to changed behavior and risk, and avoids unchanged retry loops without imposing fixed attempt limits or skipping required gates.
+This tree is an unreleased **0.4.0 candidate**. The CLI and ZIP use the published
+repository, so they do not include unpushed candidate changes.
 
-Available cost comparisons can keep work in place when a handoff would repeat an investigation or cost more than continuing. Concise findings reuse evidence at known versions. An optional local reader hashes UTF-8 sources, returns bounded pages, and omits already-available unchanged text. These helpers need no persistent cache, per-turn report, or new service; native tools remain available.
+## The seven skills
 
-Activation takes effect when the host rebuilds its instruction chain. Existing sessions can retain earlier instructions. Host overrides, disabled skills, unavailable tools, and cloud/local differences affect behavior. The current authoring host exposes chat continuation tools but no native app-project creation or current-context occupancy telemetry.
+| Skill | Purpose |
+| --- | --- |
+| [Task Coordination](skills/task-coordination/SKILL.md) | Clarify material gaps, coordinate dependencies, and finish the requested outcome. |
+| [Context Management](skills/context-management/SKILL.md) | Preserve continuity and manage chat boundaries and authorized handoffs. |
+| [Resource Selection](skills/resource-selection/SKILL.md) | Choose suitable available skills, tools, and supported agent/model routes. |
+| [Source Selection](skills/source-selection/SKILL.md) | Gather sufficient evidence, check freshness, and reuse known sources. |
+| [Execution Efficiency](skills/execution-efficiency/SKILL.md) | Match verification and recovery to the work and its risks. |
+| [Workflow Improvement](skills/workflow-improvement/SKILL.md) | Address recurring friction with proportionate, authorized improvements. |
+| [Concise Communication](skills/concise-communication/SKILL.md) | Give clear, brief replies without losing required detail or uncertainty. |
 
-Installation checks verify files and instruction placement; they do not prove live model invocation or measured savings. No skill is an idle background monitor. More chats or fewer prompt words alone do not prove a benefit. See the [full project scope map](docs/pm-scope-coverage.md), [suite principles](docs/suite-principles.md) and [behavioral cases](tests/behavioral-cases.md).
+Each skill works independently; none requires the other six. Its behavior lives
+inside its own folder, with conditional detail in references.
+
+## Use normally
+
+In hosts that support automatic skill selection, the assistant can select
+relevant installed skills from your request without an explicit invocation. You can also name a skill explicitly. It
+should load only relevant skills and references, not the entire suite for every
+request. Simple requests need no planning, delegation, logging, or evaluation
+pipeline.
+
+Installation puts files in place; discovery makes them available to the host;
+selection loads a relevant skill; application means following its instructions.
+These are distinct: installed files do not prove invocation, and automatic
+selection is not a guarantee of model adherence. Host capabilities, disabled
+skills, and higher-priority instructions still apply.
+
+Applicable requirements remain outstanding through delegation or chat changes
+until completed or changed within authority. The skills do not waive required
+evidence or verification, turn optional methods into compulsory work, or override
+explicit disabled, suggest-only, stay, and stop-asking preferences. Installation
+alone grants no authority to create, message, archive, or restore chats, change
+settings, install tools, or run benchmarks. Handoffs use supported tools and
+verified authorization; unavailable capabilities remain unavailable.
+
+No skill is an idle background monitor. Local checks do not establish live
+integration success or measured savings. See [first-version readiness](docs/v1-readiness.md),
+[scope coverage](docs/pm-scope-coverage.md), [suite principles](docs/suite-principles.md),
+and [behavioral cases](tests/behavioral-cases.md) for deeper scope and evidence.
+
+## Optional legacy installer
+
+A retained local-Codex installer is available for existing users and people who
+explicitly want additional activation guidance. Unlike normal skill installation,
+it **edits user-level instructions**, including disclosed Context Management
+routing scope when selected, and can optionally register hooks that require
+host review and trust. Neither is required to use these skills. See
+[optional installation, status, uninstall, and recovery](docs/installation.md).
+Existing installer-managed copies can stay in their supported legacy location;
+no migration or second copy is needed.
 
 ## License
 
@@ -115,7 +91,7 @@ the notice; external projects cited in research keep their own licenses.
 
 ## Development and distribution
 
-The expanded seven-skill tree is a **0.4.0 candidate**, not a claim of a published release or live validation. The source ZIP above tracks published `main`; unpushed candidate changes are not included there. Generated individual archives below are local build outputs, not published downloads.
+The expanded seven-skill tree is a **0.4.0 candidate**, not a claim of a published release or live validation. The [source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip) tracks published `main`; unpushed candidate changes are not included there. Generated individual archives below are local build outputs, not published downloads.
 
 Build the full-suite and individual downloads:
 

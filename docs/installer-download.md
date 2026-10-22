@@ -1,4 +1,8 @@
-# PM Essential Skills installer download
+# Optional legacy installer download
+
+For normal skill installation, use your usual skill manager or complete skill
+folders as described in the [repository README](https://github.com/ibbuilds/pm-essential-skills#install-as-regular-skills).
+This installer package is an optional alternative, not required setup.
 
 Extract the entire archive before running anything. `START-HERE.txt` lists the
 included skills. Only those skills are installed; companions are not required.
