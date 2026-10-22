@@ -59,9 +59,10 @@ both the ZIP and checksum. Obtain both from a trusted distribution channel.
 3. Review the manifest version and candidate/release wording. Packaging checks
    alone cannot certify native skill discovery, hook trust, invocation, adherence,
    or measured usage improvements.
-4. Decide licensing with the repository owner. No license is currently supplied;
-   no new grant is implied. If the owner adds a root `LICENSE`, installer builds
-   include it automatically. Lack of a license does not block a private build.
+4. Preserve the canonical MIT `LICENSE`. Each standalone skill folder carries
+   the same notice; installer and plugin archives include it. Do not remove notices
+   when adapting or redistributing the package. Research references are not
+   relicensed by this project's license.
 5. The validation workflow builds and uploads these exact ten files after tests
    and validation succeed. Artifact names include OS, source SHA, and run attempt;
    repository permissions remain `contents: read`. Pull requests and pushes to

@@ -94,6 +94,13 @@ Activation takes effect when the host rebuilds its instruction chain. Existing s
 
 Installation checks verify files and instruction placement; they do not prove live model invocation or measured savings. No skill is an idle background monitor. More chats or fewer prompt words alone do not prove a benefit. See the [full project scope map](docs/pm-scope-coverage.md), [suite principles](docs/suite-principles.md) and [behavioral cases](tests/behavioral-cases.md).
 
+## License
+
+MIT licensed. The [license](LICENSE) permits use, modification, redistribution,
+and commercial use with its copyright and permission notice retained. It does
+not provide a warranty. Independent skill folders and generated archives retain
+the notice; external projects cited in research keep their own licenses.
+
 ## Development and distribution
 
 The expanded seven-skill tree is a **0.4.0 candidate**, not a claim of a published release or live validation. The source ZIP above tracks published `main`; unpushed candidate changes are not included there. Generated individual archives below are local build outputs, not published downloads.
