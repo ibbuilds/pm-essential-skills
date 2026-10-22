@@ -4,20 +4,22 @@ Skills that help AI assistants preserve useful context, retrieve sufficient evid
 
 ## Install, then work normally
 
-1. Choose the full-suite download or the individual skill you want.
-2. Extract it and open **Install.cmd** on Windows.
+1. Download the [full suite source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip), with all three skills and the installer.
+2. Extract it, open the extracted **pm-essential-skills-main** folder, and open **Install.cmd** on Windows.
 3. Continue using Codex normally when it next loads its instructions. No project activation prompt is needed.
 
 The installer finds Codex's bundled Python runtime when available. It installs only the included skills and adds a small activation rule to your existing user-level instructions. It preserves existing preferences and saves originals for uninstall. It needs no Git account, plugin, server, project registration, or tracking service. It does not create project files or alter tool permissions.
 
-| Download | What it helps with |
+| Install option | What it helps with |
 | --- | --- |
-| Full suite | All three independent skills together. |
+| [Full suite source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip) | All three independent skills together. |
 | Context Management | Keep related work together, preserve continuity, and perform justified handoffs with supported tools. |
 | Execution Efficiency | Complete implementation and repair tasks with risk-based checks and evidence-driven retries. |
 | Source Selection | Find, read, and revalidate sufficient evidence while avoiding unnecessary repeated retrieval. |
 
 Each skill works independently. Installing one does not require the others. Explicit disabled, suggest-only, and persistent-stay preferences remain binding. Short chats normally proceed without management notices or extra files; a one-request stay in a long chat expires at the next request.
+
+For just one skill, use the source ZIP's Python installer with `--skill` as described below, or build the individual downloads under [Development and distribution](#development-and-distribution). The individual options above are not links to published downloads.
 
 Workflow behavior is maintained inside each `skills/<name>/` folder. The installer and optional reminders point to those skills and record coordination scope; they do not hold a second copy of the decision rules. Bare folders can also be installed in a host's native discovery location, such as `~/.agents/skills` for current local Codex. Avoid installing a second copy with the same name.
 
@@ -42,11 +44,11 @@ python3 scripts/install_suite.py uninstall
 
 Uninstall restores preexisting skill files and removes only the managed activation rule. It preserves user text added outside that rule and refuses to overwrite customized installed files. Another installer or an interrupted operation leaves a lock that must be reconciled before retrying.
 
-`CODEX_HOME` and `--codex-home PATH` select a profile. In a full source download, `install --skill source-selection`, `install --skill context-management`, or `install --skill execution-efficiency` selects one skill; installing another later keeps the first. Repeating installation updates unchanged managed files without duplicating guidance.
+`CODEX_HOME` selects a profile for either installer. Advanced options belong to the Python installer, not `Install.cmd`: for example, `python3 scripts/install_suite.py install --skill source-selection --codex-home PATH`. Use `python` or `py -3` on Windows with a suitable Python runtime. In a full source download, `--skill context-management` or `--skill execution-efficiency` selects the corresponding skill; installing another later keeps the first. Repeating installation updates unchanged managed files without duplicating guidance.
 
 ## Stronger automatic reminders
 
-For local Codex hosts supporting hooks, add `--hooks` to installation. This registers compact reminders on session start and user prompt submission. Existing hook definitions are preserved. **Codex still requires review and trust before these reminders run.** Registration is reported separately from trust and live invocation.
+For local Codex hosts supporting hooks, run `python3 scripts/install_suite.py install --hooks` (Windows: `py -3 scripts/install_suite.py install --hooks` with Python 3.10+). `Install.cmd` accepts only `install`, `status`, or `uninstall`, not extra options. This registers compact reminders on session start and user prompt submission. Existing hook definitions are preserved. **Codex still requires review and trust before these reminders run.** Registration is reported separately from trust and live invocation.
 
 Reminders make no model calls, read no transcripts, write no per-turn project state, and make no tool-approval decisions. They use only installed-skill metadata. Ordinary skills and the user-level rule remain useful without them. See [automatic activation and recovery](skills/context-management/references/automatic-activation.md).
 
