@@ -4,7 +4,7 @@
 
 Reduce avoidable AI work while preserving task quality, continuity, and user control. Measure the complete task, including the suite's own instructions, tool calls, handoffs, startup, retries, and reconstruction. A smaller prompt or more chats alone does not prove an improvement.
 
-The suite manages the supporting workflow across any project type. Domain work remains with the user's instructions and appropriate execution skills. It does not enforce coding processes, design methods, research methodologies, branch policies, or a particular project-management service.
+The suite manages task coordination and the supporting workflow across any project type. Domain work remains with the user's instructions and appropriate execution skills. It does not enforce coding processes, design methods, research methodologies, branch policies, or a particular project-management service.
 
 ## Admission criteria for a skill
 
@@ -20,15 +20,23 @@ Do not create a skill merely to rename behavior already owned elsewhere. A candi
 
 ## Current ownership
 
+The [full project scope map](pm-scope-coverage.md) ties the adopted project scope to these owners.
+
 | Responsibility | Owner |
 | --- | --- |
+| Define completion from the requested outcome, resolve material intake gaps, and coordinate dependencies | Task Coordination |
+| Choose initial skills/tools and supported model/agent execution routes | Resource Selection |
 | Continue this chat, offer project setup, or perform a handoff | Context Management |
 | Decide which sources to locate/read/revalidate for the current task | Source Selection |
 | Preserve binding decisions and remaining work during a thread transfer | Context Management |
 | Preserve provenance and unresolved source conflicts in the current result | Source Selection |
 | Decide what the project should prioritize or what the user should build | User or another explicitly requested planning workflow |
 | Calibrate repeated checks and recovery during implementation/repair | Execution Efficiency |
+| Address recurring friction, reusable lessons/toolkit changes, and evaluation governance | Workflow Improvement |
+| Give brief plain-language replies while retaining required substance and exact blockers | Concise Communication |
 | Execute domain work and its required verification | Appropriate execution skill or the assistant's normal task workflow |
+
+Task Coordination owns end-to-end requested completion, not a mandatory project-management process. Resource Selection chooses an initial execution path; Source Selection chooses the evidence needed within it; Execution Efficiency adjusts verification and recovery as evidence arrives. Workflow Improvement is conditional on a meaningful recurring or consequential need, not a per-turn audit. Concise Communication changes presentation, never silently reduces requested scope or required detail.
 
 Execution Efficiency does not mandate a coding methodology, test sequence, log, or delegation pipeline. Domain instructions retain their required verification gates. Source Selection does not create a parallel project-memory system. Context Management may carry the relevant evidence references in a handoff without copying an entire retrieval history. Skills can cooperate without loading each other's full instructions by default.
 
@@ -42,7 +50,7 @@ Keep universally applicable project constraints in the project instructions; pla
 - Notices explain a substantiated issue and an actionable next step. Avoid repeated warnings, user blame, and unnecessary confirmation.
 - Respect explicit exhaustive coverage, full-document reads, required tools, output standards, and the user's choice to stay in a chat. Optimization cannot silently reduce the assignment.
 - Use existing project structure. Add state only when a real continuation need justifies it; never create generic management scaffolding as an installation side effect.
-- Do not change models, permissions, integrations, Git state, or external settings merely to optimize usage. Existing user authorization still applies when such changes are explicitly requested.
+- Select supported execution resources within existing authority; never fabricate model controls or silently change settings. Changes to models, permissions, integrations, Git state, shared instructions, or external settings require applicable authorization. Respect denied actions and explicit limits on tests, paid evaluations, installations, and benchmarks; report the blocked target, action, reason, and status without trying an alternate route to bypass a denial.
 - Support partial capability honestly. A missing adapter is not permission to fabricate success, move unrelated data, or force a new service on the user.
 
 ## Optional integrations
@@ -51,12 +59,14 @@ Tools are adapters, not prerequisites. A checkpoint can reference ordinary files
 
 Skills whose primary function is managing branches, commits, pull requests, deployments, or another specialized workflow belong outside this general suite. This repository itself uses Git and GitHub for development and distribution; consumers do not need those services for ordinary skill execution.
 
-## Candidate work
+## Evolution and governance
 
-Execution Efficiency addresses repeated clarification, ineffective retries, and checks disconnected from acceptance; its [research rationale](execution-efficiency-design.md) separates design evidence from unmeasured benefits. Further improvements should follow observed pilot friction and remain distinct from these three responsibilities. Do not build a mandatory orchestrator or universal workflow merely to grow the suite.
+Execution Efficiency addresses repeated clarification, ineffective retries, and checks disconnected from acceptance; its [research rationale](execution-efficiency-design.md) separates design evidence from unmeasured benefits. The seven current owners cover outcome coordination, continuity, execution resources, evidence, execution/recovery, workflow improvement, and communication. Further improvements should follow observed friction and remain distinct from those responsibilities. Do not build a mandatory orchestrator or universal workflow merely to grow the suite.
 
 ## Evaluation
 
 For matched tasks, compare completion quality, source coverage, important decisions lost, repeated reads/investigations, user interventions, latency, and total usage when the host exposes it. Keep model/effort and task conditions comparable. Include failed transfers and retrieval attempts in the totals. If metrics are unavailable, report observable behavior instead of inventing saved tokens.
+
+Evaluation itself must be proportionate and authorized; do not launch benchmarks merely because a skill was installed or a lesson was noticed. Keep candidate changes separate from deployed or validated capabilities. User-disabled workflows and persistent opt-outs remain binding.
 
 Unit tests certify deterministic helper behavior. Structural checks certify packaging and references. Live tool behavior and net usage effects require separate pilots. No release is described as flawless solely because the unit tests pass.

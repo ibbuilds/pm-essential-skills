@@ -9,9 +9,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class ExecutionFixtureTests(unittest.TestCase):
     def test_behavioral_cases_have_unique_ids_and_evaluable_inputs_and_outcomes(self):
-        for filename in ("execution-efficiency-cases.json", "source-output-cases.json"):
-            with self.subTest(fixture=filename):
-                self.check_cases(json.loads((ROOT / "tests" / filename).read_text(encoding="utf-8")))
+        for path in sorted((ROOT / "tests").glob("*-cases.json")):
+            with self.subTest(fixture=path.name):
+                self.check_cases(json.loads(path.read_text(encoding="utf-8")))
 
     def check_cases(self, cases):
         self.assertIsInstance(cases, list)

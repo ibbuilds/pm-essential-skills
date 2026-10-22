@@ -11,6 +11,8 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+from activation import NAMES
+
 SPEC = importlib.util.spec_from_file_location("package_plugin", ROOT / "scripts/package_plugin.py")
 PACKAGE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(PACKAGE)
@@ -27,7 +29,7 @@ class PluginPackageTests(unittest.TestCase):
     def test_archive_contains_skills_without_private_state_or_install_side_effects(self):
         output = self.directory / "plugin.zip"
         result = PACKAGE.build(output)
-        self.assertEqual(result["skills"], ["context-management", "execution-efficiency", "source-selection"])
+        self.assertEqual(result["skills"], sorted(NAMES))
         with zipfile.ZipFile(output) as archive:
             names = archive.namelist()
             manifest = json.loads(archive.read("pm-essential-skills/plugin.json"))
@@ -39,7 +41,7 @@ class PluginPackageTests(unittest.TestCase):
             self.assertFalse(any(".pm-context" in path or "__pycache__" in path for path in names))
 
     def test_each_skill_packages_without_companion(self):
-        for skill in ("context-management", "execution-efficiency", "source-selection"):
+        for skill in NAMES:
             with self.subTest(skill=skill):
                 root = self.directory / skill
                 root.mkdir()
