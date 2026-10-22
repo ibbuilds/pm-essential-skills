@@ -187,6 +187,16 @@ def assess(observation: Any) -> dict:
         return finish("continue", "intervention_mode_stay")
     if obs.get("user_requested_new_thread", False):
         return transfer("user_requested_new_thread")
+    choice_current = (obs.get("request_id") == obs.get("choice_request_id"))
+    # Standalone setup is optional; honor a current human location choice first.
+    # Project critical pressure still takes precedence over one-request choices below.
+    if obs.get("project_mode") == "standalone" and choice_current:
+        if obs.get("user_keep_thread", False):
+            return finish("continue", "user_prefers_current_thread")
+        if obs.get("boundary_choice") == "current-thread":
+            return finish("continue", "user_chose_current_thread")
+        if obs.get("boundary_choice") == "new-thread":
+            return transfer("user_chose_new_thread")
     pressure = (ratio >= settings["review_ratio"] if ratio is not None
                 else proxy_triggered or existing_history_signal or critical_history)
     if obs.get("project_mode") == "standalone" and pressure:
@@ -207,7 +217,6 @@ def assess(observation: Any) -> dict:
             return transfer("critical_history_with_obsolete_context")
 
     # A choice belongs to one substantive request, not the rest of the phase/chat.
-    choice_current = (obs.get("request_id") == obs.get("choice_request_id"))
     if choice_current and obs.get("user_keep_thread", False):
         return finish("continue", "user_prefers_current_thread")
     if choice_current and obs.get("boundary_choice") == "current-thread":
@@ -230,7 +239,7 @@ def assess(observation: Any) -> dict:
             result = finish("ask_thread_choice", "requested_phase_boundary" if phase_boundary else "long_chat_new_request")
             result["prompt_level"] = min(3, obs.get("stay_count", 0) + 1)
             return result
-    if obs.get("new_outcome", False):
+    if obs.get("new_outcome", False) and obs.get("project_mode") != "standalone":
         return transfer("distinct_requested_outcome")
     if ratio is not None:
         if ratio >= settings["rollover_ratio"]:

@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import sys
 
-NAMES = ("context-management", "source-selection")
+NAMES = ("context-management", "execution-efficiency", "source-selection")
 
 
 def render(home, skills, installation=False, brief=False):
@@ -17,6 +17,9 @@ def render(home, skills, installation=False, brief=False):
     if "context-management" in skills:
         lines.append(f"Use `{(home / 'skills/context-management/SKILL.md').as_posix()}` "
                      "for conversation continuity and task boundaries.")
+    if "execution-efficiency" in skills:
+        lines.append(f"Use `{(home / 'skills/execution-efficiency/SKILL.md').as_posix()}` "
+                     "for proportionate verification and evidence-driven retries during implementation or repair.")
     if "source-selection" in skills:
         lines.append(f"Use `{(home / 'skills/source-selection/SKILL.md').as_posix()}` "
                      "for relevant evidence retrieval/reuse.")

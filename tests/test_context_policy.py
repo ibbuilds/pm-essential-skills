@@ -258,6 +258,47 @@ class ExistingChatTests(unittest.TestCase):
 
 
 class StandaloneTests(unittest.TestCase):
+    def test_distinct_outcome_without_pressure_continues_standalone(self):
+        for safe in (False, True):
+            for extra in ({}, {"context": context(10000)}, {"substantial_history": True}):
+                with self.subTest(safe=safe, extra=extra):
+                    result = POLICY.assess({"project_mode": "standalone", "new_outcome": True,
+                                           "safe_checkpoint": safe, **extra})
+                    self.assertEqual(result["action"], "continue")
+                    self.assertFalse(result["requires_transfer_checks"])
+                    self.assertEqual(result["notice"], "none")
+
+    def test_explicit_new_thread_still_transfers_standalone(self):
+        for safe, expected in ((True, "rollover"), (False, "defer")):
+            with self.subTest(safe=safe):
+                result = POLICY.assess({"project_mode": "standalone", "new_outcome": True,
+                                       "user_requested_new_thread": True, "safe_checkpoint": safe})
+                self.assertEqual(result["action"], expected)
+                self.assertTrue(result["requires_transfer_checks"])
+
+    def test_current_standalone_choices_precede_pressure_setup(self):
+        for allowed in (False, True):
+            for used in (80000, 90000):
+                for choice, expected in (("current-thread", "continue"), ("new-thread", "rollover")):
+                    with self.subTest(allowed=allowed, used=used, choice=choice):
+                        result = POLICY.assess({"project_mode": "standalone", "context": context(used),
+                                               "safe_checkpoint": True, "project_setup_allowed": allowed,
+                                               "request_id": "r", "choice_request_id": "r",
+                                               "boundary_choice": choice})
+                        self.assertEqual(result["action"], expected)
+                        self.assertEqual(result["requires_transfer_checks"], choice == "new-thread")
+
+    def test_expired_standalone_choice_does_not_bypass_pressure_fallback(self):
+        for choice in ("current-thread", "new-thread"):
+            for allowed, expected in ((False, "checkpoint"), (True, "offer_project")):
+                with self.subTest(choice=choice, allowed=allowed):
+                    result = POLICY.assess({"project_mode": "standalone", "context": context(),
+                                           "safe_checkpoint": True, "project_setup_allowed": allowed,
+                                           "request_id": "new", "choice_request_id": "old",
+                                           "boundary_choice": choice})
+                    self.assertEqual(result["action"], expected)
+                    self.assertFalse(result["requires_transfer_checks"])
+
     def test_standalone_pressure_offers_instead_of_creating_or_rolling_over(self):
         result = POLICY.assess({"project_mode": "standalone", "project_setup_allowed": True, "context": context(),
                                 "safe_checkpoint": True})

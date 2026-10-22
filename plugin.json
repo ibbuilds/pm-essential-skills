@@ -1,15 +1,15 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "pm-essential-skills",
-  "version": "0.2.0",
-  "description": "Independent skills for useful conversation continuity and sufficient evidence with less repeated retrieval.",
+  "version": "0.3.0",
+  "description": "Independent skills for conversation continuity, sufficient evidence, and proportionate execution with less repeated work.",
   "repository": "https://github.com/ibbuilds/pm-essential-skills",
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "PM Essential Skills",
         "shortDescription": "Less repeated AI work",
-        "longDescription": "Use either skill on its own or install both together. Relevant active tasks use normal skill discovery without a setup prompt. Preserve user preferences, project scope, source coverage, and useful ongoing work. Chat transfers use supported host tools and verified user authorization.",
+        "longDescription": "Use any skill on its own or install the suite together. Relevant active tasks use normal skill discovery without a setup prompt. Preserve user preferences, project scope, source coverage, and useful ongoing work. Chat transfers use supported host tools and verified user authorization.",
         "capabilities": []
       }
     }

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "filtered-empty-producer-failed",
+    "available_skills": [
+      "source-selection"
+    ],
+    "context": "A test producer exited 2 before printing any FAIL or ERROR lines. A filter exited 0 with zero matches. Raw output is accessible via the supplied run ID.",
+    "prompt": "Did the tests pass?",
+    "expected": "Report that the producer failed and inspect relevant raw diagnostic context via the run ID before diagnosing; preserve the producer/filter distinction.",
+    "must_not": "Do not treat empty matches or filter exit 0 as a passing test run."
+  },
+  {
+    "id": "structured-large-output",
+    "available_skills": [
+      "source-selection"
+    ],
+    "context": "A supported tool exposes structured producer status, test totals, failure details, truncation flag, and a raw artifact ID. The full output is very large.",
+    "prompt": "Check this test run and tell me what failed.",
+    "expected": "Select sufficient structured fields before model ingestion, including actual producer status, relevant totals, failures, truncation, and raw recovery ID; obtain missing material context when needed.",
+    "must_not": "Do not ingest the whole dump just to summarize it, invent missing totals, or hide truncated coverage."
+  },
+  {
+    "id": "filtered-exhaustive-request",
+    "available_skills": [
+      "source-selection"
+    ],
+    "context": "A filter returns only error lines from a report, but the user explicitly requests review of the entire report. Raw content is available in paginated form.",
+    "prompt": "Review the entire report, including warnings and successful checks.",
+    "expected": "Read all requested content through bounded pages and report actual coverage, preserving warnings and successful checks.",
+    "must_not": "Do not substitute error-only filtering for the requested full review or treat the first page as complete."
+  },
+  {
+    "id": "available-semantic-navigation",
+    "available_skills": [
+      "source-selection"
+    ],
+    "context": "An already-available symbol-reference tool resolves a typed function unambiguously and reports its coverage. A text search would return many unrelated names.",
+    "prompt": "Find this function definition and its callers.",
+    "expected": "Use the suitable semantic tool and inspect the relevant returned context; broaden only for missing coverage.",
+    "must_not": "Do not perform broad repository grep first by habit, install a new language server, or equate diagnostics with tests."
+  },
+  {
+    "id": "semantic-unavailable-fallback",
+    "available_skills": [
+      "source-selection"
+    ],
+    "context": "No semantic navigation tool is installed. The exact symbol and likely module are known; bounded text search is available.",
+    "prompt": "Locate the symbol definition.",
+    "expected": "Use bounded search in the relevant scope and inspect the defining context.",
+    "must_not": "Do not install tooling, change integrations, or block the task solely because semantic navigation is unavailable."
+  }
+]

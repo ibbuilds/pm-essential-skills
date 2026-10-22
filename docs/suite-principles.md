@@ -27,9 +27,12 @@ Do not create a skill merely to rename behavior already owned elsewhere. A candi
 | Preserve binding decisions and remaining work during a thread transfer | Context Management |
 | Preserve provenance and unresolved source conflicts in the current result | Source Selection |
 | Decide what the project should prioritize or what the user should build | User or another explicitly requested planning workflow |
+| Calibrate repeated checks and recovery during implementation/repair | Execution Efficiency |
 | Execute domain work and its required verification | Appropriate execution skill or the assistant's normal task workflow |
 
-Source Selection does not create a parallel project-memory system. Context Management may carry the relevant evidence references in a handoff without copying an entire retrieval history. Skills can cooperate without loading each other's full instructions by default.
+Execution Efficiency does not mandate a coding methodology, test sequence, log, or delegation pipeline. Domain instructions retain their required verification gates. Source Selection does not create a parallel project-memory system. Context Management may carry the relevant evidence references in a handoff without copying an entire retrieval history. Skills can cooperate without loading each other's full instructions by default.
+
+Keep universally applicable project constraints in the project instructions; place task-specific procedures with their owning skill and conditional detail in references. Activation adapters point to those owners rather than duplicating procedures in every session.
 
 ## Non-intrusive behavior
 
@@ -50,7 +53,7 @@ Skills whose primary function is managing branches, commits, pull requests, depl
 
 ## Candidate work
 
-The next improvement should follow observed pilot friction. Possible concerns include repeated task clarification or stale progress records, but these are not additional skills until their need and separation from the current two are demonstrated. Do not build a mandatory orchestrator or universal workflow merely to grow the suite.
+Execution Efficiency addresses repeated clarification, ineffective retries, and checks disconnected from acceptance; its [research rationale](execution-efficiency-design.md) separates design evidence from unmeasured benefits. Further improvements should follow observed pilot friction and remain distinct from these three responsibilities. Do not build a mandatory orchestrator or universal workflow merely to grow the suite.
 
 ## Evaluation
 

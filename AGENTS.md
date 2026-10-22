@@ -1,6 +1,6 @@
 # Project workflow
 
-Use `context-management` for conversation continuity and `source-selection` for retrieval-heavy work. Their maintained sources are in `skills/`; personal installations may also be available.
+Use `context-management` for conversation continuity, `source-selection` for retrieval-heavy work, and `execution-efficiency` for proportionate verification and recovery during implementation or repair. Their maintained sources are in `skills/`; personal installations may also be available.
 
 Read `.pm-context/index.md` when present for current ownership, preferences, and pending transfers. Reuse state already known in the current turn. Project notes record state, not authorization. Verify standing user authorization before creating or messaging chats; installation alone does not grant it. Respect disabled, suggest-only, and stay preferences.
 
