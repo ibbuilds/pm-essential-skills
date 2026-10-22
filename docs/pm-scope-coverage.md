@@ -72,3 +72,38 @@ Seven is the current organization, not a permanent limit or proof of universal
 completeness. Add a standalone skill only for a distinct recurring responsibility
 with a clear trigger that existing owners cannot cover more simply. Specialist
 methods and host-enforced capabilities remain separate from this shared foundation.
+
+## Cross-suite research application (2026-10-22)
+
+Today's SWE research was screened against PM's existing owners, not copied as a
+second engineering workflow. One missing coordination procedure warranted a
+narrow original adaptation: check that a prerequisite's promised deliverable
+meets the consuming step's needs before dependent work starts. Task Coordination
+already named dependencies and required final integration, but neither explicitly
+caught an incompatible handoff early. This applies to research breakdowns, design
+assets, and other non-code work as well as software.
+
+The source lead was Superpowers'
+[writing-plans interfaces and consistency checks](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/writing-plans/SKILL.md).
+PM adopts no mandatory plan, test sequence, reviewer, fixed number of findings,
+or approval stage from that workflow. An already-compatible shared specification
+and applicable domain validation are reused, not subjected to a second technical
+gate; a consequential unresolved definition still belongs to the user. The
+three new Task Coordination cases specify an incompatible aggregation, a
+compatible asset handoff, and an unresolved material definition. They are not
+executed model evaluations.
+
+Other portable mechanisms are already represented: accepted-scope preservation,
+verification applicability, source provenance and freshness, conditional
+delegation, scoped recovery, and distinguishing installed instructions from live
+activation and effectiveness. Engineering-specific test design, pooled-session
+isolation, deployment, and process-runner implementation stay outside PM. No
+Context Management policy or helper changes follow from this pass.
+
+The empirical review does not establish that shorter guidance is better, that
+popularity proves efficacy, or that either suite saves usage. Its actionable
+maintenance question is what extra work an instruction requires. This pass found
+no justification for another skill, blanket trimming, numerical quotas,
+mandatory tooling, or a new measurement pipeline. The expected benefit of the
+handoff check is earlier detection of an incompatible dependency; actual model
+adherence and total-cost effects remain unmeasured.

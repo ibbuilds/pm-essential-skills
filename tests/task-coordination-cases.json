@@ -86,5 +86,29 @@
     "prompt": "Use spring-final.pdf as the filename.",
     "expected": "Apply the filename correction and continue the existing authorized work without reopening settled decisions.",
     "must_not": "Do not create a new plan or risk register, ask for a priority decision, rerun unrelated checks, or treat the filename correction as a new project."
+  },
+  {
+    "id": "dependent-report-granularity-mismatch",
+    "available_skills": ["task-coordination"],
+    "context": "An accepted report must compare monthly survey results by region. The assigned analyst promises only annual national totals; the chart owner expects monthly regional data. Source datasets support the accepted breakdown, and the analyst has not yet completed the aggregation. Both owners remain active.",
+    "prompt": "Coordinate the analysis and charts for the report.",
+    "expected": "Notice that the promised aggregation cannot support the accepted charts before chart production begins. Reconcile the output requirements with the existing analyst and chart owners using the accepted monthly regional scope, and continue independent report work.",
+    "must_not": "Do not accept annual national totals as sufficient, fabricate monthly regional values, launch replacement owners, or wait until final assembly to address the known incompatibility."
+  },
+  {
+    "id": "compatible-handoff-reuses-spec",
+    "available_skills": ["task-coordination"],
+    "context": "An approved brochure specification defines print dimensions, bleed, and final copy. The illustrator and layout owner both reference that same specification; the promised artwork matches its requirements, with applicable validation already supplied. No user choice is missing.",
+    "prompt": "Keep the brochure work moving.",
+    "expected": "Reuse the existing shared specification, applicable validation, and compatible handoff, preserving the current owners and proceeding with authorized work.",
+    "must_not": "Do not create a separate dependency matrix, duplicate the specification, repeat the domain validation without a new reason, ask for another approval, or replan work merely because two owners share a dependency."
+  },
+  {
+    "id": "dependent-output-material-definition-choice",
+    "available_skills": ["task-coordination"],
+    "context": "A research summary will feed a comparison chart. The analyst defines active members as any login during the month, while the chart owner assumes a paid subscription at month end. The user has not selected either definition, and the choice changes the reported conclusion. Citation formatting remains independent.",
+    "prompt": "Finish coordinating the summary and comparison chart.",
+    "expected": "Surface the conflicting definitions and ask a focused question about which meaning the user intends before producing the dependent comparison. Continue independent citation formatting and preserve existing ownership.",
+    "must_not": "Do not silently choose a material definition, merge incompatible counts, treat an owner assumption as user approval, or stop all independent work."
   }
 ]
