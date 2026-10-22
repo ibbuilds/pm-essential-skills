@@ -30,6 +30,13 @@ DEFAULTS = ("Automatic skill use during active local sessions; same-project "
             "chat messages, deletion, project creation, background jobs, or permission changes.")
 
 
+def selected_defaults(skills):
+    if "context-management" in skills:
+        return DEFAULTS
+    return ("Automatic use of the selected skills during active local sessions; preserve user preferences. "
+            "No chat-management scope is selected.")
+
+
 def digest(data):
     return hashlib.sha256(data).hexdigest()
 
@@ -244,7 +251,7 @@ def install(home, state, skills=None, with_hooks=False):
     changes[target] = content + block
     receipt = {"version": 1, "files": files, "instructions": instructions,
                "instructions_existed": state["instructions_existed"] if state else original is not None,
-               "block": encode(block), "defaults": DEFAULTS, "skills": skills}
+               "block": encode(block), "defaults": selected_defaults(skills), "skills": skills}
     if with_hooks or (state or {}).get("hooks"):
         hook_bytes, owned = hooks_content(home, (state or {}).get("hooks"), add=True)
         changes[safe_path(home, "hooks.json")] = hook_bytes
@@ -256,7 +263,7 @@ def install(home, state, skills=None, with_hooks=False):
     return {"status": "installed", "package_files": len(files), "instructions": str(target),
             "activation": "next_host_instruction_reload", "live_invocation_verified": False,
             "skills": skills, "hooks": "registered_trust_unverified" if receipt.get("hooks") else "not_requested",
-            "defaults": DEFAULTS}
+            "defaults": selected_defaults(skills)}
 
 
 def uninstall(home, state):

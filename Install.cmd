@@ -3,6 +3,10 @@ setlocal
 set "PM_ESSENTIAL_ROOT=%~dp0"
 set "PM_ESSENTIAL_MODE=install"
 set "PM_ESSENTIAL_PAUSE=0"
+if not "%~2"=="" (
+  echo Extra arguments are not supported by Install.cmd. Use scripts/install_suite.py for advanced options.
+  exit /b 2
+)
 if "%~1"=="" set "PM_ESSENTIAL_PAUSE=1"
 if /I "%~1"=="status" set "PM_ESSENTIAL_MODE=status"
 if /I "%~1"=="uninstall" set "PM_ESSENTIAL_MODE=uninstall"

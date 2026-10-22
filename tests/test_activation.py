@@ -31,6 +31,8 @@ class ActivationTests(unittest.TestCase):
             home = self.home / name
             result = install_suite.install(home, None, [name])
             self.assertEqual(result["skills"], [name])
+            self.assertEqual("same-project" in result["defaults"], name == "context-management")
+            self.assertEqual(install_suite.load_receipt(home)["defaults"], result["defaults"])
             self.assertTrue((home / "skills" / name / "SKILL.md").is_file())
             rule = (home / "AGENTS.md").read_text()
             self.assertIn(f"/{name}/SKILL.md", rule)
@@ -42,6 +44,9 @@ class ActivationTests(unittest.TestCase):
         install_suite.install(self.home, None, ["source-selection"])
         result = install_suite.install(self.home, install_suite.load_receipt(self.home), ["context-management"])
         self.assertEqual(result["skills"], ["context-management", "source-selection"])
+        self.assertIn("same-project", result["defaults"])
+        result = install_suite.install(self.home, install_suite.load_receipt(self.home), ["execution-efficiency"])
+        self.assertIn("same-project", result["defaults"])
 
     def test_skill_catalogs_cover_every_shipped_entrypoint(self):
         shipped = sorted(path.parent.name for path in (ROOT / "skills").glob("*/SKILL.md"))
@@ -147,6 +152,8 @@ class ActivationTests(unittest.TestCase):
             with zipfile.ZipFile(package) as archive:
                 self.assertNotIn("plugin.json", archive.namelist())
                 self.assertNotIn(".pm-context/index.md", archive.namelist())
+                guide = archive.read("START-HERE.txt").decode("utf-8")
+                self.assertEqual("superseded-source archival" in guide, skill == "context-management")
                 archive.extractall(extracted)
             home = self.home / skill
             script = extracted / "scripts/install_suite.py"
@@ -157,6 +164,15 @@ class ActivationTests(unittest.TestCase):
                 if command != "uninstall":
                     self.assertEqual(json.loads(result.stdout)["skills"], [skill])
             self.assertFalse((home / "AGENTS.md").exists())
+
+    @unittest.skipUnless(os.name == "nt", "Windows installer launch")
+    def test_windows_launcher_rejects_extra_options_before_installing(self):
+        environment = dict(os.environ, CODEX_HOME=str(self.home))
+        result = subprocess.run(["cmd.exe", "/d", "/c", "Install.cmd", "install", "--hooks"],
+                                cwd=ROOT, env=environment, text=True, capture_output=True, timeout=45)
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertIn("Extra arguments are not supported", result.stdout)
+        self.assertFalse(self.home.exists())
 
     @unittest.skipUnless(os.name == "nt", "Windows installer launch")
     def test_windows_launcher_runs_complete_download_flow(self):
