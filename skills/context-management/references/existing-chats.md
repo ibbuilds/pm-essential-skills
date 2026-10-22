@@ -4,9 +4,11 @@ Load on first activation in an existing conversation, or when deciding whether t
 
 ## Check every new request before domain work
 
-Check each substantive new user request against already-visible history. A long project chat qualifies when substantial prior research/planning/resolved work can be replaced by a focused brief, fresh occupancy reaches the review threshold, or supported proxy/catch-up evidence warrants review. Assess old history immediately; do not wait for post-install growth. Accepted planning followed by implementation is a boundary even with low/unknown occupancy. Below critical pressure, ask:
+Check each substantive new user request against already-visible history. A long project chat qualifies when substantial prior research/planning/resolved work can be replaced by a focused brief, fresh occupancy reaches the review threshold, or supported proxy/catch-up evidence warrants review. Assess old history immediately; do not wait for post-install growth. Accepted planning followed by implementation is a boundary even with low/unknown occupancy. Do not wait for a numeric threshold at these structural boundaries. Before a new below-critical pressure-only question, reuse known transfer costs/reconstruction evidence: if no next phase/outcome was explicitly requested and essential destination context is unavailable or a move is already known to cost at least as much as continuing or repeat completed investigation, continue quietly or preserve a concise checkpoint instead. This exception never dismisses an unanswered question, overrides a human location choice, or changes critical policy. Unknown costs are not a reason to invent estimates or run extra calls. Otherwise, below critical pressure, ask:
 
-> This chat is long enough to warrant a fresh start. Start this request in a new chat in this project, or continue here for this request?
+> [Name the observed replaceable material, or label the supplied complete cost comparison and its basis.] A focused handoff may help. Start this request in a new chat in this project, or continue here for this request?
+
+Use an actual observed reason, not the bracketed placeholder or a generic claim about length. For a backstop-only review without identified replaceable material or a complete cost comparison, state the observed occupancy/proxy and that the benefit is unestablished. Context occupancy alone is not proof of savings.
 
 Wait before implementation or domain investigation. An asynchronous question remains pending until answered. Do not stack questions or interpret elapsed time as consent. Standing routing authority permits execution after the choice; it does not answer a below-critical location question.
 
@@ -23,6 +25,10 @@ Escalate concise recommendations after stays: first, offer a fresh chat; next, s
 An explicit “stop asking,” persistent “always stay here,” disabled management, or suggest-only preference is different from a one-request stay and remains binding until changed. An explicit new-chat request needs no repeated question. With unknown membership, resolve it through supported tools first. Short chats without a qualifying signal remain quiet; standalone work requires no project-setup interview.
 
 If the user chooses a new chat, carry decisions, constraints, artifacts, findings, and next action into the handoff. Preserve project, settings, predecessor recovery, and one owner. If readiness blocks execution, explain that blocker once; do not silently implement here against the chosen location.
+
+## Assess useful retained context, not a goal label
+
+At new requests and natural safe checkpoints, use already-known content to identify material that a focused brief can replace: superseded requirements, resolved investigations or redundant logs. Preserve active constraints, decisions, evidence references and the next authorized action. A nominal "goal finished" label, elapsed time or message count does not prove a move helps; a useful brief must avoid lost context and repeated investigation. Substantial replaceable history already permits early review without waiting for percentages. A fresh supplied comparable cost advantage can also justify an early recommendation at low occupancy; label its basis and apply [policy](policy.md). No extra model calls, full-history scans, token guesses or routine logging are required. Reuse a current request's location answer and never stack another question.
 
 ## Catch-up assessment
 

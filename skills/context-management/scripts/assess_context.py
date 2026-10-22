@@ -48,8 +48,9 @@ def _transfer_cost(value):
     if value is None:
         return None
     fields = {"basis", "source", "unit", "scope", "fresh", "continue", "handoff", "startup", "reconstruction"}
-    if not isinstance(value, dict) or set(value) != fields:
-        raise ValueError("transfer_cost must contain basis, source, unit, scope, fresh, continue, handoff, startup, reconstruction")
+    if (not isinstance(value, dict) or not fields <= set(value)
+            or set(value) - fields - {"destination_work"}):
+        raise ValueError("transfer_cost requires basis, source, unit, scope, fresh, continue, handoff, startup, reconstruction; destination_work is optional")
     if value["basis"] not in ("measured", "estimated"):
         raise ValueError("transfer_cost.basis must be measured or estimated")
     if not isinstance(value["source"], str) or not value["source"].strip():
@@ -60,9 +61,13 @@ def _transfer_cost(value):
         raise ValueError("transfer_cost needs matching remaining-work scope and boolean freshness")
     for key in ("continue", "handoff", "startup", "reconstruction"):
         _integer(value[key], f"transfer_cost.{key}")
+    complete = "destination_work" in value
+    overhead = value["handoff"] + value["startup"] + value["reconstruction"]
+    if complete:
+        _integer(value["destination_work"], "transfer_cost.destination_work")
     return {"basis": value["basis"], "source": value["source"], "unit": value["unit"],
-            "fresh": value["fresh"], "continue": value["continue"],
-            "transfer": value["handoff"] + value["startup"] + value["reconstruction"]}
+            "fresh": value["fresh"], "continue": value["continue"], "complete": complete,
+            "transfer": overhead + value["destination_work"] if complete else overhead}
 
 
 def _validate(observation: Any) -> tuple[dict, float | None, int]:
@@ -240,11 +245,35 @@ def assess(observation: Any) -> dict:
         if obs.get("project_mode", "unknown") == "unknown" and (phase_boundary or obs.get("substantial_history", False)):
             return finish("review", "phase_project_unverified")
         if obs.get("project_mode") == "project":
+            # Do not interrupt ongoing work merely to propose a move already known
+            # to repeat investigations or cost at least as much. Explicit requested
+            # boundaries, human answers, pending questions and critical pressure
+            # retain their existing precedence; unknown costs stay unknown.
+            if not obs.get("new_phase", False) and not obs.get("new_outcome", False):
+                if obs.get("transfer_context_ready") is False:
+                    return finish("continue", "transfer_context_unavailable")
+                if obs.get("reconstruction_repeats_work", False):
+                    return finish("checkpoint", "transfer_would_repeat_investigation")
+                if cost and cost["fresh"] and cost["transfer"] >= cost["continue"]:
+                    return finish("continue", "transfer_cost_not_beneficial")
             result = finish("ask_thread_choice", "requested_phase_boundary" if phase_boundary else "long_chat_new_request")
             result["prompt_level"] = min(3, obs.get("stay_count", 0) + 1)
             return result
     if obs.get("new_outcome", False) and obs.get("project_mode") != "standalone":
         return transfer("distinct_requested_outcome")
+    # A supplied economic comparison can justify an earlier recommendation even
+    # with low occupancy. It is not pressure telemetry or automatic dispatch.
+    if (obs.get("project_mode") == "project" and not obs.get("new_phase", False)
+            and cost and cost["fresh"] and cost["complete"] and cost["transfer"] < cost["continue"]):
+        if obs.get("transfer_context_ready") is False:
+            return finish("continue", "transfer_context_unavailable")
+        if obs.get("reconstruction_repeats_work", False):
+            return finish("checkpoint" if obs.get("safe_checkpoint", False) else "continue",
+                          "transfer_would_repeat_investigation")
+        if obs.get("safe_checkpoint", False):
+            result = finish("ask_thread_choice", "supplied_transfer_cost_beneficial")
+            result["prompt_level"] = min(3, obs.get("stay_count", 0) + 1)
+            return result
     if ratio is not None:
         if ratio >= settings["rollover_ratio"]:
             return transfer("measured_context_high")

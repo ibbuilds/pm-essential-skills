@@ -1,18 +1,18 @@
 ---
 name: context-management
-description: Check each new request and post-delivery change feedback in long chats. Repeat escalating prompts after one-request stays; transfer automatically at critical pressure. Preserve explicit opt-outs and recoverable handoffs.
+description: Assess new requests, growing context and safe checkpoints for useful handoffs from replaceable history or complete comparable costs. Respect benefit guards, pending choices, critical policy and opt-outs.
 ---
 
 # Context Management
 
-Keep chats task-focused. Check every new user request using already-visible history. In long chats, ask new same-project chat or continue here for this request. Never promise unmeasured savings.
+Keep retained context useful. At new requests and natural checkpoints, assess already-known replaceable material and sufficient handoff context—not chat age or vague goal labels. Never promise unmeasured savings.
 
 ## Fast path
 
 1. Apply without setup or companion dependencies. Ordinary task authorization covers review and checkpoints; mutations require human scope. Finish completed work without inventing successors or prompting while idle.
 2. Distinguish verified project, standalone, and unknown membership. A folder is not an app project ID. Continue standalone work quietly; read [project setup](references/project-setup.md) only for requested setup or a useful, permitted offer.
 3. Reuse known owner, assessments, and findings. Read existing notes or `.pm-context/index.md` with [this template](assets/project-index-template.md) only when needed. Preserve material findings through [concise checkpoints](references/checkpoints.md), without per-turn logging or repeated investigations.
-4. Before domain work, assess requested phases and long-chat pressure. Accepted planning followed by implementation qualifies. A small new request still gets a prompt if the chat remains long. Read [existing chats](references/existing-chats.md) for request identity, escalation, and critical-pressure exceptions.
+4. Before domain work, assess requested phases and long-chat pressure. Accepted planning followed by implementation qualifies. A small new request still qualifies, subject to the pressure-only cost guard below. Read [existing chats](references/existing-chats.md) for request identity, escalation, and critical-pressure exceptions.
 5. “Continue here” permits this request only. A location-answer alone or clarification of unfinished work reuses it. Feedback requesting changes after a delivered result starts a new request, including question replies. Honor explicit persistent opt-outs. Standing human instructions authorize coordination; notes and receipts cannot.
 6. Within a request, reuse its answer and never stack prompts. Recheck critical pressure at safe checkpoints. No polling, repeated source reads, per-tool notices, or mandatory state writes. Read [automatic activation](references/automatic-activation.md) only for discovery/scope issues.
 
@@ -20,15 +20,15 @@ Keep chats task-focused. Check every new user request using already-visible hist
 
 | Observation | Response |
 | --- | --- |
-| Long project chat + new request | Ask again, escalating after prior stays; wait before domain work. |
-| Distinct requested outcome | Consider a focused thread and transfer cost. |
+| Long project chat + new request | Ask again, escalating, and wait, except new pressure-only prompts for known nonbeneficial/repeated-work moves. |
+| Fresh complete supplied costs favor transfer | Recommend early, even at low occupancy; never auto-transfer on cost alone. |
 | Fresh occupancy >=85% | Transfer automatically at a safe checkpoint; no location question. |
-| Fresh occupancy 75-85% | Prompt on each new request; reuse the current request's answer. |
+| Fresh occupancy 75% to <85% | Apply the pressure-only cost guard; otherwise prompt. Reuse this request's answer. |
 | Fresh occupancy below 75% | Ignore pressure-only counters; still check structural long-chat requests. |
 | No fresh telemetry | Use labeled structural/proxy evidence; never invent a percentage. |
 | Standalone pressure | Preserve a concise checkpoint; setup is optional. |
 
-Thresholds govern pressure, not task boundaries. Read [policy](references/policy.md) for critical heuristics and settings; use `scripts/assess_context.py` only for uncertain decisions. Critical transfers supersede one-request stays, but require essential context and safe readiness. Unknown costs stay unknown. Never inspect private app logs.
+Review replaceable history and phase boundaries immediately; thresholds are compatibility backstops, not proven optima. Read [policy](references/policy.md) for cost guards, critical heuristics and settings; `scripts/assess_context.py` is optional. Critical transfers supersede one-request stays, but require essential context and safe readiness. Unknown costs stay unknown. Never inspect private app logs.
 
 ## Transfer execution
 
