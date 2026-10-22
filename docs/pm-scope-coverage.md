@@ -8,7 +8,7 @@ milestone; completion is judged against the full requested outcome.
 
 | Capability | Primary owner | Supporting existing capability |
 | --- | --- | --- |
-| Task intake, scoping, proportionate planning, dependencies, and completion | Task Coordination | Context Management handles actual conversation handoffs; Execution Efficiency handles verification and recovery. |
+| Task intake, scoping, proportionate planning, feasibility, priorities, change impact, dependencies, and completion | Task Coordination | Context Management handles actual conversation handoffs; Execution Efficiency handles verification and recovery. |
 | Context and project knowledge | Context Management | Source Selection retains provenance, coverage, and freshness; Workflow Improvement reconciles material changes in existing authoritative knowledge. |
 | Model, agent, tool, reasoning, and usage choices | Resource Selection | Source Selection owns retrieval decisions; Execution Efficiency owns check/retry decisions. |
 | Choosing and adapting skills, instructions, templates, and deterministic tools | Workflow Improvement | Existing domain owners keep their specialized procedures; installation and validation support distribution. |
@@ -28,6 +28,10 @@ owner; retain already-loaded guidance rather than rereading companion skills.
   are reused, not requested again.
 - Larger outcomes retain their acceptance criteria, dependencies, exclusions,
   owners, and unresolved requested work through implementation and delivery.
+- Material changes trigger a proportionate feasibility and commitment check.
+  Conflicting scope, time, budget, capacity, or quality constraints get a concrete
+  tradeoff decision rather than silent cuts, overruns, or obsolete work. Harmless
+  changes do not restart planning.
 - Resource choices use capabilities actually exposed by the host and authorized
   by the user. No model changes, external services, or permissions are invented.
 - Useful knowledge is reused with its applicability and evidence intact. Changed
@@ -54,3 +58,17 @@ it is not a claim that every host invokes skills identically. Deterministic chec
 and structural fixtures establish their respective mechanics, not measured live
 savings. Usage evaluation remains optional and must not block independently
 justified improvements when telemetry or execution allowance is unavailable.
+
+## General foundation coverage review
+
+The October 22, 2026 static review traced research synthesis, campaigns, events,
+reports/spreadsheets, design assets, writing, and ongoing operations. It identified
+change-impact feasibility and prioritization as underdeveloped within Task
+Coordination, not a reason for an eighth owner. The conditional rule and three
+additional scenarios cover a slipped prerequisite, conflicting added scope, and a
+harmless change. These scenarios are specifications, not executed model evidence.
+
+Seven is the current organization, not a permanent limit or proof of universal
+completeness. Add a standalone skill only for a distinct recurring responsibility
+with a clear trigger that existing owners cannot cover more simply. Specialist
+methods and host-enforced capabilities remain separate from this shared foundation.
