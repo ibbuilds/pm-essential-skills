@@ -10,10 +10,16 @@ import base64
 import hashlib
 import json
 import os
+import re
 import stat
 from pathlib import Path, PurePosixPath
 import sys
 import tempfile
+
+try:
+    import tomllib
+except ImportError:  # Python 3.10 remains supported; never guess at TOML syntax.
+    tomllib = None
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from activation import NAMES as SKILLS, render
@@ -234,6 +240,111 @@ def skill_copy_diagnostics(home, state, extra_roots):
             "coverage": "receipt-installed names in managed and explicitly supplied roots only"}
 
 
+def configuration_diagnostics(home, state, profile=None):
+    """Inspect user layers only, never claim the running host's effective state."""
+    if profile is not None and not re.fullmatch(r"[A-Za-z0-9_-]+", profile):
+        raise ValueError("Invalid --profile: use a nonempty ASCII letter/number/underscore/hyphen name")
+    result = {"status": "inspected", "scope": "base_and_selected_profile" if profile else "base_user_config",
+              "profile": profile, "files": [], "configured_disabled_skills": [],
+              "include_instructions": None, "warnings": [], "user_layer_resolution_complete": True,
+              "effective_activation": "unknown", "session_overrides": "not_inspected",
+              "next_steps": ["Compare with the profile and session overrides used to launch Codex; "
+                             "these read-only checks do not verify model invocation."]}
+    if tomllib is None:
+        result.update(status="unavailable", user_layer_resolution_complete=False)
+        result["warnings"].append("TOML diagnostics require Python 3.11+ stdlib tomllib; installation still supports Python 3.10.")
+        return result
+    names = selected_skills(state or {})
+    paths = {name: (home / "skills" / name / "SKILL.md").resolve() for name in names}
+    disabled = set()
+    for filename in ["config.toml", *([f"{profile}.config.toml"] if profile else [])]:
+        item = {"path": str(home / filename), "status": "parsed"}
+        result["files"].append(item)
+        try:
+            path = safe_path(home, filename)
+            if not path.exists():
+                item["status"] = "missing"
+                continue
+            # Avoid special-file blocking and unbounded reads; never emit config contents.
+            if not path.is_file() or path.stat().st_size > 1024 * 1024:
+                raise ValueError("Unsupported configuration file")
+            descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_BINARY", 0)
+                                 | getattr(os, "O_NONBLOCK", 0)
+                                 | getattr(os, "O_NOFOLLOW", 0))
+            with os.fdopen(descriptor, "rb") as stream:
+                if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+                    raise ValueError("Unsupported configuration file")
+                raw = stream.read(1024 * 1024 + 1)
+            if len(raw) > 1024 * 1024:
+                raise ValueError("Oversized configuration file")
+            config = tomllib.loads(raw.decode("utf-8"))
+        except (OSError, ValueError, RuntimeError, RecursionError):
+            item["status"] = "invalid_or_unreadable"
+            result["status"] = "partial"
+            result["user_layer_resolution_complete"] = False
+            result["warnings"].append(f"Could not safely parse {filename}; no contents or parser errors are displayed.")
+            continue
+        if "profile" in config or (profile and isinstance(config.get("profiles"), dict)
+                                   and profile in config["profiles"]):
+            result["warnings"].append("Legacy profile configuration is present; modern Codex requires separate NAME.config.toml profiles.")
+            result["user_layer_resolution_complete"] = False
+            result["status"] = "partial"
+        skills = config.get("skills", {})
+        if not isinstance(skills, dict):
+            result["warnings"].append(f"Invalid skills table in {filename}.")
+            result["user_layer_resolution_complete"] = False
+            result["status"] = "partial"
+            continue
+        rules = skills.get("config", [])
+        include = skills.get("include_instructions")
+        bundled = skills.get("bundled", {})
+        budget = skills.get("max_context_tokens")
+        if (not isinstance(bundled, dict)
+                or ("enabled" in bundled and type(bundled["enabled"]) is not bool)
+                or (budget is not None and (type(budget) is not int or budget <= 0))
+                or not isinstance(rules, list) or (include is not None and type(include) is not bool)
+                or any(not isinstance(rule, dict) or type(rule.get("enabled")) is not bool
+                       or any(key in rule and not isinstance(rule[key], str) for key in ("name", "path"))
+                       for rule in rules)):
+            result["warnings"].append(f"Invalid skill configuration types in {filename}; layer not interpreted.")
+            result["user_layer_resolution_complete"] = False
+            result["status"] = "partial"
+            continue
+        if include is not None:
+            result["include_instructions"] = include
+        for rule in rules:
+            has_name, has_path = "name" in rule, "path" in rule
+            if has_name == has_path or (has_name and not rule["name"].strip()):
+                result["warnings"].append(f"Ignored skill rule with ambiguous or empty selector in {filename}.")
+                continue
+            if has_name:
+                matched = [name for name in names if name == rule["name"].strip()]
+            else:
+                try:
+                    text_path = rule["path"]
+                    selected = Path(text_path)
+                    if text_path == "~" or text_path.startswith("~/") or (os.name == "nt" and text_path.startswith("~\\")):
+                        selected = selected.expanduser()
+                    selected = (selected if selected.is_absolute() else home / selected).resolve()
+                    matched = [name for name in names if paths[name] == selected]
+                except (OSError, ValueError, RuntimeError):
+                    result["user_layer_resolution_complete"] = False
+                    result["status"] = "partial"
+                    result["warnings"].append(f"Could not resolve a skill path selector in {filename}.")
+                    continue
+            for name in matched:
+                disabled.discard(name) if rule["enabled"] else disabled.add(name)
+    result["configured_disabled_skills"] = [name for name in names if name in disabled]
+    if disabled:
+        result["warnings"].append("User-layer rules disable installed skills in the native catalog. Global pointers and optional hooks still refer to files; this is not an access-control guarantee.")
+        result["next_steps"].append("Review intentional opt-outs alongside the managed global instruction block and optional reminders; no settings were changed.")
+    if result["include_instructions"] is False:
+        result["warnings"].append("User layers set skills.include_instructions=false; this suppresses the automatic skills instructions block, not generic file reads.")
+    if not result["user_layer_resolution_complete"]:
+        result["warnings"].append("Reported values cover successfully interpreted layers only; unresolved layers may change them.")
+    return result
+
+
 def installed_block(home, skills):
     return b"\n\n" + BEGIN + b"\n" + render(home, skills, installation=True).encode("utf-8") + END + b"\n"
 
@@ -417,6 +528,7 @@ def main():
     parser.add_argument("--hooks", action="store_true", help="Also register per-turn reminders; Codex trust is still required")
     parser.add_argument("--check-skill-root", type=Path, action="append",
                         help="Status only: check an additional skills directory for candidate copies; repeat as needed")
+    parser.add_argument("--profile", help="Status only: inspect NAME.config.toml after base user config")
     parser.add_argument("--codex-home", type=Path,
                         default=Path(os.environ.get("CODEX_HOME", Path.home() / ".codex")))
     args = parser.parse_args()
@@ -425,6 +537,8 @@ def main():
     try:
         if args.command != "install" and (args.skill or args.hooks):
             raise ValueError("--skill and --hooks apply to installation only")
+        if args.command != "status" and args.profile is not None:
+            raise ValueError("--profile applies to status only")
         if args.command != "status" and args.check_skill_root:
             raise ValueError("--check-skill-root applies to status only")
         if args.command != "status":
@@ -455,6 +569,7 @@ def main():
                       "skills": selected_skills(state or {}),
                       "hooks": "registered_trust_unverified" if (state or {}).get("hooks") else "not_requested",
                       "live_invocation_verified": False}
+            result["configuration_diagnostics"] = configuration_diagnostics(home, state, args.profile)
             if args.check_skill_root:
                 result["skill_copy_diagnostics"] = skill_copy_diagnostics(home, state, args.check_skill_root)
         print(json.dumps(result))

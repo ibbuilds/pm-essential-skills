@@ -20,7 +20,7 @@ class ArchiveSafetyTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        for name in ("plugin.json", "Install.cmd", "scripts/install_suite.py", "scripts/activation.py"):
+        for name in ("plugin.json", "Install.cmd", "scripts/install_suite.py", "scripts/activation.py", "docs/installer-download.md"):
             target = self.root / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / name, target)

@@ -29,7 +29,7 @@ Each skill works independently. Installing one does not require the others. Auto
 
 For just one skill, use the source ZIP's Python installer with `--skill` as described below, or build the individual downloads under [Development and distribution](#development-and-distribution). The individual options above are not links to published downloads.
 
-Workflow behavior is maintained inside each `skills/<name>/` folder. The installer and optional reminders point to those skills and record coordination scope; they do not hold a second copy of the decision rules. Bare folders can also be installed in a host's native discovery location, such as `~/.agents/skills` for current local Codex. Avoid installing a second copy with the same name.
+Workflow behavior is maintained inside each `skills/<name>/` folder. The installer and optional reminders point to those skills and record coordination scope; they do not hold a second copy of the decision rules. Bare folders can also be installed in a host's native discovery location, such as `~/.agents/skills` for current local Codex. Reviewed Codex 0.163.0 source also explicitly supports this installer’s `$CODEX_HOME/skills` location as a backward-compatible user root; no migration or second copy is needed. Avoid installing a second copy with the same name.
 
 Context Management's disclosed installation scope includes archiving superseded source chats after confirmed handoff and temporarily restoring/rearchiving them when required to recover context. It preserves other active work and keep-visible choices; it never deletes history or scans unrelated chats. Every handoff carries the needed working context plus a verified predecessor reference and a recovery map for useful omitted detail.
 
@@ -53,6 +53,8 @@ python3 scripts/install_suite.py uninstall
 ```
 
 Uninstall restores preexisting skill files and removes only the managed activation rule. It preserves user text added outside that rule and refuses to overwrite customized installed files. Interrupted operations retain a recovery journal. Run `Install.cmd recover` on Windows or `python3 scripts/install_suite.py recover` with the same profile to restore the pre-operation state, then retry. Recovery refuses to replace later user edits. If a force-killed installer left a lock, confirm no installer is running before removing only the stale `pm-essential-skills/install.lock`; keep the receipt and journal. See [recovery details](skills/context-management/references/automatic-activation.md#recovery-and-checks).
+
+Status also inspects the base user configuration for disabled installed skills and an explicit `skills.include_instructions` setting. To include a named Codex profile, use `python3 scripts/install_suite.py status --profile NAME` (add `--codex-home PATH` for a different home). This reads `config.toml` and `NAME.config.toml`; it changes neither. Python 3.10 still installs normally but reports TOML diagnostics unavailable; Python 3.11+ supplies the standard-library parser. Session overrides and actual activation remain unknown, and configuration warnings do not change the file-integrity exit code. See [source-backed activation compatibility and diagnostic limits](docs/activation-compatibility.md).
 
 Optional copy diagnostics (Python installer only):
 
@@ -102,7 +104,7 @@ Build the full-suite and individual downloads:
 python scripts/package_installers.py
 ```
 
-Archives are created under `work/downloads/`. The optional [plugin manifest](plugin.json) remains available for hosts that prefer a skills bundle; plugin packaging is not required for normal use. `scripts/package_plugin.py` builds that alternative without installing or uploading it.
+Archives, `SHA256SUMS`, and a portable `distribution.json` manifest are created under `work/downloads/`. Each individual download includes its own recovery guide. The validation workflow also retains verified candidate downloads for 14 days; these require GitHub sign-in and are not public versioned releases. See [reproducible distribution and integrity checks](docs/distribution.md). The optional [plugin manifest](plugin.json) remains available for hosts that prefer a skills bundle; plugin packaging is not required for normal use. `scripts/package_plugin.py` builds that alternative without installing or uploading it.
 
 Run the required checks with the development dependency installed:
 

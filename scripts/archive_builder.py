@@ -19,6 +19,8 @@ def write_archive(output, entries, generated=None):
     for source in entries.values():
         if source.is_symlink():
             raise ValueError("Linked package sources are not supported")
+        if not source.is_file():
+            raise ValueError("Package sources must be regular files")
         if output.resolve() == source.resolve() or (output.exists() and output.samefile(source)):
             raise ValueError("Archive output would overwrite a package source")
     if output.is_symlink():
@@ -29,10 +31,14 @@ def write_archive(output, entries, generated=None):
     temporary = Path(temporary)
     try:
         with zipfile.ZipFile(temporary, "w", zipfile.ZIP_DEFLATED) as archive:
-            for name, data in generated.items():
-                archive.writestr(name, data)
-            for name, source in entries.items():
-                archive.writestr(name, source.read_bytes())
+            # Ignore wall-clock time, source modes, insertion order, and host OS.
+            for name in sorted(set(entries) | set(generated)):
+                info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+                info.create_system = 3
+                info.external_attr = 0o100644 << 16
+                info.compress_type = zipfile.ZIP_DEFLATED
+                data = generated[name] if name in generated else entries[name].read_bytes()
+                archive.writestr(info, data, compresslevel=9)
         with zipfile.ZipFile(temporary) as archive:
             if archive.testzip() is not None:
                 raise ValueError("Archive verification failed")

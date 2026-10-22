@@ -395,5 +395,145 @@ class InstallSuiteTests(unittest.TestCase):
         self.assertEqual(list(self.home.iterdir()), [])
 
 
+class ConfigurationDiagnosticsTests(unittest.TestCase):
+    setUp = InstallSuiteTests.setUp
+    install = InstallSuiteTests.install
+    def config(self, text, filename="config.toml"):
+        (self.home / filename).write_text(text, encoding="utf-8")
+
+    def diagnose(self, profile=None):
+        return INSTALL.configuration_diagnostics(self.home, INSTALL.load_receipt(self.home), profile)
+
+    @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
+    def test_ordered_name_path_rules_and_profile_override_are_read_only(self):
+        self.install()
+        path = self.home / "skills/source-selection/SKILL.md"
+        self.config('[[skills.config]]\nname="source-selection"\nenabled=false\n'
+                    '[[skills.config]]\npath=' + json.dumps(str(path)) + '\nenabled=true\n'
+                    '[skills]\ninclude_instructions=false\n')
+        self.config('[[skills.config]]\nname="source-selection"\nenabled=false\n', "Work_2-.config.toml")
+        before = {p: p.read_bytes() for p in self.home.rglob("*") if p.is_file()}
+        base = self.diagnose()
+        selected = self.diagnose("Work_2-")
+        self.assertEqual(base["configured_disabled_skills"], [])
+        self.assertEqual(selected["configured_disabled_skills"], ["source-selection"])
+        self.assertIs(selected["include_instructions"], False)
+        self.assertEqual(selected["effective_activation"], "unknown")
+        self.assertTrue(selected["user_layer_resolution_complete"])
+        self.assertEqual(before, {p: p.read_bytes() for p in self.home.rglob("*") if p.is_file()})
+
+    @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
+    def test_missing_and_malformed_config_do_not_leak_contents(self):
+        self.install()
+        self.assertEqual(self.diagnose()["files"][0]["status"], "missing")
+        self.config('secret="never-print-me"\n[broken')
+        result = self.diagnose()
+        self.assertEqual(result["status"], "partial")
+        self.assertNotIn("never-print-me", json.dumps(result))
+        command = [sys.executable, str(ROOT / "scripts/install_suite.py"), "status", "--codex-home", str(self.home)]
+        completed = subprocess.run(command, capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0)
+        self.assertNotIn("never-print-me", completed.stdout + completed.stderr)
+
+    def test_python310_diagnostics_unavailable_without_dependency(self):
+        with patch.object(INSTALL, "tomllib", None):
+            result = self.diagnose()
+        self.assertEqual(result["status"], "unavailable")
+        self.assertFalse(result["user_layer_resolution_complete"])
+        self.assertEqual(result["files"], [])
+
+    def test_profile_validation_prevents_escape_and_mutating_commands(self):
+        for profile in ("", "../escape", "a/b", "a\\b", ".", "a.b", "é", "a b"):
+            with self.subTest(profile=profile), self.assertRaises(ValueError):
+                self.diagnose(profile)
+        completed = subprocess.run([sys.executable, str(ROOT / "scripts/install_suite.py"),
+                                    "install", "--codex-home", str(self.home), "--profile", "work"],
+                                   capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 2)
+        self.assertEqual(list(self.home.iterdir()), [])
+
+    @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
+    def test_invalid_types_ignored_selectors_relative_paths_and_unselected_profile(self):
+        self.install()
+        self.config('[[skills.config]]\npath="skills/source-selection/SKILL.md"\nenabled=false\n'
+                    '[[skills.config]]\nname="source-selection"\npath="x"\nenabled=true\n')
+        self.config('[[skills.config]]\nname="source-selection"\nenabled=true\n', "unused.config.toml")
+        self.assertEqual(self.diagnose()["configured_disabled_skills"], ["source-selection"])
+        self.config('[[skills.config]]\nname="source-selection"\nenabled="false"\n')
+        self.assertEqual(self.diagnose()["status"], "partial")
+
+    @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
+    def test_canonical_path_selector_and_later_name_rule(self):
+        self.install()
+        alias = self.home / "alias"
+        try:
+            alias.symlink_to(self.home / "skills", target_is_directory=True)
+        except OSError as exc:
+            self.skipTest(str(exc))
+        self.config('[[skills.config]]\npath=' + json.dumps(str(alias / "source-selection/SKILL.md"))
+                    + '\nenabled=false\n')
+        self.assertEqual(self.diagnose()["configured_disabled_skills"], ["source-selection"])
+        self.config('[[skills.config]]\nname=" source-selection "\nenabled=true\n', "work.config.toml")
+        self.assertEqual(self.diagnose("work")["configured_disabled_skills"], [])
+
+    @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
+    def test_nonregular_oversized_and_legacy_configuration_is_partial(self):
+        config = self.home / "config.toml"
+        config.mkdir()
+        self.assertEqual(self.diagnose()["status"], "partial")
+        config.rmdir()
+        config.write_bytes(b"#" * (1024 * 1024 + 1))
+        self.assertEqual(self.diagnose()["status"], "partial")
+        self.config('[profiles.work]\nmodel="placeholder"\n')
+        result = self.diagnose("work")
+        self.assertEqual(result["status"], "partial")
+        self.assertTrue(any("Legacy" in warning for warning in result["warnings"]))
+
+
+    @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
+    def test_native_nonzero_budget_and_required_enabled_contract(self):
+        self.install()
+        for text in ('[skills]\nmax_context_tokens=0\ninclude_instructions=false\n',
+                     '[[skills.config]]\nname="source-selection"\n'):
+            with self.subTest(text=text):
+                self.config(text)
+                result = self.diagnose()
+                self.assertEqual(result["status"], "partial")
+                self.assertFalse(result["user_layer_resolution_complete"])
+                self.assertEqual(result["configured_disabled_skills"], [])
+        self.config('[skills]\nmax_context_tokens=1\ninclude_instructions=false\n')
+        result = self.diagnose()
+        self.assertEqual(result["status"], "inspected")
+        self.assertIs(result["include_instructions"], False)
+
+    @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
+    def test_config_open_requests_binary_mode_and_does_not_hide_control_z_suffix(self):
+        self.config('# valid comment\n' + chr(26) + '[broken')
+        native_open = os.open
+        calls = []
+        def binary_open(path, flags, *args, **kwargs):
+            calls.append(flags)
+            return native_open(path, flags, *args, **kwargs)
+        with patch.object(INSTALL.os, "open", binary_open):
+            result = self.diagnose()
+        self.assertEqual(result["status"], "partial")
+        self.assertTrue(calls)
+        if hasattr(os, "O_BINARY"):
+            self.assertTrue(all(flags & os.O_BINARY for flags in calls))
+
+    @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
+    def test_linked_profile_is_not_read(self):
+        target = self.home / "outside.toml"
+        target.write_text('[[skills.config]]\nname="source-selection"\nenabled=false\n')
+        try:
+            (self.home / "work.config.toml").symlink_to(target)
+        except OSError as exc:
+            self.skipTest(str(exc))
+        result = self.diagnose("work")
+        self.assertEqual(result["status"], "partial")
+        self.assertFalse(result["user_layer_resolution_complete"])
+
+
+
 if __name__ == "__main__":
     unittest.main()

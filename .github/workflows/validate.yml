@@ -26,3 +26,23 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Validate skill structure and references
         run: python scripts/validate_repository.py
+      - name: Build verified installer downloads
+        run: python scripts/package_installers.py
+      - name: Retain verified downloads
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pm-essential-skills-${{ runner.os }}-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            work/downloads/pm-essential-skills.zip
+            work/downloads/task-coordination.zip
+            work/downloads/context-management.zip
+            work/downloads/resource-selection.zip
+            work/downloads/source-selection.zip
+            work/downloads/execution-efficiency.zip
+            work/downloads/workflow-improvement.zip
+            work/downloads/concise-communication.zip
+            work/downloads/SHA256SUMS
+            work/downloads/distribution.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
