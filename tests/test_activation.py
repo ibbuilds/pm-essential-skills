@@ -32,15 +32,43 @@ class ActivationTests(unittest.TestCase):
             result = install_suite.install(home, None, [name])
             self.assertEqual(result["skills"], [name])
             self.assertTrue((home / "skills" / name / "SKILL.md").is_file())
-            other = next(item for item in install_suite.SKILLS if item != name)
-            self.assertFalse((home / "skills" / other).exists())
             rule = (home / "AGENTS.md").read_text()
-            self.assertNotIn(f"/{other}/SKILL.md", rule)
+            self.assertIn(f"/{name}/SKILL.md", rule)
+            for other in set(install_suite.SKILLS) - {name}:
+                self.assertFalse((home / "skills" / other).exists())
+                self.assertNotIn(f"/{other}/SKILL.md", rule)
 
     def test_installing_another_skill_keeps_the_first(self):
         install_suite.install(self.home, None, ["source-selection"])
         result = install_suite.install(self.home, install_suite.load_receipt(self.home), ["context-management"])
+        self.assertEqual(result["skills"], ["context-management", "source-selection"])
+
+    def test_skill_catalogs_cover_every_shipped_entrypoint(self):
+        shipped = sorted(path.parent.name for path in (ROOT / "skills").glob("*/SKILL.md"))
+        self.assertEqual(sorted(install_suite.SKILLS), shipped)
+        self.assertEqual(sorted(package_installers.SKILLS), shipped)
+        self.assertEqual(sorted(activation.NAMES), shipped)
+
+    def test_adding_execution_skill_preserves_existing_install_and_hook_selection(self):
+        original = b"Keep my existing preferences.\n"
+        self.home.mkdir(parents=True)
+        (self.home / "AGENTS.md").write_bytes(original)
+        install_suite.install(self.home, None, ["context-management", "source-selection"], with_hooks=True)
+        state = install_suite.load_receipt(self.home)
+        before = {name: (self.home / "skills" / name / "SKILL.md").read_bytes()
+                  for name in state["skills"]}
+        result = install_suite.install(self.home, state, ["execution-efficiency"])
         self.assertEqual(result["skills"], list(install_suite.SKILLS))
+        self.assertEqual(install_suite.inspect(self.home, install_suite.load_receipt(self.home)), [])
+        for name, content in before.items():
+            self.assertEqual((self.home / "skills" / name / "SKILL.md").read_bytes(), content)
+        for event in ("SessionStart", "UserPromptSubmit"):
+            context = activation.handle({"hook_event_name": event}, self.home)["hookSpecificOutput"]["additionalContext"]
+            for name in install_suite.SKILLS:
+                self.assertIn(f"/{name}/SKILL.md", context)
+        install_suite.uninstall(self.home, install_suite.load_receipt(self.home))
+        self.assertEqual((self.home / "AGENTS.md").read_bytes(), original)
+        self.assertFalse((self.home / "hooks.json").exists())
 
     def test_hooks_merge_idempotently_and_uninstall_preserves_other_hooks(self):
         self.home.mkdir(parents=True)

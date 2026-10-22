@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install both skills and automatic user-level guidance; no per-project activation.
+"""Install selected skills and automatic user-level guidance; no per-project activation.
 
 The install command selects the disclosed automatic-management defaults. Copying
 skill folders alone does not select those defaults or grant coordination authority.
@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from activation import render
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ("context-management", "source-selection")
+SKILLS = ("context-management", "execution-efficiency", "source-selection")
 RECEIPT = "pm-essential-skills/install.json"
 BEGIN = b"<!-- pm-essential-skills:start -->"
 END = b"<!-- pm-essential-skills:end -->"

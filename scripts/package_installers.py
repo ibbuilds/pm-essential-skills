@@ -9,7 +9,7 @@ import zipfile
 from skill_resources import resource_errors
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ("context-management", "source-selection")
+SKILLS = ("context-management", "execution-efficiency", "source-selection")
 
 
 def build(output, skills, root=ROOT):

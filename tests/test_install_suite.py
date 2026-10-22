@@ -26,7 +26,7 @@ class InstallSuiteTests(unittest.TestCase):
     def install(self):
         return INSTALL.install(self.home, INSTALL.load_receipt(self.home))
 
-    def test_install_activates_both_skills_without_project_files(self):
+    def test_install_activates_all_skills_without_project_files(self):
         result = self.install()
         self.assertEqual(result["status"], "installed")
         self.assertFalse(result["live_invocation_verified"])
