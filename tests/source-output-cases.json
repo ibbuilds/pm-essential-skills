@@ -28,5 +28,25 @@
     "prompt": "Review the entire report, including warnings and successful checks.",
     "expected": "Read all requested content through bounded pages and report actual coverage, preserving warnings and successful checks.",
     "must_not": "Do not substitute error-only filtering for the requested full review or treat the first page as complete."
+  },
+  {
+    "id": "available-semantic-navigation",
+    "available_skills": [
+      "source-selection"
+    ],
+    "context": "An already-available symbol-reference tool resolves a typed function unambiguously and reports its coverage. A text search would return many unrelated names.",
+    "prompt": "Find this function definition and its callers.",
+    "expected": "Use the suitable semantic tool and inspect the relevant returned context; broaden only for missing coverage.",
+    "must_not": "Do not perform broad repository grep first by habit, install a new language server, or equate diagnostics with tests."
+  },
+  {
+    "id": "semantic-unavailable-fallback",
+    "available_skills": [
+      "source-selection"
+    ],
+    "context": "No semantic navigation tool is installed. The exact symbol and likely module are known; bounded text search is available.",
+    "prompt": "Locate the symbol definition.",
+    "expected": "Use bounded search in the relevant scope and inspect the defining context.",
+    "must_not": "Do not install tooling, change integrations, or block the task solely because semantic navigation is unavailable."
   }
 ]

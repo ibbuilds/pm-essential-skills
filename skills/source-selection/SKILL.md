@@ -11,7 +11,7 @@ Retrieve sufficient evidence with less repeated work. Apply on relevant ordinary
 
 1. Identify the outcome and missing facts. Reuse applicable evidence already available. When context suffices, make no retrieval, helper, or planning call.
 2. Honor exact sources, full-read requests, dates, exhaustive coverage, and source-specific access rules. Never narrow required work to reduce usage.
-3. Use the existing native tool at a known path/ID/URL. Otherwise search relevant filenames, headings, or terms; prefer `rg`/`rg --files` locally. For tool discovery, inspect matching names/descriptions, then the selected schema; avoid dumping the full catalog. Stay within authorized scope.
+3. Use the existing native tool at a known path/ID/URL. For exact symbol definitions/references, prefer already-available semantic navigation when suitable; otherwise use bounded filename/text search such as `rg`/`rg --files`. Do not install tooling just for this preference; language-server diagnostics do not replace required tests. For tool discovery, inspect matching names/descriptions, then the selected schema; avoid dumping the full catalog. Stay within authorized scope.
 4. Read the smallest sufficient unit, including definitions, exceptions, neighboring context, and table headers/footnotes. Bound native results by ranges/pages. Search snippets locate evidence; fetch unresolved context or authority before relying on it. Partial reads are not complete reviews.
 5. Batch independent reads/searches when supported; bound both individual results and combined output. Keep dependent follow-ups sequential. Broaden for missing coverage, conflicts, or dependencies; stop once the requested result is supported. No arbitrary search quota.
 

@@ -30,3 +30,22 @@ A compact extra skill still adds discovery overhead. Benefit must be tested on c
 The existing installer/package tests exercise all three skills independently and together in disposable profiles, including extracted downloads and restoration. They verify delivery, not model judgment. [Behavioral fixtures](../tests/execution-efficiency-cases.json) define observable acceptance and failure conditions; automated unit tests do not run them against a model.
 
 No paid model evaluation or live user-host installation was performed for this increment. Follow the [complete-task evaluation protocol](efficiency-evaluation.md) before claiming behavior improvements or savings. Preserve quality failures, missing telemetry, and overhead. Existing context thresholds and repeated-chat preference behavior are intentionally unchanged.
+
+## Expanded survey decisions (checked 2026-10-22)
+
+Current maintained documentation below has no publication date asserted here. These are portable mechanisms, not a transfer of vendor-specific settings or measured savings. Older sandboxing articles were not used as the primary rationale for this increment; failure classification is a correctness safeguard, not a claim about recent model performance.
+
+| Mechanism and evidence | Decision | Scope |
+| --- | --- | --- |
+| Exact symbol navigation: [Claude Code costs](https://code.claude.com/docs/en/costs#install-code-intelligence-plugins-for-typed-languages) | Adopted | Prefer already-available semantic navigation when suitable; bounded search fallback, no installation, diagnostics are not tests. |
+| Review-induced over-engineering: [Claude Code best practices](https://code.claude.com/docs/en/best-practices#add-an-adversarial-review-step) | Adopted | Concrete correctness/requirements findings; no manufactured defects or mandatory reviewer pipeline. |
+| Nested work and separate usage: [Claude Code subagents](https://code.claude.com/docs/en/sub-agents#let-subagents-spawn-their-own-subagents) | Adopted | Explicit outcome ownership, avoid duplicate recursive reviews; no imported depth limit or configuration mutation. |
+| Tool schemas: [OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling), [Anthropic tool definitions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools) | Adopted | Inspect applicable schema after unfamiliarity/validation failure, preserve returned IDs, avoid guessed arguments. |
+| Repeated reads, bulky results, and weak handoffs | Already covered | Source Selection bounds/reuses evidence and preserves output status; Context Management retains recoverable continuity. No second memory system. |
+| Failed retries and claims detached from the user's actual path | Strengthened | Classify code vs environment/dependency/auth/access failures; distinguish implemented, integrated, and verified. No automatic baseline suite. |
+| Global model changes, automatic plugin installs, hard attempt/depth caps, mandatory multi-agent pipelines | Deferred/not adopted | These alter user choices or impose overhead without complete-task evidence. |
+
+The schema-validated behavioral fixtures include negative cases for unavailable semantic tools, infrastructure failures, unsupported review findings, and duplicate delegation. They are evaluation inputs, not proof that a model follows the guidance. Community reports can identify scenarios worth testing but do not establish causes or savings; no recommendation here depends on an anecdote being representative.
+
+
+A further [community workflow report](https://www.reddit.com/r/codex/comments/1xc22qs/tokensresets_to_burn_before_20x_is_nerfed_perhaps/), read 2026-10-22, explicitly describes self-reported heavy usage rather than an efficiency optimum. We adopt only the narrow hypothesis that batching routine worker progress may avoid unnecessary coordination, while preserving prompt blocker/decision escalation. Its usage and output totals do not generalize. Model pinning, file-size ratchets, third-party authentication gateways, and large orchestrators remain host/domain-specific rather than PM defaults. The existing evaluator already requires per-request usage identities instead of summing inherited session totals. Non-code artifact and material-choice fixtures preserve install-and-work behavior without setup interviews or assumed approvals.
