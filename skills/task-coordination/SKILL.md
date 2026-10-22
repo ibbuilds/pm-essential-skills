@@ -27,4 +27,6 @@ Own active operations through their terminal result or the user's stopping condi
 
 Compare delivered results with every accepted requirement. Report the artifact or outcome, relevant evidence, material risks, and remaining gaps. A passing test, draft, or opened PR is insufficient when the accepted goal includes more. Once the goal is met, stop rather than inventing endless optional work.
 
+For example: finish a report's analysis and delivery, not its outline; integrate design and copy into the requested asset; distinguish code implementation from a requested release.
+
 This skill does not prescribe apps, services, Git policies, or models. Context-management owns actual conversation transfer; execution-efficiency owns technical verification and recovery. Do not load either automatically.
