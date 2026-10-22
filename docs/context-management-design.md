@@ -23,7 +23,7 @@ The unit is a coherent requested phase or outcome, not elapsed time. Each new re
 
 The skill contains a concise entrypoint, a host-independent policy, a handoff template, and a Codex desktop adapter. The optional pure Python helper makes routing decisions repeatable. It has no account access, background process, history scanner, or token estimator.
 
-The runtime extension adds declared-capability preflight and an atomic local transfer journal. These are conditional transfer-path helpers, not always-on services. The journal enforces revisions, known ownership, brief fingerprints, idempotent confirmation, and a bounded retry. The host adapter still executes actual tool calls under trusted user authorization. See [runtime contract](../skills/context-management/references/runtime.md).
+The runtime extension adds declared-capability preflight and an atomic local transfer journal. These are conditional transfer-path helpers, not always-on services. The journal enforces revisions, known ownership, brief fingerprints, idempotent confirmation, and a bounded retry. The host adapter still executes actual tool calls under trusted user authorization. See [runtime contract](../skills/ibbuilds-pm-context-management/references/runtime.md).
 
 ### Agent execution budget
 

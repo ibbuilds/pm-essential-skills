@@ -38,11 +38,11 @@ def build(output, skills, root=ROOT):
                 entries[source.relative_to(root).as_posix()] = source
     if output.resolve().is_relative_to((root / "skills").resolve()):
         raise ValueError("Download must be outside skill sources")
-    guide = ("PM Essential Skills\n\nExtract this download, open Install.cmd, then use Codex normally.\n"
+    guide = ("ibbuilds PM Essentials\n\nExtract this download, open Install.cmd, then use Codex normally.\n"
              "Included: " + ", ".join(skills) + ".\n\n"
              "Installation copies only the included skills and adds their automatic user-level guidance.\n"
              + ("Context Management selects same-project routing, superseded-source archival, and temporary recovery defaults.\n"
-                if "context-management" in skills else "No chat-management scope is selected.\n") +
+                if "ibbuilds-pm-context-management" in skills else "No chat-management scope is selected.\n") +
              "Each skill contains its own workflow; the activation rule only points to it and records scope.\n"
              "Existing user preferences are preserved. No project activation prompt, Git account, or plugin is needed.\n"
              "Guidance takes effect when Codex next reloads instructions; existing sessions may retain an old snapshot.\n\n"

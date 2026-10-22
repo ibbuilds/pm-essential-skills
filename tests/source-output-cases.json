@@ -2,7 +2,7 @@
   {
     "id": "filtered-empty-producer-failed",
     "available_skills": [
-      "source-selection"
+      "ibbuilds-pm-source-selection"
     ],
     "context": "A test producer exited 2 before printing any FAIL or ERROR lines. A filter exited 0 with zero matches. Raw output is accessible via the supplied run ID.",
     "prompt": "Did the tests pass?",
@@ -12,7 +12,7 @@
   {
     "id": "structured-large-output",
     "available_skills": [
-      "source-selection"
+      "ibbuilds-pm-source-selection"
     ],
     "context": "A supported tool exposes structured producer status, test totals, failure details, truncation flag, and a raw artifact ID. The full output is very large.",
     "prompt": "Check this test run and tell me what failed.",
@@ -22,7 +22,7 @@
   {
     "id": "filtered-exhaustive-request",
     "available_skills": [
-      "source-selection"
+      "ibbuilds-pm-source-selection"
     ],
     "context": "A filter returns only error lines from a report, but the user explicitly requests review of the entire report. Raw content is available in paginated form.",
     "prompt": "Review the entire report, including warnings and successful checks.",
@@ -32,7 +32,7 @@
   {
     "id": "available-semantic-navigation",
     "available_skills": [
-      "source-selection"
+      "ibbuilds-pm-source-selection"
     ],
     "context": "An already-available symbol-reference tool resolves a typed function unambiguously and reports its coverage. A text search would return many unrelated names.",
     "prompt": "Find this function definition and its callers.",
@@ -42,7 +42,7 @@
   {
     "id": "semantic-unavailable-fallback",
     "available_skills": [
-      "source-selection"
+      "ibbuilds-pm-source-selection"
     ],
     "context": "No semantic navigation tool is installed. The exact symbol and likely module are known; bounded text search is available.",
     "prompt": "Locate the symbol definition.",

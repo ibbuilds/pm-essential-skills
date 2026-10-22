@@ -9,6 +9,7 @@ from pathlib import Path
 import yaml
 
 from skill_resources import resource_errors
+from activation import NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -16,6 +17,8 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     errors = []
     skills = sorted((ROOT / "skills").glob("*/SKILL.md"))
+    if {path.parent.name for path in skills} != set(NAMES):
+        errors.append("Skill folders must match the seven publisher/suite-qualified catalog names")
     if not skills:
         errors.append("No skills found")
     try:
@@ -44,6 +47,8 @@ def main():
             name = metadata["name"]
             if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", name) or len(name) > 64:
                 raise ValueError("invalid skill name")
+            if not name.startswith("ibbuilds-pm-"):
+                raise ValueError("skill name must identify publisher ibbuilds and PM suite")
             description = metadata.get("description")
             if not isinstance(description, str) or not 1 <= len(description) <= 1024:
                 raise ValueError("description must be nonempty text under 1,025 characters")
@@ -54,6 +59,9 @@ def main():
             for key in ["display_name", "short_description", "default_prompt"]:
                 if not isinstance(interface.get(key), str) or not interface[key].strip():
                     raise ValueError(f"UI {key} must be nonempty text")
+            label = name.removeprefix("ibbuilds-pm-").replace("-", " ").title()
+            if interface["display_name"] != f"ibbuilds PM Essentials / {label}":
+                raise ValueError("UI display_name must identify publisher, suite and readable skill label")
             if not 25 <= len(interface["short_description"]) <= 64:
                 raise ValueError("UI short_description must be 25-64 characters")
             if "$" + name not in interface["default_prompt"]:

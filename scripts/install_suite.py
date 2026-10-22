@@ -24,6 +24,10 @@ except ImportError:  # Python 3.10 remains supported; never guess at TOML syntax
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from activation import NAMES as SKILLS, render
 
+# Historical names are recognized only for status, recovery and explicit uninstall.
+# They are not aliases in the discovery catalog or supported install selections.
+LEGACY_SKILLS = tuple(name.removeprefix("ibbuilds-pm-") for name in SKILLS)
+OWNED_SKILLS = (*SKILLS, *LEGACY_SKILLS)
 ROOT = Path(__file__).resolve().parents[1]
 RECEIPT = "pm-essential-skills/install.json"
 JOURNAL = "pm-essential-skills/transaction.json"
@@ -37,7 +41,7 @@ DEFAULTS = ("Automatic skill use during active local sessions; same-project "
 
 
 def selected_defaults(skills):
-    if "context-management" in skills:
+    if "ibbuilds-pm-context-management" in skills:
         return DEFAULTS
     return ("Automatic use of the selected skills during active local sessions; preserve user preferences. "
             "No chat-management scope is selected.")
@@ -113,7 +117,7 @@ def pending_transaction(home):
 
 def owned_target(relative):
     return (relative in (RECEIPT, HELPER, "AGENTS.md", "AGENTS.override.md", "hooks.json")
-            or any(relative.startswith(f"skills/{name}/") for name in SKILLS))
+            or any(relative.startswith(f"skills/{name}/") for name in OWNED_SKILLS))
 
 
 def recover(home):
@@ -185,7 +189,7 @@ def load_receipt(home):
     if not isinstance(state, dict) or state.get("version") != 1:
         raise ValueError("Unsupported installation receipt; preserve it for recovery")
     for relative, record in state["files"].items():
-        if relative != HELPER and not any(relative.startswith(f"skills/{name}/") for name in SKILLS):
+        if relative != HELPER and not any(relative.startswith(f"skills/{name}/") for name in OWNED_SKILLS):
             raise ValueError("Receipt contains an unowned package path")
         safe_path(home, relative)
         decode(record["original"])
@@ -203,7 +207,7 @@ def active_instructions(home):
 
 
 def selected_skills(state):
-    return [name for name in SKILLS if f"skills/{name}/SKILL.md" in state.get("files", {})]
+    return [name for name in OWNED_SKILLS if f"skills/{name}/SKILL.md" in state.get("files", {})]
 
 
 def skill_copy_diagnostics(home, state, extra_roots):
@@ -427,6 +431,12 @@ def inspect(home, state):
 def install(home, state, skills=None, with_hooks=False):
     if pending_transaction(home):
         raise ValueError("Interrupted installation needs recovery; run recover before retrying")
+    legacy = [name for name in LEGACY_SKILLS
+              if (home / "skills" / name).exists() or (home / "skills" / name).is_symlink()
+              or any(path.startswith(f"skills/{name}/") for path in (state or {}).get("files", {}))]
+    if legacy:
+        raise ValueError("Legacy skill names need explicit migration; no files changed: "
+                         + ", ".join(legacy) + ". Back up edits and opt-outs; see docs/skill-naming-migration.md.")
     if state is not None:
         problems = inspect(home, state)
         if problems:

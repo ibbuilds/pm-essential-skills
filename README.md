@@ -1,4 +1,4 @@
-# PM Essential Skills
+# ibbuilds PM Essentials
 
 Seven independent skills for AI assistants: coordinate outcomes, preserve context,
 choose resources and evidence, execute efficiently, improve recurring workflows,
@@ -29,17 +29,28 @@ locations. Let the host reload its skills; an existing session may need restarti
 This tree is an unreleased **0.4.0 candidate**. The CLI and ZIP use the published
 repository, so they do not include unpushed candidate changes.
 
+## Skill identity
+
+Every skill uses `ibbuilds-pm-<skill-slug>`: **ibbuilds** is the publisher,
+**PM Essentials** is the suite, and the suffix identifies the skill. For example,
+`$ibbuilds-pm-context-management` invokes Context Management where explicit
+invocations are supported. Display labels use **ibbuilds PM Essentials / Context Management**.
+These names identify provenance, not a host verification badge.
+
+Already installed under an unprefixed name? Follow the [migration guide](docs/skill-naming-migration.md)
+to preserve custom edits and disabled settings without duplicate copies.
+
 ## The seven skills
 
 | Skill | Purpose |
 | --- | --- |
-| [Task Coordination](skills/task-coordination/SKILL.md) | Clarify material gaps, coordinate dependencies, and finish the requested outcome. |
-| [Context Management](skills/context-management/SKILL.md) | Preserve continuity and manage chat boundaries and authorized handoffs. |
-| [Resource Selection](skills/resource-selection/SKILL.md) | Choose suitable available skills, tools, and supported agent/model routes. |
-| [Source Selection](skills/source-selection/SKILL.md) | Gather sufficient evidence, check freshness, and reuse known sources. |
-| [Execution Efficiency](skills/execution-efficiency/SKILL.md) | Match verification and recovery to the work and its risks. |
-| [Workflow Improvement](skills/workflow-improvement/SKILL.md) | Address recurring friction with proportionate, authorized improvements. |
-| [Concise Communication](skills/concise-communication/SKILL.md) | Give clear, brief replies without losing required detail or uncertainty. |
+| [Task Coordination](skills/ibbuilds-pm-task-coordination/SKILL.md) | Clarify material gaps, coordinate dependencies, and finish the requested outcome. |
+| [Context Management](skills/ibbuilds-pm-context-management/SKILL.md) | Preserve continuity and manage chat boundaries and authorized handoffs. |
+| [Resource Selection](skills/ibbuilds-pm-resource-selection/SKILL.md) | Choose suitable available skills, tools, and supported agent/model routes. |
+| [Source Selection](skills/ibbuilds-pm-source-selection/SKILL.md) | Gather sufficient evidence, check freshness, and reuse known sources. |
+| [Execution Efficiency](skills/ibbuilds-pm-execution-efficiency/SKILL.md) | Match verification and recovery to the work and its risks. |
+| [Workflow Improvement](skills/ibbuilds-pm-workflow-improvement/SKILL.md) | Address recurring friction with proportionate, authorized improvements. |
+| [Concise Communication](skills/ibbuilds-pm-concise-communication/SKILL.md) | Give clear, brief replies without losing required detail or uncertainty. |
 
 Each skill works independently; none requires the other six. Its behavior lives
 inside its own folder, with conditional detail in references.
@@ -79,8 +90,8 @@ it **edits user-level instructions**, including disclosed Context Management
 routing scope when selected, and can optionally register hooks that require
 host review and trust. Neither is required to use these skills. See
 [optional installation, status, uninstall, and recovery](docs/installation.md).
-Existing installer-managed copies can stay in their supported legacy location;
-no migration or second copy is needed.
+The installer location remains supported. Older unprefixed skill identities require
+[explicit migration](docs/skill-naming-migration.md); existing installs are never silently renamed or deleted.
 
 ## License
 
@@ -113,4 +124,4 @@ Helpers use the standard library; repository validation uses PyYAML. Tests cover
 
 Use the optional [complete-task evaluator](docs/efficiency-evaluation.md) for supported usage exports. It includes startup/retry/handoff requests, preserves quality failures, and keeps missing telemetry unknown. It does not collect data during normal work.
 
-See the [execution-efficiency research rationale](docs/execution-efficiency-design.md), [design notes](docs/context-management-design.md), [research decisions](docs/research-and-edge-cases.md), [transfer recovery](skills/context-management/references/runtime.md), and [source reuse](skills/source-selection/references/source-reuse.md). Keep skill entrypoints under 700 words, domain work independent, and conditional detail in references.
+See the [execution-efficiency research rationale](docs/execution-efficiency-design.md), [design notes](docs/context-management-design.md), [research decisions](docs/research-and-edge-cases.md), [transfer recovery](skills/ibbuilds-pm-context-management/references/runtime.md), and [source reuse](skills/ibbuilds-pm-source-selection/references/source-reuse.md). Keep skill entrypoints under 700 words, domain work independent, and conditional detail in references.

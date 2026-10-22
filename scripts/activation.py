@@ -12,13 +12,13 @@ import sys
 # The shared selection catalog lives in the already-bundled standalone helper.
 # These are routing hints, not copies of the skills' conditional procedures.
 PURPOSES = {
-    "task-coordination": "multi-step task intake, dependencies, and complete requested outcomes",
-    "context-management": "conversation continuity and task boundaries",
-    "resource-selection": "initial tool, skill, and supported model/agent choices",
-    "source-selection": "relevant evidence retrieval and reuse",
-    "execution-efficiency": "proportionate verification and evidence-driven recovery",
-    "workflow-improvement": "recurring friction, reusable lessons, and authorized workflow changes",
-    "concise-communication": "clear, brief plain-language replies without losing required substance",
+    "ibbuilds-pm-task-coordination": "multi-step task intake, dependencies, and complete requested outcomes",
+    "ibbuilds-pm-context-management": "conversation continuity and task boundaries",
+    "ibbuilds-pm-resource-selection": "initial tool, skill, and supported model/agent choices",
+    "ibbuilds-pm-source-selection": "relevant evidence retrieval and reuse",
+    "ibbuilds-pm-execution-efficiency": "proportionate verification and evidence-driven recovery",
+    "ibbuilds-pm-workflow-improvement": "recurring friction, reusable lessons, and authorized workflow changes",
+    "ibbuilds-pm-concise-communication": "clear, brief plain-language replies without losing required substance",
 }
 NAMES = tuple(PURPOSES)
 # UserPromptSubmit contains the full prompt, not just event metadata. Permit
@@ -32,7 +32,7 @@ WORKFLOW_CONTRACT = (
 
 
 def render(home, skills, installation=False, brief=False):
-    lines = ["## PM Essential Skills"]
+    lines = ["## ibbuilds PM Essentials"]
     # Each prompt remains self-contained after compaction, without repeating the
     # absolute directory for every entry. Keep purposes so selection needs no reads.
     compact = brief and sum(name in skills for name in NAMES) > 1
@@ -52,7 +52,7 @@ def render(home, skills, installation=False, brief=False):
         return "\n".join(lines) + "\n"
     lines.append("Select only relevant skills and conditional references; do not load the whole suite for every request. "
                  "Reuse loaded guidance. Honor disabled, suggest-only, stay, and user/project preferences.")
-    if installation and "context-management" in skills:
+    if installation and "ibbuilds-pm-context-management" in skills:
         lines.append("I authorize justified same-project continuations and routing messages for requested "
                      "work, archiving superseded managed sources, and temporary restore/rearchive for context recovery. "
                      "Preserve location, settings, other active work, and one owner. Excludes unrelated chats, "

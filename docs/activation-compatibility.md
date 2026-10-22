@@ -44,11 +44,11 @@ the configuration directory. For example:
 ```toml
 # config.toml: disable by name, then re-enable one specific installed copy.
 [[skills.config]]
-name = "source-selection"
+name = "ibbuilds-pm-source-selection"
 enabled = false
 
 [[skills.config]]
-path = "/absolute/codex-home/skills/source-selection/SKILL.md"
+path = "/absolute/codex-home/skills/ibbuilds-pm-source-selection/SKILL.md"
 enabled = true
 ```
 

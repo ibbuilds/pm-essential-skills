@@ -4,7 +4,7 @@ import importlib.util
 from pathlib import Path
 import unittest
 
-SCRIPT = Path(__file__).resolve().parents[1] / "skills/context-management/scripts/assess_archive.py"
+SCRIPT = Path(__file__).resolve().parents[1] / "skills/ibbuilds-pm-context-management/scripts/assess_archive.py"
 SPEC = importlib.util.spec_from_file_location("archive_policy", SCRIPT)
 POLICY = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(POLICY)

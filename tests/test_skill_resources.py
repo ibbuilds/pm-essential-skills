@@ -23,7 +23,7 @@ class IndependentResourceTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(dir=work)
         self.addCleanup(self.temp.cleanup)
         self.directory = Path(self.temp.name)
-        self.skill = self.directory / "skills/context-management"
+        self.skill = self.directory / "skills/ibbuilds-pm-context-management"
         self.skill.mkdir(parents=True)
 
     def test_nested_resources_resolve_within_skill(self):
@@ -57,7 +57,7 @@ class IndependentResourceTests(unittest.TestCase):
     def test_builders_reject_unshipped_resources_before_writing_archive(self):
         (self.skill / "SKILL.md").write_text("[required](missing.md)")
         for builder in (lambda path: package_plugin.build(path, self.directory),
-                        lambda path: package_installers.build(path, ["context-management"], self.directory)):
+                        lambda path: package_installers.build(path, ["ibbuilds-pm-context-management"], self.directory)):
             output = self.directory / "invalid.zip"
             with self.assertRaises(ValueError):
                 builder(output)
@@ -65,10 +65,10 @@ class IndependentResourceTests(unittest.TestCase):
 
     def test_each_bare_skill_runs_its_helper_without_activation_or_companion(self):
         cases = {
-            "context-management": ("assess_context.py", {
+            "ibbuilds-pm-context-management": ("assess_context.py", {
                 "project_mode": "project", "safe_checkpoint": True,
                 "new_phase": True, "substantial_history": True}, "ask_thread_choice"),
-            "source-selection": ("assess_source.py", {
+            "ibbuilds-pm-source-selection": ("assess_source.py", {
                 "source_id": "fixture:requested-document", "content_available": False}, "fetch"),
         }
         for skill, (helper, observation, expected) in cases.items():

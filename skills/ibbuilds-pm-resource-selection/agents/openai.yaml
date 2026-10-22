@@ -1,0 +1,7 @@
+interface:
+  display_name: "ibbuilds PM Essentials / Resource Selection"
+  short_description: "Choose capable resources without waste"
+  default_prompt: "Use $ibbuilds-pm-resource-selection to choose a reliable execution approach without unnecessary resource cost."
+
+policy:
+  allow_implicit_invocation: true

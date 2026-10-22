@@ -1,0 +1,6 @@
+interface:
+  display_name: "ibbuilds PM Essentials / Execution Efficiency"
+  short_description: "Match verification and retries to real risk"
+  default_prompt: "Use $ibbuilds-pm-execution-efficiency to complete this fix with proportionate verification and evidence-driven recovery."
+policy:
+  allow_implicit_invocation: true
