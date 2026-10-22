@@ -7,7 +7,7 @@ description: Coordinate intake, scope, lightweight planning, ownership, handoffs
 
 ## Establish the outcome
 
-Reuse the user's goal, accepted scope, decisions, constraints, and context. Do not ask them to repeat answers. Define observable completion against the full currently accepted scope, including still-open original requirements, not existing implementation or the latest milestone. Keep later agreed scope changes explicit.
+Reuse the user's goal, accepted scope, decisions, constraints, and context without re-asking settled questions. Define observable completion against the full currently accepted scope, including still-open original requirements, not existing implementation or the latest milestone. Keep later agreed scope changes explicit.
 
 Infer safe, reversible details. Ask a focused question with a recommended choice only when a missing material user decision affects the outcome, authorization, or costly rework. Continue independent work while awaiting that answer. Do not impose a planning or approval gate on already authorized work.
 

@@ -25,14 +25,24 @@ NAMES = tuple(PURPOSES)
 
 def render(home, skills, installation=False, brief=False):
     lines = ["## PM Essential Skills"]
+    # Each prompt remains self-contained after compaction, without repeating the
+    # absolute directory for every entry. Keep purposes so selection needs no reads.
+    compact = brief and sum(name in skills for name in NAMES) > 1
+    if compact:
+        lines.append(f"Skill paths relative to `{(home / 'skills').as_posix()}`:")
     for name in NAMES:
         if name in skills:
-            lines.append(f"Use `{(home / 'skills' / name / 'SKILL.md').as_posix()}` for {PURPOSES[name]}.")
-    lines.append("Select only relevant skills and conditional references; do not load the whole suite for every request. "
-                 "Reuse loaded guidance. Honor disabled, suggest-only, stay, and user/project preferences.")
+            if compact:
+                lines.append(f"- `{name}/SKILL.md`: {PURPOSES[name]}.")
+            else:
+                lines.append(f"Use `{(home / 'skills' / name / 'SKILL.md').as_posix()}` for {PURPOSES[name]}.")
     if brief:
+        lines.append("Select only relevant skills/references, not the whole suite. Reuse loaded guidance; "
+                     "honor disabled, suggest-only, stay, and user/project preferences.")
         lines.append("No new authority is granted.")
         return "\n".join(lines) + "\n"
+    lines.append("Select only relevant skills and conditional references; do not load the whole suite for every request. "
+                 "Reuse loaded guidance. Honor disabled, suggest-only, stay, and user/project preferences.")
     if installation and "context-management" in skills:
         lines.append("I authorize justified same-project continuations and routing messages for requested "
                      "work, archiving superseded managed sources, and temporary restore/rearchive for context recovery. "

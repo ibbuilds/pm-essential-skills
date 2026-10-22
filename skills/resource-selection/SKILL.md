@@ -5,11 +5,11 @@ description: Choose an execution approach, tools, supported model or reasoning c
 
 # Resource Selection
 
-Choose the least costly reliable approach to the accepted task, not the cheapest individual call. Preserve explicit user choices, quality requirements, authorization, and higher-priority instructions. Routine answers and straightforward edits need no resource-selection ceremony.
+Choose the least costly reliable approach to the accepted task. Preserve explicit user choices, quality requirements, authorization, and higher-priority instructions. Routine answers and straightforward edits need no resource-selection ceremony.
 
 ## Choose an approach
 
-Use existing deterministic tools for mechanical transformations, calculations, bulk processing, and reproducible outputs when they reduce error or effort. Use direct model work when sufficient; do not wrap a simple answer in tools, agents, or a planning workflow. Produce costly bulk outputs through suitable existing local deterministic paths rather than repeated model generation; do not transfer secrets to new services.
+Use existing deterministic tools for mechanical transformations, calculations, bulk processing, and reproducible outputs when they reduce error or effort; prefer suitable local paths over repeated model generation for costly bulk outputs. Do not transfer secrets to new services. Use direct model work when sufficient; do not wrap a simple answer in tools, agents, or planning.
 
 Compare total expected accepted-task cost: setup, context duplication, coordination turns, latency, retries, and verification, not just nominal inference cost. Treat budgets as limits only when observed or user-stated. Do not invent remaining usage, prices, savings, or hard thresholds. No mandatory capability inventory, introspection call, benchmark, or usage report is needed.
 

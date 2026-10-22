@@ -5,11 +5,11 @@ description: Improve an existing workflow or reusable toolkit when explicitly re
 
 # Workflow Improvement
 
-Reduce demonstrated repeat work without building another management layer. Existing continuity, retrieval, and execution workflows retain their lessons and responsibilities; domain documentation remains with its domain owner. This skill selectively maintains reusable remedies, not a parallel memory engine.
+Reduce demonstrated repeat work through reusable remedies, not another management or memory layer. Existing continuity, retrieval, execution, and domain workflows retain their lessons, documentation, and responsibilities.
 
 ## Establish the problem
 
-Identify costly friction, evidence, affected conditions, and success condition. Inspect relevant existing user rules, project information, tools, skills, and previous corrections before asking or inventing replacements. Ask only about material missing choices. One-off failures usually need fixes, not permanent rules.
+Identify costly friction, evidence, affected conditions, and success condition. Inspect relevant user rules, project information, tools, skills, and prior corrections before asking or inventing replacements. Ask only about material missing choices. One-off failures usually need fixes, not permanent rules.
 
 ## Choose the smallest remedy
 
@@ -27,6 +27,6 @@ Ensure the actual skill or project entrypoint can find that canonical owner and 
 
 Prefer reversible, scoped changes within actual approval. Exercise the affected behavior and relevant negative cases, including whether the remedy catches the known failure without rejecting valid work. Match verification to risk and honor required gates; do not impose blanket full-suite runs. Distinguish implemented, validated, and still-blocked outcomes.
 
-Keep a remedy when available evidence supports quality-preserving reduction in total overhead or user interventions. Simplify duplicate or expensive machinery; remove unsupported or obsolete machinery after checking its consumers and preserving needed behavior. Include maintenance, discovery, and validation costs, not just shorter prompts. Missing telemetry does not prevent a justified improvement: report observable evidence and unknowns, not guaranteed savings or a required live benchmark.
+Keep remedies supported by evidence of quality-preserving reduction in total overhead or user interventions. Simplify duplicate or expensive machinery; remove unsupported or obsolete machinery after checking its consumers and preserving needed behavior. Include maintenance, discovery, and validation costs, not just shorter prompts. Missing telemetry does not prevent a justified improvement: report observable evidence and unknowns, not guaranteed savings or a required live benchmark.
 
 Preserve explicit user scope and instructions. Optimization alone authorizes no new integration, global setting, permission, tracker, or always-on coordinator. If needed work exceeds authority, request that specific approval and continue independent authorized work.
