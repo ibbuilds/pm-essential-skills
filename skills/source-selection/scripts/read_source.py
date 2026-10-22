@@ -8,7 +8,9 @@ Spans use zero-based character offsets [start, end); line bounds are one-based.
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
+import stat
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -66,8 +68,15 @@ def read_source(value):
     if budget > 100000:
         raise ValueError("max_chars exceeds 100000; paginate or use a specialized reader")
     path = Path(value["path"]).expanduser().resolve(strict=True)
+    if not path.is_file():
+        raise ValueError("Local reader requires a regular file; use a specialized reader")
     # Bound the actual read, including a concurrent growth of the file.
-    with path.open("rb") as stream:
+    # A replaced FIFO must not block at open before descriptor validation. This
+    # does not impose a universal deadline on regular/network filesystem I/O.
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NONBLOCK", 0)
+    with os.fdopen(os.open(path, flags), "rb") as stream:
+        if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+            raise ValueError("Local reader requires a regular file; use a specialized reader")
         raw = stream.read(MAX_BYTES + 1)
     if len(raw) > MAX_BYTES:
         raise ValueError("Local reader supports files up to 16 MiB; use a streaming/specialized reader")

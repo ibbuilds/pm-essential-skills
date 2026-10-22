@@ -1,6 +1,6 @@
 # Bounded local reads with revision-aware reuse
 
-Use only when a local UTF-8 file needs a substantial or repeated read and this helper is available. Native read/search tools remain appropriate. Known answers need no tool; remote sources retain their native permissions, revision checks, and pagination. Do not create a persistent cache, install a server, or copy remote content merely to use this reader.
+Use only when a local regular UTF-8 file needs a substantial or repeated read and this helper is available. Directories, devices, and named pipes are rejected; the byte limit is not a universal filesystem I/O deadline. Native read/search tools remain appropriate. Known answers need no tool; remote sources retain their native permissions, revision checks, and pagination. Do not create a persistent cache, install a server, or copy remote content merely to use this reader.
 
 `scripts/read_source.py` takes JSON through stdin or `--input`. It reads a local snapshot, hashes its bytes, and emits only a bounded content page plus provenance. It creates no files. Example:
 
