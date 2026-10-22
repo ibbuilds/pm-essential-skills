@@ -275,11 +275,20 @@ class ActivationTests(unittest.TestCase):
             archive.extractall(extracted)
         environment = dict(os.environ, CODEX_HOME=str(self.home))
         for command in ("install", "status", "uninstall"):
+            if command == "status":
+                (self.home / "config.toml").write_text(
+                    '[skills]\ninclude_instructions = false\n'
+                    '[[skills.config]]\nname = "source-selection"\nenabled = false\n', encoding="utf-8")
             # The only cmd shell usage is the batch entrypoint under test; deletion stays in Python.
             result = subprocess.run(["cmd.exe", "/d", "/c", "Install.cmd", command], cwd=extracted,
                                     env=environment, text=True, capture_output=True, timeout=45)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            if command == "status":
+                self.assertIn("Disabled in inspected user configuration: source-selection", result.stdout)
+                self.assertIn("Host activation: not verified", result.stdout)
+                self.assertIn("Skill instruction inclusion is disabled", result.stdout)
         self.assertFalse((self.home / "AGENTS.md").exists())
+        self.assertIn('include_instructions = false', (self.home / "config.toml").read_text())
 
 
 if __name__ == "__main__":
