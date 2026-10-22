@@ -1,7 +1,7 @@
 [
   {
     "id": "one-off-failure-no-new-skill",
-    "available_skills": ["workflow-improvement"],
+    "available_skills": ["ibbuilds-pm-workflow-improvement"],
     "context": "One spreadsheet export failed once with an unexplained timeout. There is no previous failure evidence, and the export remains the only requested outcome.",
     "prompt": "Get this export working.",
     "expected": "Handle ordinary diagnosis and recovery within the export task; do not activate reusable workflow maintenance solely because a task failed.",
@@ -9,7 +9,7 @@
   },
   {
     "id": "repeated-deterministic-mechanic",
-    "available_skills": ["workflow-improvement"],
+    "available_skills": ["ibbuilds-pm-workflow-improvement"],
     "context": "Three approved monthly reports required reconstructing the same CSV column normalization and ISO date conversion. The project already has a report helper directory and fixtures. The column mapping and date format are explicit; the report owner's instructions already link that directory.",
     "prompt": "Make the repeated report preparation less error-prone. You may update the local report helpers and fixtures.",
     "expected": "Inspect and reuse the existing helpers, implement the deterministic conversion there, and check representative valid and invalid input against the stated mapping. Keep domain rules with the report owner and make the helper discoverable from the existing entrypoint.",
@@ -17,7 +17,7 @@
   },
   {
     "id": "conflicting-stale-instruction-correct-owner",
-    "available_skills": ["workflow-improvement"],
+    "available_skills": ["ibbuilds-pm-workflow-improvement"],
     "context": "The maintained publishing guide specifies API v2. A generated troubleshooting summary still says v1 and has caused two rejected requests. The user recently edited the guide's approval requirement; that edit remains binding. API v2 documentation and the rejected requests are available. Editing the local guide and summary is authorized.",
     "prompt": "Prevent this obsolete API advice from causing another failed publication.",
     "expected": "Verify source applicability, reconcile the stale summary with the maintained guide, preserve the user's approval requirement, and retain a narrow conditional lesson or pointer at the existing owner with evidence and invalidation conditions.",
@@ -25,7 +25,7 @@
   },
   {
     "id": "reuse-existing-skill-no-overlap",
-    "available_skills": ["workflow-improvement"],
+    "available_skills": ["ibbuilds-pm-workflow-improvement"],
     "context": "A locally installed invoice-check skill already owns invoice validation. Its conditional reference covers totals but misses one recurring duplicate-line case demonstrated by fixtures. The user authorizes changes to that skill; no other suite skills or host adapters are installed.",
     "prompt": "Improve our reusable invoice toolkit so it catches this recurring duplicate-line mistake.",
     "expected": "Inspect the existing skill and fixtures, add the narrow invariant and focused positive/negative coverage to its existing validator, and verify the entrypoint reaches the packaged resource. Operate independently of unavailable suite skills.",
@@ -33,7 +33,7 @@
   },
   {
     "id": "unknown-telemetry-justified-improvement",
-    "available_skills": ["workflow-improvement"],
+    "available_skills": ["ibbuilds-pm-workflow-improvement"],
     "context": "Two supplied traces show the same outdated parameter template causing schema errors and user corrections. Current tool schema is available. The template is locally maintained and editing it is authorized. Token usage and latency telemetry are unavailable.",
     "prompt": "Fix this recurring workflow friction without running a paid benchmark.",
     "expected": "Update the existing template against the available schema, validate the relevant arguments, and report the demonstrated error prevention while leaving net usage and latency savings unknown. Consider maintenance and discovery costs in retaining the remedy.",
@@ -41,7 +41,7 @@
   },
   {
     "id": "simplify-with-consumer-and-authority-check",
-    "available_skills": ["workflow-improvement"],
+    "available_skills": ["ibbuilds-pm-workflow-improvement"],
     "context": "The user asks for local toolkit cleanup. Two wrappers duplicate the same transformation. One remains referenced by a required reporting workflow and includes a user-required approval gate. Available fixtures establish equivalent transformed outputs, but not equivalent approval behavior. No permission was given to alter the reporting requirement.",
     "prompt": "Simplify or remove redundant toolkit machinery where justified.",
     "expected": "Inspect consumers and preserve the reporting entrypoint and required approval behavior. Consolidate only where output and control behavior remain intact; leave unsupported removal deferred with a focused explanation if needed.",

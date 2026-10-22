@@ -2,7 +2,7 @@
   {
     "id": "simple-negative",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "execution-efficiency is available; no implementation or repair is requested.",
     "prompt": "What is 6 times 7?",
@@ -12,7 +12,7 @@
   {
     "id": "known-label",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "Approved wording is Save changes. The requested edit only changes static text; no repository-wide gates exist.",
     "prompt": "Apply the approved button wording.",
@@ -22,7 +22,7 @@
   {
     "id": "required-gate",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "A copy-only edit is requested. Repository instructions require a full validation command on every change.",
     "prompt": "Fix the typo.",
@@ -32,7 +32,7 @@
   {
     "id": "security-small-diff",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "A one-line tenant access predicate is wrong; existing tests cover only same-tenant access.",
     "prompt": "Fix cross-tenant access.",
@@ -42,7 +42,7 @@
   {
     "id": "unchanged-repeat",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "The fix meets acceptance conditions; final-state required checks passed. No relevant input changed.",
     "prompt": "Is the fix ready?",
@@ -52,7 +52,7 @@
   {
     "id": "dependency-invalidates",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "Tests passed earlier, but a shared dependency and test configuration were subsequently changed.",
     "prompt": "Finish verifying the change.",
@@ -62,7 +62,7 @@
   {
     "id": "environment-unknown",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "An old integration result exists, but the relevant service deployment version cannot be established.",
     "prompt": "Confirm the integration still works now.",
@@ -72,7 +72,7 @@
   {
     "id": "deterministic-failure",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "The same command failed twice because the required service is stopped. Starting the disposable service is authorized.",
     "prompt": "Get the tests working and finish the fix.",
@@ -82,7 +82,7 @@
   {
     "id": "uncertain-write",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "A remote create request timed out; it may have succeeded. A supported status lookup exists.",
     "prompt": "Finish creating the requested item.",
@@ -92,7 +92,7 @@
   {
     "id": "tests-not-outcome",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "Several new tests pass, but the actual reproduction still shows the user-reported crash.",
     "prompt": "Fix the crash, not just the tests.",
@@ -102,7 +102,7 @@
   {
     "id": "pending-monitor",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "User requested monitoring CI for the exact commit until terminal outcome. It is still running and exposes a completion event.",
     "prompt": "Keep tracking it.",
@@ -112,7 +112,7 @@
   {
     "id": "approval-block",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "A required external action is explicitly denied. Independent read-only diagnosis remains allowed.",
     "prompt": "Finish what you can.",
@@ -122,7 +122,7 @@
   {
     "id": "settled-plan",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "The accepted plan and user choices are already in working context. Two prior hypotheses were disproved by traces at known paths.",
     "prompt": "Continue fixing the remaining issue.",
@@ -132,7 +132,7 @@
   {
     "id": "delegation-overhead",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "A single tightly coupled small repair is understood and authorized. Delegation is available.",
     "prompt": "Make the repair.",
@@ -142,9 +142,9 @@
   {
     "id": "suite-pending-location",
     "available_skills": [
-      "context-management",
-      "execution-efficiency",
-      "source-selection"
+      "ibbuilds-pm-context-management",
+      "ibbuilds-pm-execution-efficiency",
+      "ibbuilds-pm-source-selection"
     ],
     "context": "Context Management has already asked an applicable location question before an accepted phase transition. No answer has arrived. No opt-out is in effect.",
     "prompt": "The pending task is to implement the approved plan.",
@@ -154,7 +154,7 @@
   {
     "id": "explicit-exhaustive-review",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "The user explicitly requests exhaustive review of every changed path and the full test suite, including areas that appear low risk. All requested checks are available and authorized.",
     "prompt": "Review every changed file and run the complete suite before calling this finished.",
@@ -164,7 +164,7 @@
   {
     "id": "infrastructure-not-code",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "The integration command fails before application startup because a credential is missing. Reading diagnostics is authorized; changing credentials or permissions is not.",
     "prompt": "Diagnose why this integration check fails.",
@@ -174,7 +174,7 @@
   {
     "id": "review-no-manufactured-finding",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "An independently scoped review finds no supported correctness or requirements defect. A new abstraction would be a personal style preference, not an accepted requirement.",
     "prompt": "Review this small fix against its acceptance criteria.",
@@ -184,7 +184,7 @@
   {
     "id": "delegated-review-owner",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "A reviewer owns a defined diff review. Another agent already owns the same outcome; nested spawning is available.",
     "prompt": "Finish your assigned review.",
@@ -194,7 +194,7 @@
   {
     "id": "schema-error-not-guessing",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "A tool rejects an invented argument before execution. Its schema is available, and an earlier response supplied an opaque item ID.",
     "prompt": "Complete the authorized lookup.",
@@ -204,7 +204,7 @@
   {
     "id": "baseline-claim-needs-evidence",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "The change is implemented but the integration path fails; there is no baseline result establishing whether the failure predates this change.",
     "prompt": "Report whether this is finished.",
@@ -214,7 +214,7 @@
   {
     "id": "spreadsheet-formula-repair",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "A spreadsheet total omits the final row. Inputs and expected totals are supplied; artifact instructions require recalculation.",
     "prompt": "Fix the incorrect total.",
@@ -224,7 +224,7 @@
   {
     "id": "document-format-only",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "A document heading wraps awkwardly; its wording and all calculations are correct. The document workflow requires rendered inspection.",
     "prompt": "Fix the heading layout without changing the content.",
@@ -234,7 +234,7 @@
   {
     "id": "missing-material-choice",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "The user asks to prepare a report for sharing, but whether internal financial details should be included materially changes the artifact. No prior decision or permission to share exists.",
     "prompt": "Get the report ready.",
@@ -244,8 +244,8 @@
   {
     "id": "recurring-confirmed-trap",
     "available_skills": [
-      "execution-efficiency",
-      "context-management"
+      "ibbuilds-pm-execution-efficiency",
+      "ibbuilds-pm-context-management"
     ],
     "context": "An existing project note records a recurring export failure: a required column was omitted, with a reproducible failing input and verified correction. The same format/version applies now. A local validator exists but lacks this assertion; updating it is within the authorized export repair.",
     "prompt": "Repair this export and prevent the same omission.",
@@ -255,8 +255,8 @@
   {
     "id": "stale-trap-not-global-rule",
     "available_skills": [
-      "execution-efficiency",
-      "context-management"
+      "ibbuilds-pm-execution-efficiency",
+      "ibbuilds-pm-context-management"
     ],
     "context": "An old lesson says a tool rejected one export format, but the tool version and accepted formats have since changed. Its failure evidence is no longer applicable. No host configuration changes are authorized.",
     "prompt": "Finish the export with the current tool.",
@@ -266,7 +266,7 @@
   {
     "id": "one-off-failure-no-rule-sprawl",
     "available_skills": [
-      "execution-efficiency"
+      "ibbuilds-pm-execution-efficiency"
     ],
     "context": "A single unexplained transient preview failure disappeared on a safe retry. The final artifact meets acceptance conditions and required checks passed; there is no evidence of a recurring cause or objective prevention invariant.",
     "prompt": "Is this finished?",

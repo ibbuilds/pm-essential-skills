@@ -28,6 +28,66 @@ class InstallSuiteTests(unittest.TestCase):
     def install(self):
         return INSTALL.install(self.home, INSTALL.load_receipt(self.home))
 
+    def legacy_installation(self):
+        # Model an existing receipt without changing the current install catalog.
+        self.install()
+        state = INSTALL.load_receipt(self.home)
+        files = {}
+        for relative, record in state["files"].items():
+            old = relative.replace("skills/ibbuilds-pm-", "skills/")
+            source, destination = self.home / relative, self.home / old
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            source.rename(destination)
+            files[old] = record
+        state["files"] = files
+        state["skills"] = list(INSTALL.LEGACY_SKILLS)
+        (self.home / INSTALL.RECEIPT).write_text(json.dumps(state))
+        return INSTALL.load_receipt(self.home)
+
+    def test_legacy_receipt_status_and_explicit_uninstall_are_supported(self):
+        state = self.legacy_installation()
+        self.assertEqual(INSTALL.selected_skills(state), list(INSTALL.LEGACY_SKILLS))
+        self.assertEqual(INSTALL.inspect(self.home, state), [])
+        extra = self.home / "skills/context-management/personal.txt"
+        extra.write_text("Keep my notes")
+        before = (self.home / INSTALL.RECEIPT).read_bytes()
+        with self.assertRaisesRegex(ValueError, "explicit migration"):
+            INSTALL.install(self.home, state)
+        self.assertEqual((self.home / INSTALL.RECEIPT).read_bytes(), before)
+        INSTALL.uninstall(self.home, state)
+        self.assertEqual(extra.read_text(), "Keep my notes")
+        self.assertFalse((self.home / "skills/context-management/SKILL.md").exists())
+
+    def test_legacy_customization_is_preserved(self):
+        state = self.legacy_installation()
+        target = self.home / "skills/context-management/SKILL.md"
+        target.write_text("Custom old skill")
+        with self.assertRaisesRegex(ValueError, "Preserving modified installation"):
+            INSTALL.uninstall(self.home, state)
+        self.assertEqual(target.read_text(), "Custom old skill")
+
+    def test_unmanaged_legacy_copy_blocks_new_install_without_writes(self):
+        target = self.home / "skills/context-management/SKILL.md"
+        target.parent.mkdir(parents=True)
+        target.write_text("Custom old skill")
+        with self.assertRaisesRegex(ValueError, "explicit migration"):
+            self.install()
+        self.assertEqual(target.read_text(), "Custom old skill")
+        self.assertFalse((self.home / INSTALL.RECEIPT).exists())
+        self.assertFalse((self.home / "skills/ibbuilds-pm-context-management").exists())
+
+    def test_legacy_interrupted_transaction_can_be_recovered(self):
+        relative = "skills/context-management/SKILL.md"
+        target = self.home / relative
+        target.parent.mkdir(parents=True)
+        target.write_bytes(b"interrupted")
+        journal = self.home / INSTALL.JOURNAL
+        journal.parent.mkdir(parents=True)
+        journal.write_text(json.dumps({"version": 1, "files": {relative: {
+            "before": INSTALL.encode(b"original"), "after": INSTALL.encode(b"interrupted")}}}))
+        self.assertEqual(INSTALL.recover(self.home)["status"], "recovered")
+        self.assertEqual(target.read_bytes(), b"original")
+
     def test_install_activates_all_skills_without_project_files(self):
         result = self.install()
         self.assertEqual(result["status"], "installed")
@@ -60,7 +120,7 @@ class InstallSuiteTests(unittest.TestCase):
         self.assertEqual((self.home / INSTALL.RECEIPT).read_bytes(), receipt)
 
     def test_uninstall_restores_existing_skills_and_keeps_later_user_notes(self):
-        target = self.home / "skills/context-management/SKILL.md"
+        target = self.home / "skills/ibbuilds-pm-context-management/SKILL.md"
         target.parent.mkdir(parents=True)
         target.write_bytes(b"Previous personal installation\r\n")
         original = b"Existing personal preferences\r\n"
@@ -75,7 +135,7 @@ class InstallSuiteTests(unittest.TestCase):
 
     def test_modified_skill_blocks_update_and_uninstall_before_writes(self):
         self.install()
-        (self.home / "skills/source-selection/SKILL.md").write_text("User customization", encoding="utf-8")
+        (self.home / "skills/ibbuilds-pm-source-selection/SKILL.md").write_text("User customization", encoding="utf-8")
         before = (self.home / "AGENTS.md").read_bytes()
         for operation in (INSTALL.install, INSTALL.uninstall):
             with self.assertRaises(ValueError):
@@ -92,7 +152,7 @@ class InstallSuiteTests(unittest.TestCase):
 
     def test_uninstall_removes_only_owned_files(self):
         self.install()
-        extra = self.home / "skills/context-management/personal.txt"
+        extra = self.home / "skills/ibbuilds-pm-context-management/personal.txt"
         extra.write_text("Keep", encoding="utf-8")
         INSTALL.uninstall(self.home, INSTALL.load_receipt(self.home))
         self.assertEqual(extra.read_text(), "Keep")
@@ -102,14 +162,14 @@ class InstallSuiteTests(unittest.TestCase):
         self.install()
         path = self.home / INSTALL.RECEIPT
         state = json.loads(path.read_text())
-        state["files"]["skills/context-management/../../../outside"] = {"original": None}
+        state["files"]["skills/ibbuilds-pm-context-management/../../../outside"] = {"original": None}
         path.write_text(json.dumps(state), encoding="utf-8")
         with self.assertRaises(ValueError):
             INSTALL.load_receipt(self.home)
 
     def test_interrupted_install_is_degraded_without_blind_retry(self):
         self.install()
-        (self.home / "skills/context-management/SKILL.md").unlink()
+        (self.home / "skills/ibbuilds-pm-context-management/SKILL.md").unlink()
         state = INSTALL.load_receipt(self.home)
         self.assertTrue(INSTALL.inspect(self.home, state))
         with self.assertRaises(ValueError):
@@ -138,7 +198,7 @@ class InstallSuiteTests(unittest.TestCase):
         # A minimal package makes every checkpoint deterministic, including a
         # retired file whose pre-install original must survive an upgrade crash.
         package = self.home / "package"
-        source = package / "skills/source-selection"
+        source = package / "skills/ibbuilds-pm-source-selection"
         source.mkdir(parents=True)
         (source / "SKILL.md").write_bytes(b"Version one")
         (source / "obsolete.txt").write_bytes(b"Old package file")
@@ -157,7 +217,7 @@ class InstallSuiteTests(unittest.TestCase):
             for checkpoint in range(1, 9):
                 with self.subTest(operation=operation, checkpoint=checkpoint):
                     home = self.home / f"{operation}-{checkpoint}"
-                    target = home / "skills/source-selection/obsolete.txt"
+                    target = home / "skills/ibbuilds-pm-source-selection/obsolete.txt"
                     target.parent.mkdir(parents=True)
                     target.write_bytes(b"Irreplaceable personal original")
                     (home / "AGENTS.md").write_bytes(b"User instructions\r\n")
@@ -166,7 +226,7 @@ class InstallSuiteTests(unittest.TestCase):
                     (source / "obsolete.txt").write_bytes(b"Old package file")
                     with patch.object(INSTALL, "ROOT", package):
                         if operation != "install":
-                            INSTALL.install(home, None, ["source-selection"], with_hooks=True)
+                            INSTALL.install(home, None, ["ibbuilds-pm-source-selection"], with_hooks=True)
                         before = snapshot(home)
                         if operation == "upgrade":
                             (source / "obsolete.txt").unlink()
@@ -188,7 +248,7 @@ class InstallSuiteTests(unittest.TestCase):
                                 if operation == "uninstall":
                                     INSTALL.uninstall(home, state)
                                 else:
-                                    INSTALL.install(home, state, ["source-selection"], with_hooks=True)
+                                    INSTALL.install(home, state, ["ibbuilds-pm-source-selection"], with_hooks=True)
                             except KeyboardInterrupt:
                                 interrupted = True
                         if interrupted:
@@ -260,14 +320,14 @@ class InstallSuiteTests(unittest.TestCase):
 
     @unittest.skipIf(os.name == "nt", "POSIX access mode semantics")
     def test_original_modes_survive_install_uninstall_and_legacy_receipts(self):
-        target = self.home / "skills/source-selection/scripts/read_source.py"
+        target = self.home / "skills/ibbuilds-pm-source-selection/scripts/read_source.py"
         target.parent.mkdir(parents=True)
         target.write_bytes(b"Personal executable")
         target.chmod(0o751)
         instructions = self.home / "AGENTS.md"
         instructions.write_bytes(b"Shared user instructions")
         instructions.chmod(0o640)
-        INSTALL.install(self.home, None, ["source-selection"])
+        INSTALL.install(self.home, None, ["ibbuilds-pm-source-selection"])
         self.assertEqual(stat.S_IMODE(target.stat().st_mode), 0o751)
         self.assertEqual(stat.S_IMODE(instructions.stat().st_mode), 0o640)
         state = INSTALL.load_receipt(self.home)
@@ -275,7 +335,7 @@ class InstallSuiteTests(unittest.TestCase):
         self.assertEqual(target.read_bytes(), b"Personal executable")
         self.assertEqual(stat.S_IMODE(target.stat().st_mode), 0o751)
         self.assertEqual(stat.S_IMODE(instructions.stat().st_mode), 0o640)
-        INSTALL.install(self.home, None, ["source-selection"])
+        INSTALL.install(self.home, None, ["ibbuilds-pm-source-selection"])
         state = INSTALL.load_receipt(self.home)
         for record in state["files"].values():
             record.pop("original_mode")
@@ -322,13 +382,13 @@ class InstallSuiteTests(unittest.TestCase):
         self.assertEqual((self.home / INSTALL.RECEIPT).stat().st_mtime_ns, before)
 
     def test_optional_copy_diagnostics_are_read_only_and_do_not_degrade_status(self):
-        INSTALL.install(self.home, None, skills=["source-selection"])
+        INSTALL.install(self.home, None, skills=["ibbuilds-pm-source-selection"])
         extra = self.home / "other-skills"
-        copy = extra / "source-selection/SKILL.md"
+        copy = extra / "ibbuilds-pm-source-selection/SKILL.md"
         copy.parent.mkdir(parents=True)
         copy.write_text("Candidate copy", encoding="utf-8")
         # Neither uninstalled names nor nested roots are searched.
-        for relative in ("context-management/SKILL.md", "nested/source-selection/SKILL.md"):
+        for relative in ("ibbuilds-pm-context-management/SKILL.md", "nested/source-selection/SKILL.md"):
             path = extra / relative
             path.parent.mkdir(parents=True)
             path.write_text("Not in scope", encoding="utf-8")
@@ -342,9 +402,9 @@ class InstallSuiteTests(unittest.TestCase):
         data = json.loads(result.stdout)
         diagnostics = data.pop("skill_copy_diagnostics")
         self.assertEqual(data, plain)
-        self.assertEqual(diagnostics["possible_duplicates"], ["source-selection"])
-        self.assertEqual(diagnostics["candidates"], {"source-selection": [
-            str(self.home / "skills/source-selection/SKILL.md"), str(copy)]})
+        self.assertEqual(diagnostics["possible_duplicates"], ["ibbuilds-pm-source-selection"])
+        self.assertEqual(diagnostics["candidates"], {"ibbuilds-pm-source-selection": [
+            str(self.home / "skills/ibbuilds-pm-source-selection/SKILL.md"), str(copy)]})
         self.assertEqual(diagnostics["activation"], "unknown")
         self.assertEqual(diagnostics["inspection_errors"], [])
         self.assertEqual(before, {path: path.read_bytes() for path in self.home.rglob("*") if path.is_file()})
@@ -357,7 +417,7 @@ class InstallSuiteTests(unittest.TestCase):
         extra.mkdir()
         try:
             alias.symlink_to(root, target_is_directory=True)
-            (extra / "source-selection").symlink_to(root / "source-selection", target_is_directory=True)
+            (extra / "ibbuilds-pm-source-selection").symlink_to(root / "ibbuilds-pm-source-selection", target_is_directory=True)
         except OSError as exc:
             self.skipTest(f"Symlinks unavailable: {exc}")
         result = INSTALL.skill_copy_diagnostics(self.home, INSTALL.load_receipt(self.home),
@@ -407,16 +467,16 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
     @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
     def test_ordered_name_path_rules_and_profile_override_are_read_only(self):
         self.install()
-        path = self.home / "skills/source-selection/SKILL.md"
-        self.config('[[skills.config]]\nname="source-selection"\nenabled=false\n'
+        path = self.home / "skills/ibbuilds-pm-source-selection/SKILL.md"
+        self.config('[[skills.config]]\nname="ibbuilds-pm-source-selection"\nenabled=false\n'
                     '[[skills.config]]\npath=' + json.dumps(str(path)) + '\nenabled=true\n'
                     '[skills]\ninclude_instructions=false\n')
-        self.config('[[skills.config]]\nname="source-selection"\nenabled=false\n', "Work_2-.config.toml")
+        self.config('[[skills.config]]\nname="ibbuilds-pm-source-selection"\nenabled=false\n', "Work_2-.config.toml")
         before = {p: p.read_bytes() for p in self.home.rglob("*") if p.is_file()}
         base = self.diagnose()
         selected = self.diagnose("Work_2-")
         self.assertEqual(base["configured_disabled_skills"], [])
-        self.assertEqual(selected["configured_disabled_skills"], ["source-selection"])
+        self.assertEqual(selected["configured_disabled_skills"], ["ibbuilds-pm-source-selection"])
         self.assertIs(selected["include_instructions"], False)
         self.assertEqual(selected["effective_activation"], "unknown")
         self.assertTrue(selected["user_layer_resolution_complete"])
@@ -455,11 +515,11 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
     @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
     def test_invalid_types_ignored_selectors_relative_paths_and_unselected_profile(self):
         self.install()
-        self.config('[[skills.config]]\npath="skills/source-selection/SKILL.md"\nenabled=false\n'
-                    '[[skills.config]]\nname="source-selection"\npath="x"\nenabled=true\n')
-        self.config('[[skills.config]]\nname="source-selection"\nenabled=true\n', "unused.config.toml")
-        self.assertEqual(self.diagnose()["configured_disabled_skills"], ["source-selection"])
-        self.config('[[skills.config]]\nname="source-selection"\nenabled="false"\n')
+        self.config('[[skills.config]]\npath="skills/ibbuilds-pm-source-selection/SKILL.md"\nenabled=false\n'
+                    '[[skills.config]]\nname="ibbuilds-pm-source-selection"\npath="x"\nenabled=true\n')
+        self.config('[[skills.config]]\nname="ibbuilds-pm-source-selection"\nenabled=true\n', "unused.config.toml")
+        self.assertEqual(self.diagnose()["configured_disabled_skills"], ["ibbuilds-pm-source-selection"])
+        self.config('[[skills.config]]\nname="ibbuilds-pm-source-selection"\nenabled="false"\n')
         self.assertEqual(self.diagnose()["status"], "partial")
 
     @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
@@ -470,10 +530,10 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
             alias.symlink_to(self.home / "skills", target_is_directory=True)
         except OSError as exc:
             self.skipTest(str(exc))
-        self.config('[[skills.config]]\npath=' + json.dumps(str(alias / "source-selection/SKILL.md"))
+        self.config('[[skills.config]]\npath=' + json.dumps(str(alias / "ibbuilds-pm-source-selection/SKILL.md"))
                     + '\nenabled=false\n')
-        self.assertEqual(self.diagnose()["configured_disabled_skills"], ["source-selection"])
-        self.config('[[skills.config]]\nname=" source-selection "\nenabled=true\n', "work.config.toml")
+        self.assertEqual(self.diagnose()["configured_disabled_skills"], ["ibbuilds-pm-source-selection"])
+        self.config('[[skills.config]]\nname=" ibbuilds-pm-source-selection "\nenabled=true\n', "work.config.toml")
         self.assertEqual(self.diagnose("work")["configured_disabled_skills"], [])
 
     @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
@@ -494,7 +554,7 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
     def test_native_nonzero_budget_and_required_enabled_contract(self):
         self.install()
         for text in ('[skills]\nmax_context_tokens=0\ninclude_instructions=false\n',
-                     '[[skills.config]]\nname="source-selection"\n'):
+                     '[[skills.config]]\nname="ibbuilds-pm-source-selection"\n'):
             with self.subTest(text=text):
                 self.config(text)
                 result = self.diagnose()
@@ -524,7 +584,7 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
     @unittest.skipIf(INSTALL.tomllib is None, "stdlib TOML parser unavailable")
     def test_linked_profile_is_not_read(self):
         target = self.home / "outside.toml"
-        target.write_text('[[skills.config]]\nname="source-selection"\nenabled=false\n')
+        target.write_text('[[skills.config]]\nname="ibbuilds-pm-source-selection"\nenabled=false\n')
         try:
             (self.home / "work.config.toml").symlink_to(target)
         except OSError as exc:

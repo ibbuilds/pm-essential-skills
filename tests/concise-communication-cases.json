@@ -1,7 +1,7 @@
 [
   {
     "id": "direct-answer-no-work-narration",
-    "available_skills": ["concise-communication"],
+    "available_skills": ["ibbuilds-pm-concise-communication"],
     "context": "The supplied report lists 14 completed orders and 2 pending orders. No lookup or calculation beyond reading those totals is needed.",
     "prompt": "How many orders are still pending?",
     "expected": "Give the pending count directly in ordinary language, without extra tools or unrelated report details.",
@@ -9,7 +9,7 @@
   },
   {
     "id": "explicit-depth-and-complete-artifact",
-    "available_skills": ["concise-communication"],
+    "available_skills": ["ibbuilds-pm-concise-communication"],
     "context": "The user is learning Python and needs a self-contained standard-library script. No external files or credentials are required.",
     "prompt": "Write a complete Python CLI that converts Celsius to Fahrenheit, handles invalid numeric input, and has a --help option. Explain each part with examples so I can learn, and show exactly how to run it.",
     "expected": "Provide the complete requested runnable script, substantive explanations, examples, and reproducible run instructions. Keep only unrelated framing short.",
@@ -17,7 +17,7 @@
   },
   {
     "id": "status-no-change-is-not-completion",
-    "available_skills": ["concise-communication"],
+    "available_skills": ["ibbuilds-pm-concise-communication"],
     "context": "The only observed result is that the authorized upload is still running at 60 percent, unchanged since the last update. No error or completion event has arrived.",
     "prompt": "Any update? Is it done?",
     "expected": "Briefly report that the upload is still running at the last observed 60 percent and no new result has arrived.",
@@ -25,7 +25,7 @@
   },
   {
     "id": "specific-blocker-with-outcome-boundaries",
-    "available_skills": ["concise-communication"],
+    "available_skills": ["ibbuilds-pm-concise-communication"],
     "context": "A PDF report was generated and locally verified. Uploading it to the shared Finance folder was attempted and explicitly denied because the account lacks write access. Email delivery was not attempted and would need separate authorization.",
     "prompt": "Why isn't the report in the Finance folder yet?",
     "expected": "Lead with the denied upload and write-access reason. Identify the Finance folder, confirm the PDF is generated and locally verified, and ask for write access or an authorized writable destination.",
@@ -33,7 +33,7 @@
   },
   {
     "id": "brief-but-preserves-critical-risk",
-    "available_skills": ["concise-communication"],
+    "available_skills": ["ibbuilds-pm-concise-communication"],
     "context": "The user pasted `rm -rf ./backup` and says this directory contains their only copy of family photos. No command has run.",
     "prompt": "Quick answer: should I run this to tidy up?",
     "expected": "Directly advise against running it and explain in plain language that it deletes the only photo copy; suggest preserving a verified copy before cleanup.",

@@ -1,0 +1,6 @@
+interface:
+  display_name: "ibbuilds PM Essentials / Source Selection"
+  short_description: "Relevant evidence with less repeated retrieval"
+  default_prompt: "Use $ibbuilds-pm-source-selection to find sufficient evidence for this task while preserving my requested sources and coverage."
+policy:
+  allow_implicit_invocation: true

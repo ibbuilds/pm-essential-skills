@@ -36,13 +36,13 @@ jobs:
           name: pm-essential-skills-${{ runner.os }}-${{ github.sha }}-${{ github.run_attempt }}
           path: |
             work/downloads/pm-essential-skills.zip
-            work/downloads/task-coordination.zip
-            work/downloads/context-management.zip
-            work/downloads/resource-selection.zip
-            work/downloads/source-selection.zip
-            work/downloads/execution-efficiency.zip
-            work/downloads/workflow-improvement.zip
-            work/downloads/concise-communication.zip
+            work/downloads/ibbuilds-pm-task-coordination.zip
+            work/downloads/ibbuilds-pm-context-management.zip
+            work/downloads/ibbuilds-pm-resource-selection.zip
+            work/downloads/ibbuilds-pm-source-selection.zip
+            work/downloads/ibbuilds-pm-execution-efficiency.zip
+            work/downloads/ibbuilds-pm-workflow-improvement.zip
+            work/downloads/ibbuilds-pm-concise-communication.zip
             work/downloads/SHA256SUMS
             work/downloads/distribution.json
           if-no-files-found: error

@@ -49,7 +49,7 @@ When token telemetry is unavailable, supplied observations can still reveal repe
 
 ## Current mechanical improvements
 
-The compact user-level rule and brief prompt reminders reduce always-loaded text. Source Selection's optional [bounded reader](../skills/source-selection/references/bounded-reading.md) returns only missing unchanged coverage; it is not a remote-cache interceptor. Context Management's [cost comparison](../skills/context-management/references/policy.md) can avoid expensive reconstruction. [Concise findings](../skills/context-management/references/checkpoints.md) preserve applicable results without creating a new tracking system.
+The compact user-level rule and brief prompt reminders reduce always-loaded text. Source Selection's optional [bounded reader](../skills/ibbuilds-pm-source-selection/references/bounded-reading.md) returns only missing unchanged coverage; it is not a remote-cache interceptor. Context Management's [cost comparison](../skills/ibbuilds-pm-context-management/references/policy.md) can avoid expensive reconstruction. [Concise findings](../skills/ibbuilds-pm-context-management/references/checkpoints.md) preserve applicable results without creating a new tracking system.
 
 Local tests verify these mechanics using synthetic data and temporary files. Live implicit activation, judgment quality, and net usage effects require separate evidence. Keep the normal experience quiet: evaluations run only when requested or as development verification, not after every user turn.
 

@@ -65,7 +65,7 @@ decision criterion.
 
 ## Implementation and limits
 
-The [skill's policy](../skills/context-management/references/policy.md) owns the
+The [skill's policy](../skills/ibbuilds-pm-context-management/references/policy.md) owns the
 actual decision rules. Existing numerical defaults remain tunable compatibility
 backstops, not research-proven economic optima. Neither a message-count cap nor
 a percentage alone establishes savings.

@@ -1,5 +1,7 @@
 # Optional legacy installer download
 
+For old unprefixed skill names, back up edits and disabled settings before replacing them. The installer refuses silent migration; status, explicit uninstall and recovery remain supported. See https://github.com/ibbuilds/pm-essential-skills/blob/main/docs/skill-naming-migration.md.
+
 For normal skill installation, use your usual skill manager or complete skill
 folders as described in the [repository README](https://github.com/ibbuilds/pm-essential-skills#install-as-regular-skills).
 This installer package is an optional alternative, not required setup.

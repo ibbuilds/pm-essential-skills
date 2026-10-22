@@ -19,9 +19,9 @@ def load(name, path):
     return module
 
 
-STATE = load("transfer_state", "skills/context-management/scripts/transfer_state.py")
-PREFLIGHT = load("preflight", "skills/context-management/scripts/preflight.py")
-SOURCE = load("assess_source", "skills/source-selection/scripts/assess_source.py")
+STATE = load("transfer_state", "skills/ibbuilds-pm-context-management/scripts/transfer_state.py")
+PREFLIGHT = load("preflight", "skills/ibbuilds-pm-context-management/scripts/preflight.py")
+SOURCE = load("assess_source", "skills/ibbuilds-pm-source-selection/scripts/assess_source.py")
 
 
 class TransferTests(unittest.TestCase):
@@ -175,7 +175,7 @@ class TransferTests(unittest.TestCase):
 
     def test_status_cli_works_after_process_restart(self):
         self.change("request", self.gates)
-        run = subprocess.run([sys.executable, str(ROOT / "skills/context-management/scripts/transfer_state.py"),
+        run = subprocess.run([sys.executable, str(ROOT / "skills/ibbuilds-pm-context-management/scripts/transfer_state.py"),
                               "--state", str(self.path), "--event", "status"],
                              capture_output=True, text=True, check=False)
         self.assertEqual(run.returncode, 0, run.stderr)
@@ -299,7 +299,7 @@ class SourceReuseTests(unittest.TestCase):
                 SOURCE.assess(value)
 
     def test_source_cli(self):
-        run = subprocess.run([sys.executable, str(ROOT / "skills/source-selection/scripts/assess_source.py")],
+        run = subprocess.run([sys.executable, str(ROOT / "skills/ibbuilds-pm-source-selection/scripts/assess_source.py")],
                              input=json.dumps(self.value), capture_output=True, text=True, check=False)
         self.assertEqual(run.returncode, 0, run.stderr)
         self.assertEqual(json.loads(run.stdout)["action"], "reuse")

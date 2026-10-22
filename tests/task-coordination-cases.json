@@ -1,7 +1,7 @@
 [
   {
     "id": "report-reuses-accepted-scope",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "The user already requested a two-page internal report comparing the three supplied survey datasets, with a recommendation and a final PDF. Audience and source files are known; no external delivery is requested.",
     "prompt": "Please get the report finished.",
     "expected": "Reuse the accepted audience, sources, and deliverables; coordinate analysis, recommendation, and PDF production with observable completion against all three. Infer reversible formatting choices and deliver the completed PDF with evidence and any real limitations.",
@@ -9,7 +9,7 @@
   },
   {
     "id": "trivial-clear-direct",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "The user supplies one sentence: The team are ready. No project context is needed.",
     "prompt": "Change are to is.",
     "expected": "Return the corrected sentence directly.",
@@ -17,7 +17,7 @@
   },
   {
     "id": "material-choice-independent-progress",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "A campaign brief authorizes preparing final design and copy assets, but does not choose between two incompatible audiences: existing enterprise buyers or new individual consumers. Brand colors, required dimensions, and supplied product facts are settled. Prior campaign evidence favors enterprise buyers.",
     "prompt": "Prepare the campaign assets.",
     "expected": "Ask a focused audience question recommending enterprise buyers with a reason, while preparing the already specified dimensions and factual asset inventory. Wait for the audience decision before committing audience-specific copy.",
@@ -25,7 +25,7 @@
   },
   {
     "id": "partial-milestone-is-not-release",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "The accepted task is to fix a bug, merge through the existing authorized workflow, and verify the staging release. A PR is open and unit tests pass, but review and staging verification remain pending.",
     "prompt": "Are we done with everything we agreed to cover?",
     "expected": "State that implementation and unit checks are complete but the accepted outcome remains open; identify review, merge, and staging verification as remaining, and continue the authorized workflow while respecting actual approval dependencies.",
@@ -33,7 +33,7 @@
   },
   {
     "id": "blocked-delivery-independent-work",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "The task includes completing a report, its summary, and uploading both to the Finance folder. The report is generated. Upload to Finance was denied for lack of write access. The summary can still be completed locally and is not yet finished.",
     "prompt": "Finish the package and put it in Finance.",
     "expected": "Complete the independent summary; report the denied upload action, Finance target, access reason, completed artifacts, and blocked delivery status. Ask for appropriate write access or an authorized alternative destination.",
@@ -41,7 +41,7 @@
   },
   {
     "id": "existing-owners-no-duplicate-delegation",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "The existing tracker assigns Mira to final copy and Lee to illustration. Both are active and have separate owned files. The assistant owns integration of those assets into the final brochure.",
     "prompt": "Coordinate this through the final brochure.",
     "expected": "Reuse existing ownership and tracker state, give or clarify relevant integration requirements without duplicating assignments, and integrate the delivered assets against the accepted brochure scope.",
@@ -49,7 +49,7 @@
   },
   {
     "id": "active-operation-no-arbitrary-poll-cap",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "An authorized video export is still running with no error. The user asked for the final exported video and has not imposed a timeout. Supported status checks remain available; several observations show unchanged progress.",
     "prompt": "Keep tracking it until the export is finished.",
     "expected": "Continue proportionate monitoring to a terminal result or a genuine blocker, then inspect the terminal outcome and report the exported artifact or precise failure.",
@@ -57,7 +57,7 @@
   },
   {
     "id": "accepted-outcome-complete-stop",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "The requested design asset and alternate size have both been delivered and checked against the accepted brief. No requested revisions, active operations, or material risks remain. Publishing was explicitly excluded.",
     "prompt": "Is that everything?",
     "expected": "Confirm completion against both accepted deliverables with concise evidence and stop.",
@@ -65,7 +65,7 @@
   },
   {
     "id": "event-prerequisite-slips-past-deadline",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "An internal event must happen Friday in an accessible venue within the approved budget. Venue-specific invitations are not sent. The booked venue reports it will only be available Monday. A supplied alternative is accessible, available Friday, and within budget, but changing the booking requires the user decision. The attendee list remains useful for either venue.",
     "prompt": "The venue just sent that update. Keep getting the event ready.",
     "expected": "Recognize that the existing venue makes the Friday plan infeasible. Surface the affected commitment and recommend the supplied Friday alternative with its known constraints, asking for the necessary venue-change decision. Continue unaffected attendee-list work and pause obsolete venue-specific invitations.",
@@ -73,7 +73,7 @@
   },
   {
     "id": "report-added-scope-exceeds-capacity",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "A report is due today. The accepted minimum is a verified analysis of three supplied datasets. The user adds a fourth dataset. It is known that processing all four cannot finish today with the currently authorized capacity; no deadline, budget, or verification relaxation was authorized. The completed three-dataset analysis remains usable.",
     "prompt": "Add the fourth dataset too and finish the report.",
     "expected": "Explain the conflict between the added scope, deadline, and authorized capacity. Present concrete alternatives, such as delivering the verified three-dataset report on time with the fourth as a separately agreed follow-up, or changing the deadline. Obtain the necessary decision without discarding valid completed work.",
@@ -81,7 +81,7 @@
   },
   {
     "id": "harmless-design-rename-no-replan",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "A brochure and alternate size are being prepared against an approved brief. The user corrects only the output filename from spring-preview.pdf to spring-final.pdf. Audience, design, dimensions, deadline, ownership, and authorization are unchanged.",
     "prompt": "Use spring-final.pdf as the filename.",
     "expected": "Apply the filename correction and continue the existing authorized work without reopening settled decisions.",
@@ -89,7 +89,7 @@
   },
   {
     "id": "dependent-report-granularity-mismatch",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "An accepted report must compare monthly survey results by region. The assigned analyst promises only annual national totals; the chart owner expects monthly regional data. Source datasets support the accepted breakdown, and the analyst has not yet completed the aggregation. Both owners remain active.",
     "prompt": "Coordinate the analysis and charts for the report.",
     "expected": "Notice that the promised aggregation cannot support the accepted charts before chart production begins. Reconcile the output requirements with the existing analyst and chart owners using the accepted monthly regional scope, and continue independent report work.",
@@ -97,7 +97,7 @@
   },
   {
     "id": "compatible-handoff-reuses-spec",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "An approved brochure specification defines print dimensions, bleed, and final copy. The illustrator and layout owner both reference that same specification; the promised artwork matches its requirements, with applicable validation already supplied. No user choice is missing.",
     "prompt": "Keep the brochure work moving.",
     "expected": "Reuse the existing shared specification, applicable validation, and compatible handoff, preserving the current owners and proceeding with authorized work.",
@@ -105,7 +105,7 @@
   },
   {
     "id": "dependent-output-material-definition-choice",
-    "available_skills": ["task-coordination"],
+    "available_skills": ["ibbuilds-pm-task-coordination"],
     "context": "A research summary will feed a comparison chart. The analyst defines active members as any login during the month, while the chart owner assumes a paid subscription at month end. The user has not selected either definition, and the choice changes the reported conclusion. Citation formatting remains independent.",
     "prompt": "Finish coordinating the summary and comparison chart.",
     "expected": "Surface the conflicting definitions and ask a focused question about which meaning the user intends before producing the dependent comparison. Continue independent citation formatting and preserve existing ownership.",
