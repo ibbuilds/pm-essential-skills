@@ -7,6 +7,7 @@ output, and reasoning subtotals must not be added to these totals again.
 
 import argparse
 import json
+import math
 from pathlib import Path
 import sys
 
@@ -78,6 +79,19 @@ def run(value):
             "observations": observations}
 
 
+def relative_change(delta, baseline):
+    """Keep unavailable float ratios distinct from exact integer measurements."""
+    if not baseline:
+        return None
+    try:
+        ratio = delta / baseline
+    except OverflowError:
+        return None
+    if not math.isfinite(ratio) or (delta != 0 and ratio == 0):
+        return None
+    return ratio
+
+
 def compare(value):
     if not isinstance(value, dict) or set(value) != {"runs"} or not isinstance(value["runs"], list):
         raise ValueError("Input must contain a runs array")
@@ -124,7 +138,7 @@ def compare(value):
                 suite_total += right
                 result.update(status="measured", baseline_tokens=left, suite_tokens=right,
                               token_delta=right - left,
-                              relative_token_change=(right - left) / left if left else None)
+                              relative_token_change=relative_change(right - left, left))
         all_measured = all_measured and result["status"] == "measured"
         all_quality = all_quality and result["quality"] == "passed"
         pairs.append(result)
@@ -132,7 +146,7 @@ def compare(value):
     delta = suite_total - baseline_total if all_measured else None
     return {"pairs": pairs, "all_pairs_measured": all_measured,
             "all_quality_passed": all_quality, "total_token_delta": delta,
-            "relative_token_change": delta / baseline_total if all_measured and baseline_total else None,
+            "relative_token_change": relative_change(delta, baseline_total) if all_measured else None,
             "observed_improvement": all_measured and all_quality and delta < 0,
             "interpretation": "supplied observations only; no causal or statistical guarantee"}
 
@@ -157,10 +171,11 @@ def main():
         except RecursionError as exc:
             raise ValueError(str(exc)) from exc
         result = compare(value)
+        serialized = json.dumps(result, separators=(",", ":"), allow_nan=False)
     except (ValueError, OSError, TypeError, OverflowError) as exc:
         print(json.dumps({"error": str(exc)}), file=sys.stderr)
         return 2
-    print(json.dumps(result, separators=(",", ":")))
+    print(serialized)
     return 0
 
 
