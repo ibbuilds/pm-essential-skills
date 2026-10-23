@@ -151,8 +151,12 @@ def transition(state, event, data):
         "confirm": {"destination_thread_id", "destination_ready", "project_id", "handoff_id"},
         "supersede": {"routing_saved"}, "cancel": set(),
     }
-    if event not in allowed or set(data) - allowed[event]:
-        raise ValueError("Unknown event or event-data field")
+    if event not in allowed:
+        raise ValueError("Unknown transition event. Supported events: " + ", ".join(sorted(allowed)))
+    if set(data) - allowed[event]:
+        # Report only fixed schema names, never untrusted payload keys/values.
+        fields = ", ".join(sorted(allowed[event])) or "(none; use an empty object)"
+        raise ValueError(f"Unknown event-data field. Allowed fields for {event}: {fields}")
     if event == "request":
         if phase != "prepared" or state["attempts"] >= 2:
             raise ValueError("Creation is allowed only from prepared, within the retry limit")
@@ -218,7 +222,7 @@ def write_atomic(path, state):
 
 def update(path, event, data, expected_revision=None):
     if event not in EVENTS:
-        raise ValueError("Unknown transfer event")
+        raise ValueError("Unknown transfer event. Supported events: " + ", ".join(sorted(EVENTS)))
     path = Path(path)
     if path.is_symlink():
         raise ValueError("Journal cannot be a symbolic link")
