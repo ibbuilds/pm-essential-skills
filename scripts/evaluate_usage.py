@@ -151,7 +151,8 @@ def compare(value):
             "all_quality_passed": all_quality, "total_token_delta": delta,
             "relative_token_change": relative_change(delta, baseline_total) if all_measured else None,
             "observed_improvement": all_measured and all_quality and delta < 0,
-            "interpretation": "supplied observations only; no causal or statistical guarantee"}
+            "interpretation": "observed_improvement is token-only, not an overall usefulness verdict; "
+                              "supplied observations only; no causal or statistical guarantee"}
 
 
 def unique(pairs):
