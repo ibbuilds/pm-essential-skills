@@ -6,7 +6,7 @@ import subprocess
 import sys
 import tempfile
 
-SCRIPT = Path(__file__).resolve().parents[2] / 'skills/ibbuilds-pm-source-selection/scripts/capture_command.py'
+SCRIPT = Path(__file__).resolve().parents[2] / 'skills/pm-essential-skills-source-selection/scripts/capture_command.py'
 CASES = {
     'short': "print('ok')",
     'repeated': "import os; os.write(1,b'row: unchanged\\n'*100000); os.write(2,b'notice\\n'*10000)",

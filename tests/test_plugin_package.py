@@ -29,7 +29,7 @@ class PluginPackageTests(unittest.TestCase):
         self.directory = Path(self.temp.name)
 
     def test_catalog_identity_is_consistent_and_has_no_alias_folders(self):
-        expected = {"ibbuilds-pm-" + suffix for suffix in (
+        expected = {"pm-essential-skills-" + suffix for suffix in (
             "task-coordination", "context-management", "resource-selection", "source-selection",
             "execution-efficiency", "workflow-improvement", "concise-communication")}
         self.assertEqual(set(NAMES), expected)
@@ -40,10 +40,10 @@ class PluginPackageTests(unittest.TestCase):
             metadata = yaml.safe_load(text.split("---", 2)[1])
             self.assertEqual(metadata["name"], name)
             self.assertLessEqual(len(name), 64)
-            label = name.removeprefix("ibbuilds-pm-").replace("-", " ").title()
-            display = f"ibbuilds PM Essentials / {label}"
+            label = name.removeprefix("pm-essential-skills-").replace("-", " ").title()
+            display = f"PM Essential Skills / {label}"
             ui = yaml.safe_load((folder / "agents/openai.yaml").read_text(encoding="utf-8"))["interface"]
-            self.assertEqual(ui["display_name"], display)
+            self.assertEqual(ui["display_name"], name)
             self.assertIn("$" + name, ui["default_prompt"])
             self.assertIn("# " + display, text)
 

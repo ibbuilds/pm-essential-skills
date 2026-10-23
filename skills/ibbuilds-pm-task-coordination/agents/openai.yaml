@@ -1,6 +1,0 @@
-interface:
-  display_name: "ibbuilds PM Essentials / Task Coordination"
-  short_description: "Coordinate scope, ownership, and real completion"
-  default_prompt: "Use $ibbuilds-pm-task-coordination to carry this multi-step task through its agreed outcome."
-policy:
-  allow_implicit_invocation: true

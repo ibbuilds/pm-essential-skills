@@ -1,0 +1,6 @@
+interface:
+  display_name: "pm-essential-skills-source-selection"
+  short_description: "Relevant evidence with less repeated retrieval"
+  default_prompt: "Use $pm-essential-skills-source-selection to find sufficient evidence for this task while preserving my requested sources and coverage."
+policy:
+  allow_implicit_invocation: true

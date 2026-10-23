@@ -1,7 +1,0 @@
-interface:
-  display_name: "ibbuilds PM Essentials / Concise Communication"
-  short_description: "Brief, specific replies without losing essentials"
-  default_prompt: "Use $ibbuilds-pm-concise-communication to keep replies brief, specific, and clear."
-
-policy:
-  allow_implicit_invocation: true

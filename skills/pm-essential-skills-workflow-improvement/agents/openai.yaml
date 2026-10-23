@@ -1,0 +1,6 @@
+interface:
+  display_name: "pm-essential-skills-workflow-improvement"
+  short_description: "Maintain scoped remedies for recurring workflow friction"
+  default_prompt: "Use $pm-essential-skills-workflow-improvement to improve this recurring workflow with the smallest justified reusable remedy."
+policy:
+  allow_implicit_invocation: true

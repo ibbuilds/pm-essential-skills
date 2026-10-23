@@ -1,0 +1,6 @@
+interface:
+  display_name: "pm-essential-skills-task-coordination"
+  short_description: "Coordinate scope, ownership, and real completion"
+  default_prompt: "Use $pm-essential-skills-task-coordination to carry this multi-step task through its agreed outcome."
+policy:
+  allow_implicit_invocation: true

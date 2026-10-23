@@ -32,12 +32,12 @@ class ActivationInputTests(unittest.TestCase):
         return json.loads(output.getvalue())
 
     def test_large_valid_prompt_gets_reminder_without_reflecting_prompt(self):
-        install_suite.install(self.home, None, ["ibbuilds-pm-source-selection"])
+        install_suite.install(self.home, None, ["pm-essential-skills-source-selection"])
         payload = json.dumps({"hook_event_name": "UserPromptSubmit", "prompt": "UNTRUSTED " * 14000}).encode()
         self.assertGreater(len(payload), 65536)
         result = self.invoke(payload)
         context = result["hookSpecificOutput"]["additionalContext"]
-        self.assertIn("ibbuilds-pm-source-selection/SKILL.md", context)
+        self.assertIn("pm-essential-skills-source-selection/SKILL.md", context)
         self.assertNotIn("UNTRUSTED", context)
 
     def test_oversized_envelope_is_bounded_neutral_noop(self):

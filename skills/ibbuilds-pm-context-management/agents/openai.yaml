@@ -1,6 +1,0 @@
-interface:
-  display_name: "ibbuilds PM Essentials / Context Management"
-  short_description: "Focused project threads and reliable context handoffs"
-  default_prompt: "Use $ibbuilds-pm-context-management to organize this project's requested work into focused threads and preserve concise handoffs."
-policy:
-  allow_implicit_invocation: true

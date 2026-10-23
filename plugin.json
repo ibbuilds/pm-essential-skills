@@ -7,7 +7,7 @@
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "ibbuilds PM Essentials",
+        "displayName": "PM Essential Skills",
         "shortDescription": "Less repeated AI work",
         "longDescription": "Install any skill independently or use the suite. Select only the skills relevant to the current task: coordinate complete outcomes, preserve context, choose resources and evidence, verify proportionately, improve recurring workflows, and communicate clearly. Respect disabled skills, user preferences, existing permissions, and authorized scope. Optional reminders are not background jobs.",
         "capabilities": []

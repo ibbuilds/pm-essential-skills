@@ -24,12 +24,12 @@ class ArchiveSafetyTests(unittest.TestCase):
             target = self.root / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / name, target)
-        shutil.copytree(ROOT / "skills/ibbuilds-pm-concise-communication", self.root / "skills/ibbuilds-pm-concise-communication")
+        shutil.copytree(ROOT / "skills/pm-essential-skills-concise-communication", self.root / "skills/pm-essential-skills-concise-communication")
 
     def test_builders_refuse_outputs_that_are_sources(self):
         for name, build in (
             ("plugin.json", lambda output: package_plugin.build(output, self.root)),
-            ("Install.cmd", lambda output: package_installers.build(output, ["ibbuilds-pm-concise-communication"], self.root)),
+            ("Install.cmd", lambda output: package_installers.build(output, ["pm-essential-skills-concise-communication"], self.root)),
         ):
             with self.subTest(name=name):
                 output = self.root / name

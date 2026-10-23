@@ -11,7 +11,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / 'skills/ibbuilds-pm-source-selection/scripts/capture_command.py'
+SCRIPT = ROOT / 'skills/pm-essential-skills-source-selection/scripts/capture_command.py'
 spec = importlib.util.spec_from_file_location('capture_command', SCRIPT)
 capture = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(capture)
