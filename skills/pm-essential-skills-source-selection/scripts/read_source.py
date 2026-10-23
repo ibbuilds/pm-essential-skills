@@ -193,7 +193,8 @@ def main():
     except (ValueError, OSError, TypeError) as exc:
         print(json.dumps({"error": str(exc)}), file=sys.stderr)
         return 2
-    print(json.dumps(result, separators=(",", ":"), ensure_ascii=True))
+    utf8_stdout = (sys.stdout.encoding or "ascii").lower().replace("-", "").replace("_", "") == "utf8"
+    print(json.dumps(result, separators=(",", ":"), ensure_ascii=not utf8_stdout))
     return 0
 
 
