@@ -65,7 +65,7 @@ def unique_state_fields(pairs):
     result = {}
     for key, value in pairs:
         if key in result:
-            raise ValueError(f"Duplicate installation state field: {key}; preserve it for recovery")
+            raise ValueError("Duplicate installation state field; preserve it for recovery")
         result[key] = value
     return result
 
@@ -154,7 +154,10 @@ def recover(home):
     raw = read(journal)
     if raw is None:
         return {"status": "nothing_to_recover"}
-    transaction = json.loads(raw, object_pairs_hook=unique_state_fields)
+    try:
+        transaction = json.loads(raw, object_pairs_hook=unique_state_fields)
+    except RecursionError as exc:
+        raise ValueError("Installation state JSON is nested too deeply; preserve it for recovery") from exc
     if (not isinstance(transaction, dict) or type(transaction.get("version")) is not int
             or transaction["version"] != 1
             or not isinstance(transaction.get("files"), dict)):
@@ -214,7 +217,10 @@ def load_receipt(home):
     raw = read(safe_path(home, RECEIPT))
     if raw is None:
         return None
-    state = json.loads(raw, object_pairs_hook=unique_state_fields)
+    try:
+        state = json.loads(raw, object_pairs_hook=unique_state_fields)
+    except RecursionError as exc:
+        raise ValueError("Installation state JSON is nested too deeply; preserve it for recovery") from exc
     if (not isinstance(state, dict) or type(state.get("version")) is not int
             or state["version"] != 1):
         raise ValueError("Unsupported installation receipt; preserve it for recovery")

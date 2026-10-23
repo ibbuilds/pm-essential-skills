@@ -31,7 +31,7 @@ def unique(pairs):
     result = {}
     for key, value in pairs:
         if key in result:
-            raise ValueError(f"Duplicate JSON field: {key}")
+            raise ValueError("Duplicate JSON field; field names must be unique")
         result[key] = value
     return result
 
@@ -50,11 +50,19 @@ def read_regular_bytes(path, *, journal=False):
         return stream.read()
 
 
+def parse_json(raw):
+    try:
+        return json.loads(raw, object_pairs_hook=unique)
+    except RecursionError as exc:
+        # Normalize decoder limits only, not recursion in lifecycle logic.
+        raise ValueError("JSON nesting exceeds decoder limit") from exc
+
+
 def read_json(path, *, journal=False):
     # Event payloads (--input) retain their ordinary stream-compatible behavior.
     raw = (read_regular_bytes(path, journal=True).decode("utf-8-sig") if journal
            else path.read_text(encoding="utf-8-sig"))
-    return json.loads(raw, object_pairs_hook=unique)
+    return parse_json(raw)
 
 
 def digest(path, source_thread_id=None):
@@ -289,7 +297,7 @@ def main():
         if args.event == "status":
             data = {}
         else:
-            data = read_json(args.input) if args.input else json.loads(sys.stdin.read(), object_pairs_hook=unique)
+            data = read_json(args.input) if args.input else parse_json(sys.stdin.read())
         result = summary(update(args.state, args.event, data, args.expected_revision))
     except (ValueError, OSError) as exc:
         print(json.dumps({"error": str(exc)}), file=sys.stderr)

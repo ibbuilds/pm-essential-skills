@@ -37,6 +37,62 @@ class JsonCliBoundaryTests(unittest.TestCase):
                     self.assertNotIn("PRIVATE_FIXTURE", result.stderr)
                     self.assertNotIn("Traceback", result.stderr)
 
+    def test_duplicate_field_diagnostics_are_bounded_without_input_echo(self):
+        key = "PRIVATE_FIXTURE_" + "x" * 2048
+        raw = "{" + json.dumps(key) + ":0," + json.dumps(key) + ":1}"
+        for script in SCRIPTS:
+            with self.subTest(script=script):
+                result = self.invoke(script, raw)
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(result.stdout, "")
+                error = json.loads(result.stderr)
+                self.assertEqual(set(error), {"error"})
+                self.assertIn("Duplicate", error["error"])
+                self.assertIn("field names must be unique", error["error"])
+                self.assertLess(len(result.stderr), 128)
+                self.assertNotIn("PRIVATE_FIXTURE", result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_stateful_duplicate_field_errors_preserve_evidence_without_echo(self):
+        key = "PRIVATE_FIXTURE_" + "x" * 2048
+        raw = "{" + json.dumps(key) + ":0," + json.dumps(key) + ":1}"
+        with tempfile.TemporaryDirectory(prefix="pm-duplicate-boundary-") as directory:
+            home = Path(directory)
+            cases = (
+                ("scripts/install_suite.py", "pm-essential-skills/install.json", "status"),
+                ("scripts/install_suite.py", "pm-essential-skills/transaction.json", "recover"),
+                (CONTEXT + "transfer_state.py", "transfer.json", "status"),
+            )
+            for script, relative, event in cases:
+                with self.subTest(script=script, event=event):
+                    target = home / relative
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text(raw, encoding="utf-8")
+                    before = target.read_bytes()
+                    args = ((event, "--codex-home", str(home)) if script.startswith("scripts/")
+                            else ("--state", str(target), "--event", event))
+                    result = self.invoke(script, "", *args)
+                    self.assertEqual(result.returncode, 2)
+                    self.assertEqual(result.stdout, "")
+                    error = json.loads(result.stderr)
+                    self.assertEqual(set(error), {"error"})
+                    self.assertIn("Duplicate", error["error"])
+                    self.assertLess(len(result.stderr), 128)
+                    self.assertNotIn("PRIVATE_FIXTURE", result.stderr)
+                    self.assertNotIn("Traceback", result.stderr)
+                    self.assertEqual(target.read_bytes(), before)
+                    self.assertFalse(list(home.rglob("*.lock")))
+                    target.unlink()
+            target = home / "uncreated-transfer.json"
+            result = self.invoke(CONTEXT + "transfer_state.py", raw,
+                                 "--state", str(target), "--event", "prepare")
+            self.assertEqual(result.returncode, 2)
+            self.assertEqual(result.stdout, "")
+            self.assertEqual(json.loads(result.stderr), {
+                "error": "Duplicate JSON field; field names must be unique"})
+            self.assertFalse(target.exists())
+            self.assertFalse(list(home.rglob("*.lock")))
+
     def test_normal_inputs_remain_usable_via_stdin_and_input_file(self):
         with tempfile.TemporaryDirectory(prefix="pm-json-boundary-") as directory:
             source = Path(directory) / "source.txt"

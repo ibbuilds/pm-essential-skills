@@ -312,7 +312,7 @@ def _unique_object(pairs: list[tuple[str, Any]]) -> dict:
     result = {}
     for name, value in pairs:
         if name in result:
-            raise ValueError(f"Duplicate JSON field: {name}")
+            raise ValueError("Duplicate JSON field; field names must be unique")
         result[name] = value
     return result
 

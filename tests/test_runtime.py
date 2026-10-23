@@ -145,6 +145,68 @@ class TransferTests(unittest.TestCase):
         self.assertEqual((corrected["phase"], corrected["revision"], corrected["attempts"]),
                          ("requesting", 1, 1))
 
+    def test_deep_event_json_cli_is_bounded_and_preserves_state(self):
+        original = self.path.read_bytes()
+        input_path = self.path.with_name("input.json")
+        new_path = self.path.with_name("not-created.json")
+        payloads = ("[" * 10000, "[" * 10000 + '"PRIVATE_FIXTURE"' + "]" * 10000)
+        for raw in payloads:
+            input_path.write_text(raw, encoding="utf-8")
+            for event, target in (("prepare", new_path), ("request", self.path)):
+                command = [sys.executable, STATE.__file__, "--state", str(target),
+                           "--event", event, "--expected-revision", "0"]
+                for args, stdin in (([], raw), (["--input", str(input_path)], "")):
+                    with self.subTest(event=event, file_input=bool(args), balanced=raw.endswith("]")):
+                        run = subprocess.run(command + args, input=stdin, text=True,
+                                             capture_output=True, timeout=3)
+                        self.assertEqual(run.returncode, 2)
+                        self.assertEqual(run.stdout, "")
+                        self.assertEqual(json.loads(run.stderr),
+                                         {"error": "JSON nesting exceeds decoder limit"})
+                        self.assertLess(len(run.stderr), 100)
+                        self.assertEqual(self.path.read_bytes(), original)
+                        self.assertFalse(new_path.exists())
+                        self.assertFalse(list(self.path.parent.glob("*.lock")))
+
+    def test_deep_stored_json_cli_preserves_journal_and_releases_lock(self):
+        for raw in ("[" * 10000, "[" * 10000 + '"PRIVATE_FIXTURE"' + "]" * 10000):
+            self.path.write_text(raw, encoding="utf-8")
+            original = self.path.read_bytes()
+            for event in ("status", "request"):
+                with self.subTest(event=event, balanced=raw.endswith("]")):
+                    run = subprocess.run(
+                        [sys.executable, STATE.__file__, "--state", str(self.path),
+                         "--event", event, "--expected-revision", "0"],
+                        input=json.dumps(self.gates), text=True, capture_output=True, timeout=3)
+                    self.assertEqual(run.returncode, 2)
+                    self.assertEqual(run.stdout, "")
+                    self.assertEqual(json.loads(run.stderr),
+                                     {"error": "JSON nesting exceeds decoder limit"})
+                    self.assertLess(len(run.stderr), 100)
+                    self.assertEqual(self.path.read_bytes(), original)
+                    self.assertFalse(list(self.path.parent.glob("*.lock")))
+
+    def test_json_cli_valid_lifecycle_through_stdin_and_file(self):
+        input_path = self.path.with_name("input.json")
+        for event, data, file_input, owner in (
+                ("request", self.gates, False, None),
+                ("confirm", self.confirmation, True, "destination-b"),
+                ("supersede", {"routing_saved": True}, False, "destination-b")):
+            payload = json.dumps(data)
+            input_path.write_text(payload, encoding="utf-8")
+            command = [sys.executable, STATE.__file__, "--state", str(self.path),
+                       "--event", event, "--expected-revision", str(self.state["revision"])]
+            if file_input:
+                command += ["--input", str(input_path)]
+            run = subprocess.run(command, input="" if file_input else payload,
+                                 text=True, capture_output=True, timeout=3)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            self.assertEqual(run.stderr, "")
+            self.assertEqual(json.loads(run.stdout)["active_writer"], owner)
+            self.state = STATE.update(self.path, "status", {})
+        self.assertEqual(self.state["phase"], "superseded")
+        self.assertEqual(self.state["attempts"], 1)
+
     def test_brief_without_exact_source_reference_cannot_be_prepared(self):
         for content in ("Goal and next step only", "Source title only", "Source ID: source-aa"):
             with self.subTest(content=content):
