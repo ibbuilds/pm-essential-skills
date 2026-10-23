@@ -25,6 +25,8 @@ Ensure the actual skill or project entrypoint can find that canonical owner and 
 
 ## Validate and govern
 
+When generalizing a lesson, separate the useful correction from incidental steps in a successful run. Check available contrasting cases before widening scope. Discovery evidence alone does not establish transfer; without broader support, preserve the original conditions and uncertainty rather than requiring another benchmark.
+
 Prefer reversible, scoped changes within actual approval. Exercise the affected behavior and relevant negative cases, including whether the remedy catches the known failure without rejecting valid work. Match verification to risk and honor required gates; do not impose blanket full-suite runs. Distinguish implemented, validated, and still-blocked outcomes.
 
 Keep remedies supported by evidence of quality-preserving reduction in total overhead or user interventions. Simplify duplicate or expensive machinery; remove unsupported or obsolete machinery after checking its consumers and preserving needed behavior. Include maintenance, discovery, and validation costs, not just shorter prompts. Missing telemetry does not prevent a justified improvement: report observable evidence and unknowns, not guaranteed savings or a required live benchmark.
