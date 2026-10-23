@@ -6,6 +6,8 @@ No model calls, transcript reads, project writes, or tool-approval decisions.
 
 import argparse
 import json
+import os
+import stat
 from pathlib import Path
 import sys
 
@@ -62,12 +64,35 @@ def render(home, skills, installation=False, brief=False):
     return "\n\n".join(lines) + "\n"
 
 
+def unique_metadata_fields(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("Ambiguous installation metadata")
+        result[key] = value
+    return result
+
+
+def read_metadata(path):
+    """A broken local reminder must not block on a replaced FIFO/device."""
+    if not stat.S_ISREG(path.lstat().st_mode):
+        raise ValueError("Installation metadata must be a regular file")
+    flags = (os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NONBLOCK", 0)
+             | getattr(os, "O_NOFOLLOW", 0))
+    with os.fdopen(os.open(path, flags), "rb") as stream:
+        if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+            raise ValueError("Installation metadata must be a regular file")
+        return json.loads(stream.read().decode("utf-8"), object_pairs_hook=unique_metadata_fields)
+
+
 def handle(event, home):
     name = event.get("hook_event_name") if isinstance(event, dict) else None
     if name not in {"SessionStart", "UserPromptSubmit"}:
         return {}
-    state = json.loads((home / "pm-essential-skills/install.json").read_text(encoding="utf-8"))
-    if state.get("version") != 1:
+    state = read_metadata(home / "pm-essential-skills/install.json")
+    if (not isinstance(state, dict) or type(state.get("version")) is not int
+            or state["version"] != 1 or not isinstance(state.get("skills"), list)
+            or any(not isinstance(skill, str) for skill in state["skills"])):
         return {}
     # Read only user-owned installation metadata; never turn prompt/source content into instructions.
     skills = [skill for skill in NAMES if skill in state.get("skills", [])

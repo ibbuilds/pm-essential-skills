@@ -28,6 +28,13 @@ mechanics, not universal cancellation guarantees. Unaffected work and safe
 read-only work can continue; a conflicting replacement writer needs reconciled
 ownership. A late side effect is neither impossible nor newly authorized.
 
+The pinned SDK [parent-cancellation regression case](https://github.com/openai/openai-agents-python/blob/0dc4cf152bff1f50bdc0e41f28808563406545b2/tests/test_run_step_execution.py#L2733-L2788)
+explicitly leaves child cleanup unfinished after the parent exits. Conversely,
+[cooperative nested cancellation](https://github.com/openai/openai-agents-python/blob/0dc4cf152bff1f50bdc0e41f28808563406545b2/tests/test_agent_as_tool.py#L3806-L3872)
+checks the relevant child and handler have stopped. Reuse such scoped evidence;
+neither a completion flag nor parent exit universally settles external effects.
+These upstream tests were inspected, not executed.
+
 [Stale constraints, v3](https://arxiv.org/html/2608.25553v3) (28 August 2026)
 and [STALE, v1](https://arxiv.org/html/2605.06527v1) (7 May 2026) support checking
 whether inherited conclusions still apply, but their constrained/synthetic
@@ -73,3 +80,60 @@ counterexamples and local integrity checks. It did not run paid model evaluation
 execute upstream projects, install on the user's host or prove net savings.
 No new controller, mandatory service, benchmark runner or installation step was
 added. Existing handoff policy, opt-outs and user-owned decisions remain intact.
+
+
+## Extended comparison: error handling and evaluation health
+
+The inspected [Anthropic skill-evaluation helper](https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/skill-creator/scripts/run_eval.py#L210-L239)
+coerces worker exceptions to `False`, then uses low activation rates to pass
+expected-negative cases. Static inspection therefore identifies a path where
+execution failure can look like favorable negative-control behavior; it does not
+establish that a whole mixed evaluation passes or that a particular reported run
+was affected. The helper was not executed or imported. Our evaluator has no live
+runner and does not synthesize those observations. A maintainer-only note in
+[efficiency evaluation](efficiency-evaluation.md) now separates execution health
+and trace coverage from activation, retaining failed attempts and their costs.
+A valid completed answer without a tool call remains a valid negative.
+
+Current [Superpowers debugging](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/systematic-debugging/SKILL.md)
+and [verification](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/verification-before-completion/SKILL.md)
+were compared against existing diagnostic evidence, ownership and freshness
+rules. No fixed retry-count architecture gate, universal test-first repair or
+same-message rerun requirement was adopted. An unchanged verified artifact can
+reuse applicable evidence; a clear new supported hypothesis can justify another
+attempt without a mandatory escalation. Popularity is not evidence that every
+procedure is efficient for every task.
+
+
+## Locally reproduced helper failures
+
+- A version-1 installation receipt with `files: []` raised an uncaught attribute
+  error. Field/record validation now rejects malformed receipts before use,
+  preserves their bytes and returns the existing structured error format.
+- Replacing an interrupted transaction target with a FIFO blocked recovery while
+  opening it. Transaction reads now reject nonregular files and verify the opened
+  descriptor; the regression preserves the journal and other targets, then
+  recovers only after explicit fixture reconciliation. This is not permission
+  for the helper to delete unexpected user objects.
+- Lowering a transfer journal's attempt counter while leaving its event history
+  intact bypassed the resolved-failure retry gate. Version-1 history is complete
+  and unpruned, so validation now checks lifecycle consistency and request count.
+  Inconsistent state is rejected unchanged; history still does not prove host
+  outcomes or grant authorization. Durable journal/brief reads also reject
+  nonregular files before blocking; failed preparation releases its owned lock.
+  Regular symlinked briefs and explicit event-input streams remain supported.
+
+- Conflicting duplicate JSON fields in recovery evidence were accepted with
+  last-value semantics: a duplicated `before` could turn restoration into
+  deletion and remove the journal. Persistent receipt/journal parsing now rejects
+  duplicates before mutation, while a valid `before: null` still restores the
+  intentional absence of a newly created file.
+- The optional hook independently read its receipt and could block on a FIFO or
+  emit guidance from malformed selection metadata. Its standalone reader now
+  rejects nonregular inputs, checks the opened descriptor and validates selection
+  shape. Broken metadata produces the established neutral result; valid selected
+  skills still work, without reflecting prompt text or adding installer imports.
+
+These are isolated local reproductions and regression checks, unlike the
+upstream tests inspected above. They do not establish live host integration or
+change the existing handoff permission policy.

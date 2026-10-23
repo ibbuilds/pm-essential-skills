@@ -59,6 +59,14 @@ Local tests verify these mechanics using synthetic data and temporary files. Liv
 
 Evaluate each case first with only its listed skill metadata and packaged resources, without the suite's global reminder or a companion. Repeat with ordinary installed discovery and, when relevant, the optional reminder. This separates a weak skill from a helpful installer pointer. Test full descriptions and a shortened prefix; record omissions as discovery failures rather than changing host budgets. Use actual supported traces/artifacts, not the model's promise to follow the skill.
 
+Establish run health and relevant trace completeness separately from activation.
+Launch/authentication failures, timeouts, failed child processes or missing trace
+coverage are invalid or inconclusive observations, not successful negative
+controls. A valid completed direct answer without skill activation can be a
+correct negative; no tool call is required solely to demonstrate health. Preserve
+failed/inconclusive runs and their known costs rather than dropping them or
+coercing missing behavior to `false`.
+
 For a phase case, inspect ordering: the location question must precede substantial domain reads or changes, and no implementation/dispatch may occur while the answer is pending. For source cases, inspect sufficient coverage, missed exceptions, unnecessary reads, and truncation recovery. For continuity, check that the creation prompt carries immediate context and a usable predecessor reference; retrieval should resolve missing details without reloading everything. For archival, check cleanup eligibility, original-state receipts, restoration after failed reads, and isolation from active work. Negative controls must stay quiet. Check returned work quality before comparing usage. Keep helper/packaging tests, isolated model forward tests, and real desktop integration results separate.
 
 For optional Codex CLI evaluations, `codex exec --json` supplies a structured run trace; the CLI does not expose desktop chat-creation behavior merely because the desktop does. Run only in disposable fixtures with existing permissions and settings. Do not add a background collector, hidden model call, or live-user-project mutation to the normal skill flow.

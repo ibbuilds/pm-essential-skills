@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import re
+import stat
 import sys
 import tempfile
 from pathlib import Path
@@ -35,12 +36,29 @@ def unique(pairs):
     return result
 
 
-def read_json(path):
-    return json.loads(path.read_text(encoding="utf-8-sig"), object_pairs_hook=unique)
+def read_regular_bytes(path, *, journal=False):
+    # Durable state/briefs cannot be streams. Check before open and again on the
+    # descriptor; a FIFO substituted between those checks must not block open.
+    if not path.is_file():
+        raise ValueError("Durable transfer source requires a regular file")
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NONBLOCK", 0)
+    if journal:
+        flags |= getattr(os, "O_NOFOLLOW", 0)
+    with os.fdopen(os.open(path, flags), "rb") as stream:
+        if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+            raise ValueError("Durable transfer source requires a regular file")
+        return stream.read()
+
+
+def read_json(path, *, journal=False):
+    # Event payloads (--input) retain their ordinary stream-compatible behavior.
+    raw = (read_regular_bytes(path, journal=True).decode("utf-8-sig") if journal
+           else path.read_text(encoding="utf-8-sig"))
+    return json.loads(raw, object_pairs_hook=unique)
 
 
 def digest(path, source_thread_id=None):
-    raw = path.read_bytes()
+    raw = read_regular_bytes(path)
     if not raw.strip():
         raise ValueError("Continuation brief is empty")
     content = raw.decode("utf-8-sig")
@@ -79,6 +97,31 @@ def validate(state):
             raise ValueError("Invalid transfer event")
     if events[-1]["revision"] != state["revision"] or events[-1]["phase"] != state["phase"]:
         raise ValueError("Journal state disagrees with event history")
+    # Version 1 retains the complete history; the writer never prunes events or
+    # appends idempotent no-ops. Check consistency, not host outcomes/permission.
+    if events[0]["event"] != "prepare" or events[0]["phase"] != "prepared":
+        raise ValueError("Transfer history must start with prepare/prepared")
+    phase, attempts = "prepared", 0
+    for entry in events[1:]:
+        event = entry["event"]
+        allowed = {
+            "request": ({"prepared"}, "requesting"),
+            "unknown": ({"requesting"}, "uncertain"),
+            "failed": ({"requesting", "uncertain"}, "prepared" if attempts < 2 else "failed"),
+            "absent": ({"uncertain"}, "prepared" if attempts < 2 else "failed"),
+            "confirm": ({"requesting", "uncertain"}, "confirmed"),
+            "supersede": ({"confirmed"}, "superseded"),
+            "cancel": ({"prepared", "failed"}, "cancelled"),
+        }
+        if event not in allowed or phase not in allowed[event][0]:
+            raise ValueError("Invalid lifecycle transition in transfer history")
+        phase = allowed[event][1]
+        if event == "request":
+            attempts += 1
+        if attempts > 2 or entry["phase"] != phase:
+            raise ValueError("Transfer history phase or retry limit is inconsistent")
+    if state["attempts"] != attempts:
+        raise ValueError("Transfer attempts disagree with request event history")
     for key in ["handoff_id", "project_id", "source_thread_id", "brief_path"]:
         text(state[key], key)
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,79}", state["handoff_id"]):
@@ -181,7 +224,7 @@ def update(path, event, data, expected_revision=None):
         raise ValueError("Journal cannot be a symbolic link")
     path = path.resolve()
     if event == "status":
-        return validate(read_json(path))
+        return validate(read_json(path, journal=True))
     if not isinstance(data, dict):
         raise ValueError("Event data must be an object")
     if event != "prepare" and (type(expected_revision) is not int or expected_revision < 0):
@@ -205,7 +248,7 @@ def update(path, event, data, expected_revision=None):
                                   events=[dict(event="prepare", phase="prepared", revision=0)]))
             state["brief_path"] = str(brief)
         else:
-            state = validate(read_json(path))
+            state = validate(read_json(path, journal=True))
             if expected_revision != state["revision"]:
                 raise ValueError("Stale revision; read current state before retrying")
             if event == "request" and digest(Path(state["brief_path"]), state["source_thread_id"])[0] != state["brief_sha256"]:

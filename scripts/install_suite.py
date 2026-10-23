@@ -60,6 +60,16 @@ def decode(value):
     return None if value is None else base64.b64decode(value, validate=True)
 
 
+def unique_state_fields(pairs):
+    """Reject ambiguous durable recovery evidence before interpreting any fields."""
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"Duplicate installation state field: {key}; preserve it for recovery")
+        result[key] = value
+    return result
+
+
 def safe_path(home, relative):
     """Validate receipt/package paths before any writes or deletes."""
     parts = PurePosixPath(relative)
@@ -78,7 +88,24 @@ def safe_path(home, relative):
 
 
 def read(path):
-    return path.read_bytes() if path.exists() else None
+    """Read regular managed files without blocking on a replaced FIFO/device."""
+    try:
+        mode = path.lstat().st_mode
+    except FileNotFoundError:
+        return None
+    if not stat.S_ISREG(mode):
+        raise ValueError(f"Refusing nonregular installation file: {path}; preserve it for recovery")
+    try:
+        descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_BINARY", 0)
+                             | getattr(os, "O_NONBLOCK", 0)
+                             | getattr(os, "O_NOFOLLOW", 0))
+    except FileNotFoundError:
+        return None
+    with os.fdopen(descriptor, "rb") as stream:
+        # Recheck the opened object, not only the pathname checked above.
+        if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+            raise ValueError(f"Refusing nonregular installation file: {path}; preserve it for recovery")
+        return stream.read()
 
 
 def file_mode(path):
@@ -127,8 +154,9 @@ def recover(home):
     raw = read(journal)
     if raw is None:
         return {"status": "nothing_to_recover"}
-    transaction = json.loads(raw)
-    if (not isinstance(transaction, dict) or transaction.get("version") != 1
+    transaction = json.loads(raw, object_pairs_hook=unique_state_fields)
+    if (not isinstance(transaction, dict) or type(transaction.get("version")) is not int
+            or transaction["version"] != 1
             or not isinstance(transaction.get("files"), dict)):
         raise ValueError("Invalid recovery journal; preserve it for manual recovery")
     originals = {}
@@ -186,10 +214,22 @@ def load_receipt(home):
     raw = read(safe_path(home, RECEIPT))
     if raw is None:
         return None
-    state = json.loads(raw)
-    if not isinstance(state, dict) or state.get("version") != 1:
+    state = json.loads(raw, object_pairs_hook=unique_state_fields)
+    if (not isinstance(state, dict) or type(state.get("version")) is not int
+            or state["version"] != 1):
         raise ValueError("Unsupported installation receipt; preserve it for recovery")
+    if (not isinstance(state.get("files"), dict)
+            or type(state.get("instructions_existed")) is not bool
+            or not isinstance(state.get("block"), str)):
+        raise ValueError("Invalid installation receipt fields; preserve it for recovery")
+    if not decode(state["block"]):
+        raise ValueError("Invalid receipt instruction block; preserve it for recovery")
     for relative, record in state["files"].items():
+        if (not isinstance(record, dict) or "original" not in record
+                or (record["original"] is not None and not isinstance(record["original"], str))
+                or not isinstance(record.get("sha256"), str)
+                or not re.fullmatch(r"[0-9a-f]{64}", record["sha256"])):
+            raise ValueError("Invalid receipt file record; preserve it for recovery")
         if relative != HELPER and not any(relative.startswith(f"skills/{name}/") for name in OWNED_SKILLS):
             raise ValueError("Receipt contains an unowned package path")
         safe_path(home, relative)
@@ -197,7 +237,7 @@ def load_receipt(home):
         for mode in (record.get("mode"), record.get("original_mode")):
             if mode is not None and (type(mode) is not int or not 0 <= mode <= 0o7777):
                 raise ValueError("Invalid receipt mode; preserve it for recovery")
-    if state["instructions"] not in ("AGENTS.md", "AGENTS.override.md"):
+    if state.get("instructions") not in ("AGENTS.md", "AGENTS.override.md"):
         raise ValueError("Invalid global instruction target")
     return state
 

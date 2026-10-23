@@ -25,6 +25,8 @@ A normal tool return can still report an operation failure through documented st
 
 Failure of a parallel mutation batch does not establish atomic rollback. If A succeeded, B errored, and C remains pending, do not replay A or assume C stopped. Before retrying, reconcile only already-dispatched operations with uncertain effects, using existing receipts, supported status, or target state. Complete per-item receipts or authoritative evidence of documented atomic rollback can settle outcomes without new queries. Read-only failures need coverage recovery, not write reconciliation. No particular concurrency primitive or new ledger is required.
 
+For an unfamiliar tool or argument-validation error, inspect the available schema/help before another call rather than guessing fields. Reuse that schema while applicable and preserve returned IDs verbatim; reopen it only when new evidence warrants it. Schema validation errors are not evidence of application defects.
+
 ## Prevent a confirmed recurring mistake
 
 After resolving a recurring costly failure, reuse its evidence before trying the rejected approach again under the same conditions. Keep any reusable lesson scoped to its trigger, verified correction, and invalidation condition in current context or an existing authorized record; do not create a file for every incident.
@@ -38,5 +40,3 @@ When independent review is warranted, supply the actual diff/artifact, acceptanc
 Delegate a distinct outcome, not “review everything again.” State its owner, scope, inputs, expected evidence, and completion condition in the handoff. Keep existing owners responsible for their outcomes; coordinate genuinely independent subtasks rather than allowing children to recursively commission the same review. Nested delegation can be useful for separate work, but is not a default escalation path or proof of quality. Batch routine worker progress when useful, but surface blockers and material decisions promptly rather than forcing silence. No fixed depth cap, mandatory agent count, or host configuration change is introduced.
 
 Distinguish implemented, integrated, and verified: a code edit is not proof that the actual user path works. Tie relevant evidence to the tested revision/environment and report which stage remains unverified. Call a failure pre-existing only with baseline evidence; do not require an unrelated full baseline suite before every change.
-
-For an unfamiliar tool or argument-validation error, inspect the available schema/help before another call rather than guessing fields. Reuse that schema while applicable and preserve returned IDs verbatim; reopen it only when new evidence warrants it. Schema validation errors are not evidence of application defects.

@@ -202,6 +202,36 @@ class InstallSuiteTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             INSTALL.load_receipt(self.home)
 
+    def test_malformed_receipt_fields_are_rejected_without_writes(self):
+        receipt = self.home / INSTALL.RECEIPT
+        receipt.parent.mkdir(parents=True)
+        valid = {"version": 1, "files": {}, "instructions": "AGENTS.md",
+                 "instructions_existed": False, "block": INSTALL.encode(b"managed block")}
+        for fields in ({"version": True}, {"version": 1.0},
+                       {"files": []}, {"files": None}, {"instructions_existed": "false"},
+                       {"block": None}, {"block": ""}, {"instructions": []},
+                       {"files": {INSTALL.HELPER: []}},
+                       {"files": {INSTALL.HELPER: {"original": 4, "sha256": "0" * 64}}},
+                       {"files": {INSTALL.HELPER: {"original": None, "sha256": "bad"}}}):
+            with self.subTest(fields=fields):
+                raw = json.dumps({**valid, **fields}).encode()
+                receipt.write_bytes(raw)
+                with self.assertRaises(ValueError):
+                    INSTALL.load_receipt(self.home)
+                self.assertEqual(receipt.read_bytes(), raw)
+                self.assertFalse((self.home / INSTALL.JOURNAL).exists())
+
+    def test_malformed_receipt_cli_returns_structured_error(self):
+        receipt = self.home / INSTALL.RECEIPT
+        receipt.parent.mkdir(parents=True)
+        receipt.write_text(json.dumps({"version": 1, "files": []}))
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/install_suite.py"),
+                                 "status", "--codex-home", str(self.home)],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("preserve it for recovery", json.loads(result.stderr)["error"])
+        self.assertNotIn("Traceback", result.stderr)
+
     def test_interrupted_install_is_degraded_without_blind_retry(self):
         self.install()
         (self.home / "skills/pm-essential-skills-context-management/SKILL.md").unlink()
@@ -326,6 +356,124 @@ class InstallSuiteTests(unittest.TestCase):
         INSTALL.recover(self.home)
         self.assertEqual(first.read_bytes(), b"old instructions")
         self.assertEqual(second.read_bytes(), b"old hooks")
+
+    def test_duplicate_recovery_fields_preserve_target_and_journal(self):
+        target = self.home / "AGENTS.md"
+        target.write_bytes(b"installed")
+        journal = self.home / INSTALL.JOURNAL
+        journal.parent.mkdir(parents=True)
+        raw = (b'{"version":1,"files":{"AGENTS.md":{"before":"b3JpZ2luYWw=",'
+               b'"before":null,"after":"aW5zdGFsbGVk"}}}')
+        journal.write_bytes(raw)
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/install_suite.py"),
+                                 "recover", "--codex-home", str(self.home)],
+                                capture_output=True, text=True, timeout=5)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("Duplicate installation state field: before", json.loads(result.stderr)["error"])
+        self.assertEqual(target.read_bytes(), b"installed")
+        self.assertEqual(journal.read_bytes(), raw)
+        for version in (True, 1.0):
+            with self.subTest(version=version):
+                raw = json.dumps({"version": version, "files": {"AGENTS.md": {
+                    "before": None, "after": INSTALL.encode(b"installed")}}}).encode()
+                journal.write_bytes(raw)
+                with self.assertRaisesRegex(ValueError, "Invalid recovery journal"):
+                    INSTALL.recover(self.home)
+                self.assertEqual(target.read_bytes(), b"installed")
+                self.assertEqual(journal.read_bytes(), raw)
+        # A single null before value legitimately records a newly created file.
+        journal.write_text(json.dumps({"version": 1, "files": {"AGENTS.md": {
+            "before": None, "after": INSTALL.encode(b"installed")}}}))
+        self.assertEqual(INSTALL.recover(self.home)["status"], "recovered")
+        self.assertFalse(target.exists())
+        self.assertFalse(journal.exists())
+
+    def test_duplicate_receipt_fields_preserve_original_evidence(self):
+        receipt = self.home / INSTALL.RECEIPT
+        receipt.parent.mkdir(parents=True)
+        target = self.home / INSTALL.HELPER
+        target.write_bytes(b"installed")
+        state = {"version": 1, "files": {INSTALL.HELPER: {
+            "original": INSTALL.encode(b"original"), "sha256": INSTALL.digest(b"installed")}},
+            "instructions": "AGENTS.md", "instructions_existed": True,
+            "block": INSTALL.encode(INSTALL.BEGIN + b"\nmanaged\n" + INSTALL.END)}
+        guidance = self.home / "AGENTS.md"
+        guidance.write_bytes(INSTALL.decode(state["block"]))
+        valid = json.dumps(state)
+        fixtures = [valid.replace('"original": "b3JpZ2luYWw="',
+                                  '"original": "b3JpZ2luYWw=", "original": null'),
+                    valid.replace('"version": 1', '"version": 1, "version": 1')]
+        for raw in fixtures:
+            with self.subTest(raw=raw):
+                receipt.write_text(raw)
+                result = subprocess.run([sys.executable, str(ROOT / "scripts/install_suite.py"),
+                                         "uninstall", "--codex-home", str(self.home)],
+                                        capture_output=True, text=True, timeout=5)
+                self.assertEqual(result.returncode, 2)
+                self.assertIn("Duplicate installation state field", json.loads(result.stderr)["error"])
+                self.assertEqual(receipt.read_text(), raw)
+                self.assertEqual(target.read_bytes(), b"installed")
+                self.assertEqual(guidance.read_bytes(), INSTALL.decode(state["block"]))
+                self.assertFalse((self.home / INSTALL.JOURNAL).exists())
+        receipt.write_text(valid)
+        self.assertEqual(INSTALL.load_receipt(self.home), state)
+
+    def test_transaction_read_preserves_missing_and_regular_file_semantics(self):
+        target = self.home / "AGENTS.md"
+        self.assertIsNone(INSTALL.read(target))
+        for content in (b"", b"original\x1a\xff\r\n"):
+            target.write_bytes(content)
+            self.assertEqual(INSTALL.read(target), content)
+        target.unlink()
+        target.mkdir()
+        with self.assertRaisesRegex(ValueError, "nonregular installation file"):
+            INSTALL.read(target)
+        self.assertTrue(target.is_dir())
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "FIFO unavailable")
+    def test_recovery_refuses_fifo_without_writes_and_resumes_after_reconciliation(self):
+        first, second = self.home / "hooks.json", self.home / "AGENTS.md"
+        first.write_bytes(b"new hooks")
+        os.mkfifo(second)
+        journal = self.home / INSTALL.JOURNAL
+        journal.parent.mkdir(parents=True)
+        raw = json.dumps({"version": 1, "files": {
+            "hooks.json": {"before": INSTALL.encode(b"old hooks"), "after": INSTALL.encode(b"new hooks")},
+            "AGENTS.md": {"before": INSTALL.encode(b"old instructions"),
+                          "after": INSTALL.encode(b"new instructions")}}}).encode()
+        journal.write_bytes(raw)
+        command = [sys.executable, str(ROOT / "scripts/install_suite.py"),
+                   "recover", "--codex-home", str(self.home)]
+        result = subprocess.run(command, capture_output=True, text=True, timeout=5)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("nonregular installation file", json.loads(result.stderr)["error"])
+        self.assertEqual(journal.read_bytes(), raw)
+        self.assertEqual(first.read_bytes(), b"new hooks")
+        self.assertTrue(stat.S_ISFIFO(second.lstat().st_mode))
+        # Model explicit user reconciliation; recovery itself never removes the FIFO.
+        second.unlink()
+        second.write_bytes(b"new instructions")
+        self.assertEqual(INSTALL.recover(self.home)["status"], "recovered")
+        self.assertEqual(first.read_bytes(), b"old hooks")
+        self.assertEqual(second.read_bytes(), b"old instructions")
+        self.assertFalse(journal.exists())
+
+    @unittest.skipUnless(hasattr(os, "mkfifo") and hasattr(os, "O_NONBLOCK"), "Nonblocking FIFO unavailable")
+    def test_transaction_read_checks_opened_file_after_path_replacement(self):
+        target = self.home / "AGENTS.md"
+        target.write_bytes(b"original")
+        native_open = os.open
+
+        def replace_before_open(path, flags, *args, **kwargs):
+            self.assertTrue(flags & os.O_NONBLOCK)
+            target.unlink()
+            os.mkfifo(target)
+            return native_open(path, flags, *args, **kwargs)
+
+        with patch.object(INSTALL.os, "open", side_effect=replace_before_open):
+            with self.assertRaisesRegex(ValueError, "nonregular installation file"):
+                INSTALL.read(target)
+        self.assertTrue(stat.S_ISFIFO(target.lstat().st_mode))
 
     def test_failed_rollback_keeps_journal_and_cli_recovers(self):
         target = self.home / "AGENTS.md"
