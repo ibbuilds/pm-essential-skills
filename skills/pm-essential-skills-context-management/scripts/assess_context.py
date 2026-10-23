@@ -75,7 +75,7 @@ def _validate(observation: Any) -> tuple[dict, float | None, int]:
         raise ValueError("Observation must be a JSON object")
     unknown = set(observation) - FIELDS
     if unknown:
-        raise ValueError(f"Unknown observation fields: {', '.join(sorted(unknown))}")
+        raise ValueError("Unknown observation fields; use only supported field names")
     if "boundary_choice" in observation and observation["boundary_choice"] not in ("new-thread", "current-thread"):
         raise ValueError("boundary_choice must be new-thread or current-thread")
     for key in ("request_id", "choice_request_id", "last_prompt_request_id"):

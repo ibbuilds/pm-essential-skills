@@ -53,6 +53,18 @@ class JsonCliBoundaryTests(unittest.TestCase):
                 self.assertNotIn("PRIVATE_FIXTURE", result.stderr)
                 self.assertNotIn("Traceback", result.stderr)
 
+    def test_unknown_context_fields_are_rejected_without_input_echo(self):
+        for key in ("unexpected_field", "SYNTHETIC_UNKNOWN_FIELD_" + "x" * 2048):
+            with self.subTest(long_key=len(key) > 2048):
+                result = self.invoke(CONTEXT + "assess_context.py", json.dumps({key: True}))
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(result.stdout, "")
+                self.assertEqual(json.loads(result.stderr), {
+                    "error": "Unknown observation fields; use only supported field names"})
+                self.assertLess(len(result.stderr.encode("utf-8")), 128)
+                self.assertNotIn(key, result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+
     def test_stateful_duplicate_field_errors_preserve_evidence_without_echo(self):
         key = "PRIVATE_FIXTURE_" + "x" * 2048
         raw = "{" + json.dumps(key) + ":0," + json.dumps(key) + ":1}"
