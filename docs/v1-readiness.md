@@ -6,6 +6,13 @@ Reviewed 22 October 2026 against source revision
 published release, a claim of flawless behavior, or a benchmark target. The
 manifest remains the unreleased 0.4.0 candidate; this document does not change it.
 
+**Status clarification — 23 October 2026:** The dated reviews, test counts and CI
+results below describe earlier snapshots, not the latest candidate. Subsequent
+changes are summarized in the [23 October research audit](research-audit-2026-10-23.md).
+Use the selected candidate's exact source revision and applicable local/remote
+check results for current integration status. The urgent-work/location exception
+remains pending; live adherence and net savings remain unverified.
+
 ## Conclusion
 
 Subsequent reinforcement pass (22 October 2026): applicable skill requirements
@@ -28,9 +35,9 @@ The implemented foundation covers the accepted **domain-independent** PM scope.
 It does not need an eighth skill, a mandatory orchestrator, or engineering-specific
 methods to be a first version. Static inspection found concrete procedures for
 each requirement below, not merely names in a capability table. No additional
-implementation change is justified by this readiness pass. Final local repository and packaging gates are recorded below. Remote CI and the
-exact merged source still require verification before handoff; they are not
-reasons to keep expanding the product.
+implementation change is justified by this readiness pass. The local repository and packaging results below are historical evidence.
+Current integration status must be tied to the selected candidate’s exact revision
+and applicable checks; it is not a reason to keep expanding the product.
 
 One material policy limitation remains explicit: Context Management can require
 an unanswered location choice before urgent domain work. An urgent-work exception
@@ -158,8 +165,8 @@ candidate; do not reopen research merely to find more features:
 2. The final required repository gates pass: `python -m unittest discover -s tests`
    and `python scripts/validate_repository.py`. Record source revision, platform,
    failures/skips and command outcome. Reuse applicable existing results rather
-   than rerun unchanged tests repeatedly; the final local results above cover this documentation integration, and
-   final remote CI must still pass before handoff.
+   than rerun unchanged tests repeatedly; the results above cover their stated historical snapshots. Confirm applicable
+   local and remote gates for the selected candidate before handoff.
 3. The user's selected source checkout or archive is identified and contains the
    actual final skills/resources. If archives are rebuilt, check their manifest
    and checksums; local output or CI artifacts are not a published release.

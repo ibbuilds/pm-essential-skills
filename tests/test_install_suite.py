@@ -221,6 +221,50 @@ class InstallSuiteTests(unittest.TestCase):
                 self.assertEqual(receipt.read_bytes(), raw)
                 self.assertFalse((self.home / INSTALL.JOURNAL).exists())
 
+    def test_malformed_owned_hooks_refuse_without_mutating_files(self):
+        receipt = self.home / INSTALL.RECEIPT
+        receipt.parent.mkdir(parents=True)
+        guidance = self.home / "AGENTS.md"
+        block = INSTALL.BEGIN + b"\nfixture\n" + INSTALL.END
+        guidance.write_bytes(block)
+        helper = self.home / INSTALL.HELPER
+        helper.write_bytes(b"fixture helper")
+        hooks = self.home / "hooks.json"
+        original = b'{"description":"user hooks","hooks":{}}\n'
+        hooks.write_bytes(original)
+        merged, owned = INSTALL.hooks_content(self.home, add=True)
+        hooks.write_bytes(merged)
+        state = {"version": 1, "files": {INSTALL.HELPER: {
+                    "original": None, "sha256": INSTALL.digest(helper.read_bytes())}},
+                 "instructions": "AGENTS.md", "instructions_existed": True,
+                 "block": INSTALL.encode(block)}
+        malformed = [[], {}, None, False, 0, ""] + [
+            {"original": None, "groups": groups} for groups in ([], {}, None, True, "invalid")]
+        for ownership in malformed:
+            with self.subTest(ownership=ownership):
+                raw = json.dumps(state | {"hooks": ownership}).encode()
+                receipt.write_bytes(raw)
+                for command in ("status", "uninstall"):
+                    result = subprocess.run([sys.executable, str(ROOT / "scripts/install_suite.py"),
+                                             command, "--codex-home", str(self.home)],
+                                            capture_output=True, text=True, timeout=5)
+                    self.assertEqual(result.returncode, 2, result.stderr)
+                    self.assertIn("Invalid reminder hook receipt", json.loads(result.stderr)["error"])
+                    self.assertNotIn("Traceback", result.stderr)
+                    self.assertEqual(receipt.read_bytes(), raw)
+                    self.assertEqual(guidance.read_bytes(), block)
+                    self.assertEqual(helper.read_bytes(), b"fixture helper")
+                    self.assertEqual(hooks.read_bytes(), merged)
+                    self.assertFalse((self.home / INSTALL.JOURNAL).exists())
+        # No-hooks writers omit the field; genuine records retain null originals.
+        for valid in (state, state | {"hooks": owned},
+                      state | {"hooks": owned | {"original": None}}):
+            receipt.write_text(json.dumps(valid))
+            self.assertEqual(INSTALL.load_receipt(self.home), valid)
+        restored, remaining = INSTALL.hooks_content(self.home, owned)
+        self.assertEqual(restored, original)
+        self.assertIsNone(remaining)
+
     def test_malformed_receipt_cli_returns_structured_error(self):
         receipt = self.home / INSTALL.RECEIPT
         receipt.parent.mkdir(parents=True)
