@@ -356,22 +356,65 @@ class UsageEvaluationTests(unittest.TestCase):
                     self.assertFalse(result["observed_improvement"])
                     self.assertIsNone(result["total_token_delta"])
 
-    def test_ratio_overflow_returns_structured_cli_error(self):
+    def test_ratio_overflow_preserves_exact_totals_with_unknown_ratio(self):
         runs = [self.record("large", "baseline", [1]),
                 self.record("large", "suite", [10 ** 400])]
         result = subprocess.run([sys.executable, str(ROOT / "scripts/evaluate_usage.py")],
                                 input=json.dumps({"runs": runs}), text=True,
                                 capture_output=True, timeout=5)
-        self.assertEqual(result.returncode, 2)
-        self.assertEqual(result.stdout, "")
-        self.assertTrue(json.loads(result.stderr)["error"])
-        self.assertNotIn("Traceback", result.stderr)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stderr, "")
+        for report in (json.loads(result.stdout), USAGE.compare({"runs": runs})):
+            self.assertTrue(report["all_pairs_measured"])
+            self.assertEqual(report["total_token_delta"], 10 ** 400 - 1)
+            self.assertIsNone(report["relative_token_change"])
+            pair = report["pairs"][0]
+            self.assertEqual(pair["baseline_tokens"], 1)
+            self.assertEqual(pair["suite_tokens"], 10 ** 400)
+            self.assertEqual(pair["token_delta"], 10 ** 400 - 1)
+            self.assertIsNone(pair["relative_token_change"])
         # Large exact totals remain supported when their relative change is representable.
         runs[0]["usage"]["requests"][0]["total_tokens"] = 10 ** 400
         result = USAGE.compare({"runs": runs})
         self.assertEqual(result["total_token_delta"], 0)
         self.assertEqual(result["relative_token_change"], 0)
         self.assertFalse(result["observed_improvement"])
+
+    def test_large_finite_ratio_and_nonzero_underflow(self):
+        huge = 10 ** 400
+        for delta, ratio in ((huge, 1.0), (-1, None), (1, None), (0, 0.0)):
+            with self.subTest(delta_sign=(delta > 0) - (delta < 0), ratio=ratio):
+                runs = [self.record("large", "baseline", [huge]),
+                        self.record("large", "suite", [huge + delta])]
+                result = USAGE.compare({"runs": runs})
+                self.assertEqual(result["total_token_delta"], delta)
+                self.assertEqual(result["pairs"][0]["token_delta"], delta)
+                for report in (result, result["pairs"][0]):
+                    if ratio is None:
+                        self.assertIsNone(report["relative_token_change"])
+                    else:
+                        self.assertEqual(report["relative_token_change"], ratio)
+                self.assertEqual(result["observed_improvement"], delta < 0)
+
+    def test_summed_integer_serialization_failure_is_structured(self):
+        limit = getattr(sys, "get_int_max_str_digits", lambda: 0)()
+        if not limit:
+            self.skipTest("Interpreter integer-string conversion limit disabled")
+        largest = int("9" * limit)
+        runs = [self.record("large", variant, [largest, largest])
+                for variant in ("baseline", "suite")]
+        report = USAGE.compare({"runs": runs})
+        self.assertEqual(report["pairs"][0]["baseline_tokens"], 2 * largest)
+        self.assertEqual(report["total_token_delta"], 0)
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/evaluate_usage.py")],
+                                input=json.dumps({"runs": runs}), text=True,
+                                capture_output=True, timeout=5)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.stdout, "")
+        error = json.loads(result.stderr)
+        self.assertEqual(set(error), {"error"})
+        self.assertTrue(error["error"])
+        self.assertNotIn("Traceback", result.stderr)
 
     def test_duplicate_requests_and_token_subtotals_are_rejected(self):
         runs = self.pair()
