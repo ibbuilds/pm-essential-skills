@@ -110,5 +110,45 @@
     "prompt": "Finish coordinating the summary and comparison chart.",
     "expected": "Surface the conflicting definitions and ask a focused question about which meaning the user intends before producing the dependent comparison. Continue independent citation formatting and preserve existing ownership.",
     "must_not": "Do not silently choose a material definition, merge incompatible counts, treat an owner assumption as user approval, or stop all independent work."
+  },
+  {
+    "id": "changed-scope-reaches-active-delegates",
+    "available_skills": ["pm-essential-skills-task-coordination"],
+    "context": "An analyst and chart delegate are active under an accepted all-region report brief. The user now excludes North-region data. The citation-formatting owner works only on unchanged source labels. Delegates do not automatically share the parent conversation.",
+    "prompt": "Exclude North and finish the report.",
+    "expected": "Send the changed boundary to the affected analyst and chart owners through supported controls, reconcile affected work and outputs with the exclusion, and continue unaffected citation work.",
+    "must_not": "Do not assume delegates saw the update, integrate North data, duplicate active owners, broadcast to unaffected owners, or create a change ledger."
+  },
+  {
+    "id": "cancel-ack-is-not-cessation",
+    "available_skills": ["pm-essential-skills-task-coordination"],
+    "context": "A delegate edits report.md and has an active export tool and child worker. The user withdraws the old scope. A supported cancellation request was acknowledged, but cessation of the delegate, tool, child, and external effects is unconfirmed. A replacement would write report.md. Independent read-only source review remains authorized.",
+    "prompt": "Replace the obsolete report work with the new scope.",
+    "expected": "Use supported controls and reconcile actual worker, tool, child, and external-effect state before conflicting replacement writes or integration. Continue authorized independent read-only review while the conflicting state is unresolved.",
+    "must_not": "Do not infer cessation or rollback from acknowledgment, start overlapping writers, globally halt unaffected work, or invent unsupported kill controls."
+  },
+  {
+    "id": "late-old-scope-result-not-accepted",
+    "available_skills": ["pm-essential-skills-task-coordination"],
+    "context": "The user narrowed the report to domestic results and the affected delegate was notified. Its delayed result still includes international recommendations. No external publication occurred. Domestic findings can be independently checked and remain in scope.",
+    "prompt": "Assemble the final report.",
+    "expected": "Reconcile the late output against current domestic-only scope; reject or revise obsolete recommendations and reuse only checked applicable findings before integration.",
+    "must_not": "Do not treat delivery after cancellation or a prior acceptance as proof of current applicability, integrate the obsolete recommendations, or discard all valid findings merely because they arrived late."
+  },
+  {
+    "id": "harmless-parent-note-no-delegate-update",
+    "available_skills": ["pm-essential-skills-task-coordination"],
+    "context": "The parent corrects a typo in its private progress note. Active copy and illustration delegates still have the same accepted scope, inputs, ownership, and constraints; their outputs are unaffected.",
+    "prompt": "Continue the brochure.",
+    "expected": "Continue existing authorized work without delegate updates or additional state checks for this harmless correction.",
+    "must_not": "Do not routinely broadcast, poll workers, cancel assignments, create a ledger, or restart work merely because the parent note changed."
+  },
+  {
+    "id": "confirmed-cessation-all-effects-reuse-terminal-evidence",
+    "available_skills": ["pm-essential-skills-task-coordination"],
+    "context": "An obsolete report delegate has a trustworthy documented terminal completion receipt from the supported host. Its documented scope confirms that the delegate, its export tool, and child worker have stopped; there are no pending writes or external effects. Applicable existing evidence accounts for its final outputs. A replacement writing report.md under the new scope is authorized.",
+    "prompt": "Start the replacement report under the new scope.",
+    "expected": "Reuse the fully scoped terminal evidence and reconciled outputs, and start the authorized replacement without redundant status checks. Preserve the current scope when integrating its results.",
+    "must_not": "Do not equate this documented terminal receipt with an uncertain acceptance acknowledgment, re-poll already settled cessation, require a new ledger or approval, or block authorized replacement without an unresolved conflict."
   }
 ]

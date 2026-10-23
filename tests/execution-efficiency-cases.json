@@ -272,5 +272,75 @@
     "prompt": "Is this finished?",
     "expected": "Report the verified result and any relevant limitation without inventing a permanent prevention rule.",
     "must_not": "Do not create an incident file, blocking guard, hook, or unsupported causal lesson merely because one attempt failed."
+  },
+  {
+    "id": "text-only-tool-success-valid",
+    "available_skills": [
+      "pm-essential-skills-execution-efficiency"
+    ],
+    "context": "A supported read-only tool returns isError=false and a complete text content block answering the question. Its schema makes structuredContent optional and none is present.",
+    "prompt": "Summarize the returned result.",
+    "expected": "Use the valid text result with its documented success status; no retry or repair is needed.",
+    "must_not": "Do not treat absent optional structuredContent as failure, invent a parsing error, or re-fetch complete evidence."
+  },
+  {
+    "id": "returned-preexecution-denial-preserved",
+    "available_skills": [
+      "pm-essential-skills-execution-efficiency"
+    ],
+    "context": "A tool call returns normally with isError=true and a diagnostic explicitly denying a write to Finance before execution. No success fields are supplied and no new authority exists.",
+    "prompt": "Finish the Finance upload.",
+    "expected": "Preserve the pre-execution denial, report the blocked action and target, and request the specific missing authority while continuing independent authorized work.",
+    "must_not": "Do not consume missing success fields, replace the denial with a parsing failure, retry unchanged, bypass restrictions, or reconcile a write documented never to have executed."
+  },
+  {
+    "id": "fail-fast-mutations-independent-outcomes",
+    "available_skills": [
+      "pm-essential-skills-execution-efficiency"
+    ],
+    "context": "Three authorized independent writes A, B, and C were dispatched. The batch rejects when B fails. An existing receipt confirms A succeeded; B is documented to have failed before execution for a recoverable input error; C is still pending with an operation ID. Correcting B is authorized.",
+    "prompt": "Recover the batch and finish the writes.",
+    "expected": "Retain A as complete, correct B within scope, and reconcile C through its supported operation status or target evidence before any retry of C. Complete the remaining authorized outcomes without whole-batch replay.",
+    "must_not": "Do not replay A, infer C stopped or rolled back from the batch rejection, launch a duplicate C, mandate allSettled, or create a new ledger."
+  },
+  {
+    "id": "returned-error-after-write-reconcile",
+    "available_skills": [
+      "pm-essential-skills-execution-efficiency"
+    ],
+    "context": "A create-record call returns isError=true with a diagnostic that a downstream notification failed after the record write may have committed. The record ID and supported lookup are available; no retry has occurred.",
+    "prompt": "Recover the operation.",
+    "expected": "Inspect the diagnostic and existing receipt or supported record state to settle the possible write before retrying; recover only the remaining authorized work without duplicating a confirmed record.",
+    "must_not": "Do not equate the reported error with pre-execution denial or no side effects, blindly replay creation, or claim complete success from the possible write alone."
+  },
+  {
+    "id": "documented-atomic-rollback-settles-effects",
+    "available_skills": [
+      "pm-essential-skills-execution-efficiency"
+    ],
+    "context": "A supported transactional batch reports failure with an authoritative terminal receipt confirming documented atomic rollback covers every dispatched write and all external effects. The recoverable input error is known and its correction and retry remain authorized.",
+    "prompt": "Correct the input and retry the transaction.",
+    "expected": "Reuse the fully scoped rollback evidence, correct the input, and retry within authorization without redundant state queries.",
+    "must_not": "Do not generalize ordinary fail-fast semantics into rollback, but do not ignore this documented rollback or poll already settled effects, require a ledger, or ask for redundant approval."
+  },
+  {
+    "id": "complete-per-item-receipts-avoid-rechecks",
+    "available_skills": [
+      "pm-essential-skills-execution-efficiency"
+    ],
+    "context": "A failed parallel write batch has complete authoritative per-item terminal receipts: A and C succeeded; B failed before execution due to a correctable input error. No pending operations or uncovered effects remain, and correcting B is authorized.",
+    "prompt": "Finish the remaining write.",
+    "expected": "Reuse all receipts, retain A and C as complete, and correct and retry only B without fresh status queries.",
+    "must_not": "Do not replay the whole batch, re-query settled outcomes merely because the aggregate failed, assume rollback, or impose a different concurrency API."
+  },
+  {
+    "id": "read-only-batch-failure-coverage-recovery",
+    "available_skills": [
+      "pm-essential-skills-execution-efficiency"
+    ],
+    "context": "A batch of three independent read-only source queries returns two complete results and one transient failure. No operation can mutate external state. The missing source is required for the requested comparison.",
+    "prompt": "Complete the comparison.",
+    "expected": "Reuse the two applicable results and recover the missing source coverage through a supported authorized read before concluding.",
+    "must_not": "Do not apply write-side-effect reconciliation, discard valid reads, retry the entire batch, or claim complete coverage from two results."
   }
 ]
