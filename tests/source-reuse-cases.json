@@ -1,0 +1,32 @@
+[
+  {
+    "id": "immutable-record-superseded",
+    "available_skills": [
+      "pm-essential-skills-source-selection"
+    ],
+    "context": "The approved April plan is fully loaded with verified immutable identity and unchanged bytes. A known accepted May decision replaces its launch date. The user asks for the current launch date; the old conclusion in working notes still uses April.",
+    "prompt": "What is the current launch date?",
+    "expected": "Use the accepted May decision as governing evidence and invalidate the old dependent launch-date conclusion. Reassess affected claims without refetching the unchanged April record or scanning unrelated sources.",
+    "must_not": "Do not treat immutable bytes or valid provenance as continuing applicability, rely on a helper reuse result as a truth oracle, or perform a universal supersession scan."
+  },
+  {
+    "id": "immutable-record-historical-target",
+    "available_skills": [
+      "pm-essential-skills-source-selection"
+    ],
+    "context": "The approved April plan is available with verified immutable identity. A known accepted May decision changes the launch date. The user specifically asks what launch date was approved in April, not the current date.",
+    "prompt": "What date did the April plan approve?",
+    "expected": "Answer from the identified April version, distinguishing its historical scope from the later accepted change if useful.",
+    "must_not": "Do not replace the historical answer with the May date, invalidate the April record as historical evidence, or fetch unchanged content unnecessarily."
+  },
+  {
+    "id": "fresh-record-retains-explicit-user-limit",
+    "available_skills": [
+      "pm-essential-skills-source-selection"
+    ],
+    "context": "The user explicitly limits research to supplied local files and excludes external browsing. A newly supplied accepted project memo identifies a newer external reference as relevant. The external source is not among the supplied files.",
+    "prompt": "Update the comparison using the supplied files only.",
+    "expected": "Use applicable supplied evidence while retaining the no-browsing limit. Identify any material unsupported claim or ask for specific permission if external evidence is necessary.",
+    "must_not": "Do not treat the newer memo as authorization to browse, override explicit user preferences, or claim the unread external reference was verified."
+  }
+]

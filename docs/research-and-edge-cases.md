@@ -2,6 +2,8 @@
 
 This records why the workflow takes its current shape. It is maintainer documentation, not part of the normal agent instruction path.
 
+See the [23 October comparison](research-audit-2026-10-23.md) for targeted delegate/source-validity improvements and rejected additions.
+
 ## Findings translated into behavior
 
 | Evidence | Design consequence |

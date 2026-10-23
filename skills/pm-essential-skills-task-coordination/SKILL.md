@@ -7,7 +7,7 @@ description: For multi-step, ambiguous, or delegated work; handle trivial clear 
 
 ## Establish the outcome
 
-Reuse the user's goal, accepted scope, decisions, constraints, and context without re-asking settled questions. Define observable completion against the full currently accepted scope, including still-open original requirements, not existing implementation or the latest milestone. Keep later agreed scope changes explicit. Include required workflow steps from applicable enabled skills, not only explicitly requested deliverables. Conditional no-op paths and optional methods remain conditional; do not load every skill.
+Reuse the user's settled goals, scope, decisions, constraints, and context without re-asking. Define observable completion against all accepted scope, including open original requirements, not implementation or the latest milestone. Keep agreed scope changes explicit. Include required workflow steps from applicable enabled skills, not only explicitly requested deliverables. Conditional no-op paths and optional methods remain conditional; do not load every skill.
 
 Infer safe, reversible details. Ask a focused question with a recommended choice only when a missing material user decision affects the outcome, authorization, or costly rework. Continue independent work while awaiting that answer. Do not impose a planning or approval gate on already authorized work.
 
@@ -15,13 +15,15 @@ Infer safe, reversible details. Ask a focused question with a recommended choice
 
 For a trivial clear task, act directly without a plan, tracker, or setup. Otherwise identify only the useful next steps, dependencies, owners, and completion evidence. Keep that state in current context or the existing tracker; do not create project-management files by default.
 
-Delegate separable outcomes only when useful. Check existing assignments before spawning work; preserve one active writer per outcome and avoid duplicate workers or overlapping edits. Give each owner the goal, boundaries, inputs, deliverable, and dependencies. A handoff must identify what is complete, what remains, and who owns the next action; delegation does not discharge responsibility for integration. Carry outstanding skill obligations, their owner/status, pending decisions, and the scope of exceptions in existing context or handoff state. Reuse satisfied evidence while applicable; no separate ledger is needed.
+Delegate separable outcomes only when useful. Check existing assignments before spawning work; preserve one active writer per outcome and avoid duplicate workers or overlapping edits. Give each owner the goal, boundaries, inputs, deliverable, and dependencies. Handoffs identify completed work, remaining work, and next owners; retain responsibility for integration. Carry outstanding skill obligations, their owner/status, pending decisions, and the scope of exceptions in existing context or handoff state. Reuse satisfied evidence while applicable; no separate ledger is needed.
 
-When work depends on another deliverable, compare the promised output with what the next step actually needs before starting dependent work. Reuse an accepted shared specification and applicable validation rather than repeating domain checks or duplicating them. Resolve material mismatches with the responsible owner; ask for user-owned decisions rather than inventing them. Compatible inputs need no new document or approval.
+Before dependent work, compare promised deliverables with downstream needs. Reuse an accepted shared specification and applicable validation rather than repeating domain checks or duplicating them. Resolve material mismatches with the responsible owner; ask for user-owned decisions rather than inventing them. Compatible inputs need no new document or approval.
 
 ## Adapt to material changes
 
-When a material requirement, deadline, budget, capacity, or dependency changes, reassess whether the accepted outcome is still achievable and which commitments are affected. Respect user priorities and reorder only authorized work; avoid work made obsolete by the change. If requirements conflict, present a concrete tradeoff and its consequences for the necessary decision while continuing unaffected work. Do not silently drop scope, lower required quality, or exceed limits. Label uncertain estimates. A harmless change needs no replanning ceremony.
+When a material requirement, deadline, budget, capacity, or dependency changes, reassess whether the accepted outcome is still achievable and which commitments are affected. Respect user priorities and reorder only authorized work; avoid work made obsolete by the change. If requirements conflict, present a concrete tradeoff and its consequences for the necessary decision while continuing unaffected work. Do not silently drop scope, lower required quality, or exceed limits. Label uncertain estimates. Harmless changes need no ceremony.
+
+Send material scope/constraint changes to affected active delegates; do not assume shared updated context. Use supported revision/cancellation controls. Cancellation requests or acceptance acknowledgments alone do not establish cessation. Reuse trustworthy documented terminal evidence without redundant checks; reconcile workers, tools, children, and external effects it does not cover. Before conflicting replacement work or integration, reconcile actual state and late outputs against current scope. Continue unaffected work and safe read-only replacements; no routine broadcasts, polling, or new ledger.
 
 ## Keep work moving
 
@@ -32,7 +34,5 @@ Own active operations through their terminal result or the user's stopping condi
 ## Close the actual loop
 
 Compare delivered results with every accepted requirement and applicable skill obligation. Report the artifact or outcome, relevant evidence, material risks, and remaining gaps. A passing test, draft, or opened PR is insufficient when the accepted goal includes more. Once the goal is met, stop rather than inventing endless optional work.
-
-For example: finish a report's analysis and delivery, not its outline; integrate design and copy into the requested asset; distinguish code implementation from a requested release.
 
 This skill does not prescribe apps, services, Git policies, or models. Context-management owns actual conversation transfer; execution-efficiency owns technical verification and recovery. Do not load either automatically.

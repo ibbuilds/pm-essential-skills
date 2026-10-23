@@ -32,6 +32,8 @@ Use actual IDs, revisions, hashes, ETags, or version markers when available. `re
 
 Use `known_immutable: true` only when the identity denotes an immutable source/version. New drafts, live project files, and a convenient old timestamp do not establish immutability. If a historical version is the intended authority, identify that version explicitly rather than claim it is current.
 
+Unchanged bytes and provenance establish identity, not continued applicability: an immutable approved April plan may be superseded by an accepted May decision. When a known relevant update changes the governing evidence, invalidate dependent conclusions and reassess only affected claims; no universal supersession scan is needed. The April plan remains appropriate for a question about April. Fresh facts never override explicit user permissions or preferences.
+
 The helper validates declared observations, not their truth. It does not hash files, obtain permissions, or infer token savings. Do not call it for every source when the reuse decision is already obvious.
 
 For local UTF-8 sources, the optional [bounded reader](bounded-reading.md) performs a current content-hash check and emits only missing, bounded coverage. It uses the same assessment logic without a persistent cache. For remote sources, use their existing tool's revision/range support; this helper cannot intercept or cache arbitrary connectors.
