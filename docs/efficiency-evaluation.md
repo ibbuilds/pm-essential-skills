@@ -47,6 +47,8 @@ For each comparable complete pair, report suite minus baseline usage, with a neg
 
 When token telemetry is unavailable, supplied observations can still reveal repeated reads, user interruptions, calls, or elapsed time. These remain separate measures; fewer calls do not automatically mean lower tokens or equal quality. Review missed exceptions, lost constraints, needless handoffs, and the suite's own overhead. Reject changes that reduce counts by narrowing the requested work or making users supervise routine management.
 
+See the [cloud-only measured pilot](cloud-workflow-evaluation-2026-10-23.md) for actual workflow burdens and component-level payload comparisons without Codex usage. It includes unfavorable results and does not establish total-token savings.
+
 ## Current mechanical improvements
 
 The compact user-level rule and brief prompt reminders reduce always-loaded text. Source Selection's optional [bounded reader](../skills/pm-essential-skills-source-selection/references/bounded-reading.md) returns only missing unchanged coverage; it is not a remote-cache interceptor. Context Management's [cost comparison](../skills/pm-essential-skills-context-management/references/policy.md) can avoid expensive reconstruction. [Concise findings](../skills/pm-essential-skills-context-management/references/checkpoints.md) preserve applicable results without creating a new tracking system.
