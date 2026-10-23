@@ -29,6 +29,67 @@ class PluginPackageTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.directory = Path(self.temp.name)
 
+    def test_portable_metadata_contract_without_root_extension_allowlist(self):
+        import contextlib
+        import io
+        from unittest.mock import patch
+        import validate_repository as validator
+
+        root = self.directory / "portable-repository"
+        shutil.copytree(ROOT / "skills", root / "skills")
+        shutil.copyfile(ROOT / "plugin.json", root / "plugin.json")
+        first = sorted((root / "skills").glob("*/SKILL.md"))[0]
+        # These enforce the portable spec, not every host's coercion behavior:
+        # Codex accepts blank metadata and numeric short-description scalars.
+        invalid = ("metadata: wrong\n", "metadata: null\n", "metadata:\n",
+                   "metadata: []\n", "metadata: {author: [wrong]}\n",
+                   "metadata: {short-description: {nested: wrong}}\n",
+                   "metadata: {short-description: 123}\n",
+                   "metadata: {enabled: true}\n", "metadata: {1: value}\n")
+        valid = ("", "metadata: {}\n",
+                 "metadata: {author: example, version: '1.0', short-description: '123'}\n",
+                 "defaults: &defaults {author: example, version: '1.0'}\n"
+                 "metadata: {<<: *defaults, author: other}\n",
+                 "extra: &author example\nmetadata: {author: *author}\n",
+                 "unknown-extension: {nested: [1, true]}\nlicense: MIT\n"
+                 "compatibility: Requires Python.\nallowed-tools: Read\n")
+        for extra in invalid + valid:
+            with self.subTest(extra=extra):
+                rejected = extra in invalid
+                first.write_text(f"---\nname: {first.parent.name}\n"
+                                 "description: A useful workflow.\n" + extra +
+                                 "---\nUseful instructions.\n", encoding="utf-8")
+                with patch.object(validator, "ROOT", root), contextlib.redirect_stdout(io.StringIO()) as out:
+                    result = validator.main()
+                self.assertEqual(result, int(rejected), out.getvalue())
+                if rejected:
+                    self.assertIn("metadata must map string keys to string values", out.getvalue())
+
+    def test_description_content_and_portable_character_limit(self):
+        import contextlib
+        import io
+        from unittest.mock import patch
+        import validate_repository as validator
+
+        root = self.directory / "portable-repository"
+        shutil.copytree(ROOT / "skills", root / "skills")
+        shutil.copyfile(ROOT / "plugin.json", root / "plugin.json")
+        first = sorted((root / "skills").glob("*/SKILL.md"))[0]
+        # Codex preserves long descriptions; 1024 is the portable spec limit.
+        # Whitespace-only descriptions also fail the released host's loader.
+        for description, rejected in (("   ", True), ("\t\n", True),
+                                      ("💡" * 1024, False), ("💡" * 1025, True),
+                                      ("  Useful description.  ", False)):
+            with self.subTest(length=len(description), rejected=rejected):
+                first.write_text(f"---\nname: {first.parent.name}\n"
+                                 f"description: {json.dumps(description, ensure_ascii=False)}\n"
+                                 "---\nUseful instructions.\n", encoding="utf-8")
+                with patch.object(validator, "ROOT", root), contextlib.redirect_stdout(io.StringIO()) as out:
+                    result = validator.main()
+                self.assertEqual(result, int(rejected), out.getvalue())
+                if rejected:
+                    self.assertIn("description must be nonempty text under 1,025 characters", out.getvalue())
+
     def test_duplicate_frontmatter_is_reported_and_later_skills_checked(self):
         import validate_repository as validator
         from unittest.mock import patch
