@@ -1,0 +1,6 @@
+interface:
+  display_name: "pm-essential-skills-context-management"
+  short_description: "Focused project threads and reliable context handoffs"
+  default_prompt: "Use $pm-essential-skills-context-management to organize this project's requested work into focused threads and preserve concise handoffs."
+policy:
+  allow_implicit_invocation: true

@@ -26,7 +26,8 @@ from activation import NAMES as SKILLS, render
 
 # Historical names are recognized only for status, recovery and explicit uninstall.
 # They are not aliases in the discovery catalog or supported install selections.
-LEGACY_SKILLS = tuple(name.removeprefix("ibbuilds-pm-") for name in SKILLS)
+BARE_SKILLS = tuple(name.removeprefix("pm-essential-skills-") for name in SKILLS)
+LEGACY_SKILLS = (*BARE_SKILLS, *("ibbuilds-pm-" + name for name in BARE_SKILLS))
 OWNED_SKILLS = (*SKILLS, *LEGACY_SKILLS)
 ROOT = Path(__file__).resolve().parents[1]
 RECEIPT = "pm-essential-skills/install.json"
@@ -41,7 +42,7 @@ DEFAULTS = ("Automatic skill use during active local sessions; same-project "
 
 
 def selected_defaults(skills):
-    if "ibbuilds-pm-context-management" in skills:
+    if "pm-essential-skills-context-management" in skills:
         return DEFAULTS
     return ("Automatic use of the selected skills during active local sessions; preserve user preferences. "
             "No chat-management scope is selected.")

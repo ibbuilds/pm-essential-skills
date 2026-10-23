@@ -1,0 +1,7 @@
+interface:
+  display_name: "pm-essential-skills-concise-communication"
+  short_description: "Brief, specific replies without losing essentials"
+  default_prompt: "Use $pm-essential-skills-concise-communication to keep replies brief, specific, and clear."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,6 +1,0 @@
-interface:
-  display_name: "ibbuilds PM Essentials / Workflow Improvement"
-  short_description: "Maintain scoped remedies for recurring workflow friction"
-  default_prompt: "Use $ibbuilds-pm-workflow-improvement to improve this recurring workflow with the smallest justified reusable remedy."
-policy:
-  allow_implicit_invocation: true

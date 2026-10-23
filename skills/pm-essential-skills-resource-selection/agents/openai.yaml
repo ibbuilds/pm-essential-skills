@@ -1,0 +1,7 @@
+interface:
+  display_name: "pm-essential-skills-resource-selection"
+  short_description: "Choose capable resources without waste"
+  default_prompt: "Use $pm-essential-skills-resource-selection to choose a reliable execution approach without unnecessary resource cost."
+
+policy:
+  allow_implicit_invocation: true

@@ -19,8 +19,8 @@ def load(name, path):
     return module
 
 
-READ = load("read_source", "skills/ibbuilds-pm-source-selection/scripts/read_source.py")
-POLICY = load("cost_policy", "skills/ibbuilds-pm-context-management/scripts/assess_context.py")
+READ = load("read_source", "skills/pm-essential-skills-source-selection/scripts/read_source.py")
+POLICY = load("cost_policy", "skills/pm-essential-skills-context-management/scripts/assess_context.py")
 USAGE = load("evaluate_usage", "scripts/evaluate_usage.py")
 
 
@@ -193,7 +193,7 @@ class BoundedReaderTests(unittest.TestCase):
             self.read()
 
     def test_reader_cli_keeps_metadata_and_returns_only_requested_lines(self):
-        result = subprocess.run([sys.executable, str(ROOT / "skills/ibbuilds-pm-source-selection/scripts/read_source.py")],
+        result = subprocess.run([sys.executable, str(ROOT / "skills/pm-essential-skills-source-selection/scripts/read_source.py")],
                                 input=json.dumps({"path": str(self.path), "start_line": 2, "end_line": 2}),
                                 text=True, capture_output=True, check=True)
         parsed = json.loads(result.stdout)

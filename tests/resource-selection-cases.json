@@ -1,7 +1,7 @@
 [
   {
     "id": "trivial-direct-no-selection",
-    "available_skills": ["ibbuilds-pm-resource-selection"],
+    "available_skills": ["pm-essential-skills-resource-selection"],
     "context": "Current capabilities suffice; no external information or execution is needed.",
     "prompt": "Rewrite 'We will get back to you soon' more concisely.",
     "expected": "Provide a concise rewrite directly.",
@@ -9,7 +9,7 @@
   },
   {
     "id": "mechanical-local-transformation",
-    "available_skills": ["ibbuilds-pm-resource-selection"],
+    "available_skills": ["pm-essential-skills-resource-selection"],
     "context": "A local UTF-8 file has 60,000 records with duplicate IDs. An existing local standard-library script can deduplicate by ID while preserving first occurrence. It requires no service or credentials. User authorized creating a new output file, not modifying the original.",
     "prompt": "Create a deduplicated copy, preserving the first record for each ID.",
     "expected": "Use the existing deterministic local path to generate the authorized copy without rewriting records through model output.",
@@ -17,7 +17,7 @@
   },
   {
     "id": "high-risk-retain-capability",
-    "available_skills": ["ibbuilds-pm-resource-selection"],
+    "available_skills": ["pm-essential-skills-resource-selection"],
     "context": "Current model supports strong reasoning. A weaker supported alternative is available, but an authorization-rule review includes subtle cross-tenant interactions and consequences of missed defects. No evidence shows the weaker alternative meets quality requirements. All necessary source material is supplied.",
     "prompt": "Review these access-control rules carefully. Reduce unnecessary cost, but do not sacrifice correctness.",
     "expected": "Retain sufficient strong capability for the consequential judgment and reduce redundant work instead. Match reasoning to actual difficulty rather than automatically maximizing every setting.",
@@ -25,7 +25,7 @@
   },
   {
     "id": "unavailable-switch-current-adequate",
-    "available_skills": ["ibbuilds-pm-resource-selection"],
+    "available_skills": ["pm-essential-skills-resource-selection"],
     "context": "The interface exposes no model or reasoning switch. Current capabilities can summarize the supplied short meeting notes. No external actions are needed.",
     "prompt": "Use a cheaper model if possible to summarize these notes accurately.",
     "expected": "Summarize with current capabilities; if discussing the conditional request, accurately state that switching is unavailable here rather than claiming a change.",
@@ -33,7 +33,7 @@
   },
   {
     "id": "delegation-overhead-dominates",
-    "available_skills": ["ibbuilds-pm-resource-selection"],
+    "available_skills": ["pm-essential-skills-resource-selection"],
     "context": "The entire task is choosing between two supplied subject lines for a short internal update. Both lines and the audience are already in context. Agents are available but would need the same context and coordinator review.",
     "prompt": "Pick the clearer subject line and briefly explain why.",
     "expected": "Choose directly with a brief rationale because parallel reviews add more context and coordination cost than useful independent work.",
@@ -41,7 +41,7 @@
   },
   {
     "id": "preserve-explicit-model-choice",
-    "available_skills": ["ibbuilds-pm-resource-selection"],
+    "available_skills": ["pm-essential-skills-resource-selection"],
     "context": "The user explicitly selected the current model for this research synthesis. Alternative models and delegation mechanisms are exposed. The supplied excerpts are sufficient to complete the task.",
     "prompt": "Use this model, not another one, to synthesize these excerpts. Save effort where possible without losing nuance.",
     "expected": "Honor the chosen model and synthesize with it, avoiding unnecessary duplicate processing while preserving nuance.",
@@ -49,7 +49,7 @@
   },
   {
     "id": "bounded-independent-delegation",
-    "available_skills": ["ibbuilds-pm-resource-selection"],
+    "available_skills": ["pm-essential-skills-resource-selection"],
     "context": "Three unrelated supplied proposals need substantial reviews against explicit criteria. Agents are supported and authorized. Each review uses a separate document; the parent needs only each review's findings for a final comparison. Parallelism meaningfully reduces latency without duplicating the full corpus.",
     "prompt": "Review each proposal against these criteria, then compare the results.",
     "expected": "Delegate bounded independent reviews with only the relevant proposal and criteria, one owner per review, and retain parent ownership of the final comparison. Account for coordination and review cost.",
@@ -57,7 +57,7 @@
   },
   {
     "id": "capability-gap-real-blocker",
-    "available_skills": ["ibbuilds-pm-resource-selection"],
+    "available_skills": ["pm-essential-skills-resource-selection"],
     "context": "The requested deliverable requires interpreting an attached image, but the current interface has neither visual input capability nor a tool to extract it. No supported model switch exists. The user has not supplied a textual description.",
     "prompt": "Describe the exact differences between the two diagrams in the attachment.",
     "expected": "Explain that the diagrams cannot be inspected with available capabilities and request an accessible representation or authorized capable interface. Distinguish unavailability from an attempted denial.",

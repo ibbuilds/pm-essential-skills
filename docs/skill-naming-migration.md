@@ -1,17 +1,18 @@
 # Skill identity and migration
 
-The publisher is **ibbuilds** and the suite is **PM Essentials**. Canonical folder
-and frontmatter names now share the `ibbuilds-pm-` prefix. There are no alias folders.
+Canonical folder, frontmatter and display names use `repo-name-skill-name`:
+`pm-essential-skills-<skill-slug>`. There are no alias folders. Both previous naming
+generations map to the same canonical names:
 
-| Previous name | Canonical name |
-| --- | --- |
-| `concise-communication` | `ibbuilds-pm-concise-communication` |
-| `context-management` | `ibbuilds-pm-context-management` |
-| `execution-efficiency` | `ibbuilds-pm-execution-efficiency` |
-| `resource-selection` | `ibbuilds-pm-resource-selection` |
-| `source-selection` | `ibbuilds-pm-source-selection` |
-| `task-coordination` | `ibbuilds-pm-task-coordination` |
-| `workflow-improvement` | `ibbuilds-pm-workflow-improvement` |
+| Original name | Previous prefixed name | Canonical name |
+| --- | --- | --- |
+| `concise-communication` | `ibbuilds-pm-concise-communication` | `pm-essential-skills-concise-communication` |
+| `context-management` | `ibbuilds-pm-context-management` | `pm-essential-skills-context-management` |
+| `execution-efficiency` | `ibbuilds-pm-execution-efficiency` | `pm-essential-skills-execution-efficiency` |
+| `resource-selection` | `ibbuilds-pm-resource-selection` | `pm-essential-skills-resource-selection` |
+| `source-selection` | `ibbuilds-pm-source-selection` | `pm-essential-skills-source-selection` |
+| `task-coordination` | `ibbuilds-pm-task-coordination` | `pm-essential-skills-task-coordination` |
+| `workflow-improvement` | `ibbuilds-pm-workflow-improvement` | `pm-essential-skills-workflow-improvement` |
 
 This is an identity change, not new authority or a behavior change. Each skill
 remains independently installable through the normal skill manager or complete

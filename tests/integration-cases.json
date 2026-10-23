@@ -1,7 +1,7 @@
 [
   {
     "id": "integration-pending-location-before-independent-domain-work",
-    "available_skills": ["ibbuilds-pm-context-management", "ibbuilds-pm-task-coordination", "ibbuilds-pm-source-selection"],
+    "available_skills": ["pm-essential-skills-context-management", "pm-essential-skills-task-coordination", "pm-essential-skills-source-selection"],
     "context": "Verified project; accepted plan in a long chat. The assistant asked whether implementation should start in a new same-project chat or here. No answer has arrived. Current occupancy is below critical pressure, the checkpoint is safe, and routing authorization exists. The implementation requires editing parser.py and checking its existing tests; both are accessible but have not been read for this request.",
     "prompt": "The pending task is to implement the approved parser fix and update its regression tests.",
     "expected": "Keep the existing location question pending. The trace contains no implementation-domain reads, edits, test runs, or thread dispatch while unanswered. Task Coordination's instruction to continue independent work does not bypass this request's location gate.",
@@ -9,7 +9,7 @@
   },
   {
     "id": "integration-requested-independent-review-is-not-trivial-duplication",
-    "available_skills": ["ibbuilds-pm-task-coordination", "ibbuilds-pm-resource-selection", "ibbuilds-pm-execution-efficiency"],
+    "available_skills": ["pm-essential-skills-task-coordination", "pm-essential-skills-resource-selection", "pm-essential-skills-execution-efficiency"],
     "context": "An access-control migration changed tenant lookup and role inheritance. The existing author already reviewed it. Supported read-only delegates are authorized; no independent reviewer is assigned. The user requires a separate skeptical review before acceptance, not another implementation owner. The diff, security criteria, and tests are available; whether a defect exists has not been established.",
     "prompt": "Have an independent reviewer challenge this migration against the security criteria. Verify any proposed defects before recommending changes; no edits yet.",
     "expected": "Assign one bounded read-only independent review with the diff and criteria, retain responsibility for validating its evidence, and report supported findings or no actionable findings. The review is part of acceptance, not avoidable duplication of the author's check.",
@@ -17,7 +17,7 @@
   },
   {
     "id": "integration-exhaustive-risk-review-not-cheaper-sampling",
-    "available_skills": ["ibbuilds-pm-resource-selection", "ibbuilds-pm-source-selection", "ibbuilds-pm-execution-efficiency"],
+    "available_skills": ["pm-essential-skills-resource-selection", "pm-essential-skills-source-selection", "pm-essential-skills-execution-efficiency"],
     "context": "The attached authorization policy has 12 numbered pages, including a cross-tenant exception in a footnote on page 11. The reader returns four pages per call. Pages 1-4 have been read; pages 5-12 are not loaded. The current strong model is adequate. A weaker model is exposed but has no demonstrated suitability for this security judgment. No additional service is authorized.",
     "prompt": "Review every page and exception for cross-tenant access risks. Save unnecessary effort, but do not sacrifice correctness or coverage. Do not change the policy.",
     "expected": "Complete the remaining page coverage including footnotes and resolve dependencies before concluding. Retain adequate reasoning capability, reuse pages 1-4 while available, and distinguish actual policy evidence from uncertainty. If any page is inaccessible, report that specific gap rather than complete coverage.",
@@ -25,7 +25,7 @@
   },
   {
     "id": "integration-concise-chat-complete-audit-artifact",
-    "available_skills": ["ibbuilds-pm-concise-communication", "ibbuilds-pm-task-coordination", "ibbuilds-pm-source-selection"],
+    "available_skills": ["pm-essential-skills-concise-communication", "pm-essential-skills-task-coordination", "pm-essential-skills-source-selection"],
     "context": "Three supplied immutable procedures are fully available. The accepted deliverable is a written audit covering each procedure with evidence references, all identified exceptions, uncertainty, and a recommendation. No external delivery or additional research is required. The user normally prefers short chat replies.",
     "prompt": "Deliver the full audit, not an executive summary. Keep the surrounding status message brief.",
     "expected": "Produce the complete requested audit with coverage of all three procedures and evidence for its conclusions. Keep only the surrounding chat concise; check the artifact against the accepted deliverable rather than substituting a short response or outline.",
@@ -33,7 +33,7 @@
   },
   {
     "id": "integration-post-compaction-correction-retains-approval-gate",
-    "available_skills": ["ibbuilds-pm-workflow-improvement", "ibbuilds-pm-context-management", "ibbuilds-pm-execution-efficiency", "ibbuilds-pm-task-coordination"],
+    "available_skills": ["pm-essential-skills-workflow-improvement", "pm-essential-skills-context-management", "pm-essential-skills-execution-efficiency", "pm-essential-skills-task-coordination"],
     "context": "After compaction, an existing checkpoint records two rejected report submissions caused by an obsolete v1 parameter template. The authoritative local guide requires v2 and explicit human approval before submission. Editing the template and fixtures was authorized, submission was not. The checkpoint says the template edit is implemented but its positive and negative fixtures remain unrun. The files and original failure references are accessible; no current context-pressure signal exists.",
     "prompt": "Finish the approved recurring-error fix and tell me what is actually verified. Do not submit the report.",
     "expected": "Recover the narrow authoritative template/approval details as needed, complete the outstanding relevant checks against final files, preserve the existing approval gate, and report implementation versus verification accurately. Reuse applicable failure evidence without redoing the entire investigation or inventing a new memory system.",
@@ -42,8 +42,8 @@
   {
     "id": "integration-skill-originated-render-gate",
     "available_skills": [
-      "ibbuilds-pm-task-coordination",
-      "ibbuilds-pm-execution-efficiency"
+      "pm-essential-skills-task-coordination",
+      "pm-essential-skills-execution-efficiency"
     ],
     "context": "The user requested a document heading correction. The applicable enabled document workflow requires inspecting the final rendering, though the user did not repeat that requirement. A delegated editor delivered the corrected file and confirmed the text, but has not rendered it. Rendering and inspection are available and authorized; the parent owns integration.",
     "prompt": "Finish the corrected document and tell me whether it is ready.",
@@ -53,8 +53,8 @@
   {
     "id": "integration-blocked-skill-gate-survives-handoff",
     "available_skills": [
-      "ibbuilds-pm-task-coordination",
-      "ibbuilds-pm-execution-efficiency"
+      "pm-essential-skills-task-coordination",
+      "pm-essential-skills-execution-efficiency"
     ],
     "context": "An existing handoff says the document correction is implemented but the applicable workflow final-render inspection is blocked because no supported renderer is available. The destination assistant owns completion. The file and text-check evidence are available, but rendering remains unavailable. The user has not waived inspection or authorized new software.",
     "prompt": "Continue from the handoff and give me the actual completion status.",
@@ -64,8 +64,8 @@
   {
     "id": "integration-satisfied-skill-evidence-reused",
     "available_skills": [
-      "ibbuilds-pm-task-coordination",
-      "ibbuilds-pm-execution-efficiency"
+      "pm-essential-skills-task-coordination",
+      "pm-essential-skills-execution-efficiency"
     ],
     "context": "The corrected document and final rendering have already been inspected under the applicable artifact workflow. Evidence identifies the exact final revision and affected layout. No content, dependencies, configuration, environment, acceptance criteria, or relevant freshness conditions changed. All accepted deliverables are ready.",
     "prompt": "Is the correction finished?",
@@ -75,8 +75,8 @@
   {
     "id": "integration-one-request-exception-not-permanent",
     "available_skills": [
-      "ibbuilds-pm-task-coordination",
-      "ibbuilds-pm-concise-communication"
+      "pm-essential-skills-task-coordination",
+      "pm-essential-skills-concise-communication"
     ],
     "context": "Concise Communication is enabled. The user asked for a detailed explanation for the previous request only, including its follow-up clarifications. That request was delivered and confirmed complete. The user did not set a persistent verbosity preference. The supplied report contains exactly two pending items.",
     "prompt": "For this new request, how many items are pending?",
@@ -86,8 +86,8 @@
   {
     "id": "integration-explicit-opt-out-and-pending-authority",
     "available_skills": [
-      "ibbuilds-pm-task-coordination",
-      "ibbuilds-pm-workflow-improvement"
+      "pm-essential-skills-task-coordination",
+      "pm-essential-skills-workflow-improvement"
     ],
     "context": "The user explicitly disabled automatic reusable workflow changes persistently and limited toolkit improvements to suggestions until they opt back in. A recurring report-template issue is known, but only the current report correction is authorized. The assistant already asked whether the user wants the reusable template changed; no answer arrived. The current report can be corrected independently.",
     "prompt": "Finish the current report correction.",
@@ -97,13 +97,13 @@
   {
     "id": "integration-all-installed-trivial-direct",
     "available_skills": [
-      "ibbuilds-pm-task-coordination",
-      "ibbuilds-pm-context-management",
-      "ibbuilds-pm-resource-selection",
-      "ibbuilds-pm-source-selection",
-      "ibbuilds-pm-execution-efficiency",
-      "ibbuilds-pm-workflow-improvement",
-      "ibbuilds-pm-concise-communication"
+      "pm-essential-skills-task-coordination",
+      "pm-essential-skills-context-management",
+      "pm-essential-skills-resource-selection",
+      "pm-essential-skills-source-selection",
+      "pm-essential-skills-execution-efficiency",
+      "pm-essential-skills-workflow-improvement",
+      "pm-essential-skills-concise-communication"
     ],
     "context": "All seven skills are installed and enabled. This is a fresh short standalone chat, with no active operations, outstanding obligations, missing evidence, or special user preferences.",
     "prompt": "What is 6 times 7?",
@@ -113,9 +113,9 @@
   {
     "id": "integration-authorized-recurring-remedy-followthrough",
     "available_skills": [
-      "ibbuilds-pm-task-coordination",
-      "ibbuilds-pm-workflow-improvement",
-      "ibbuilds-pm-execution-efficiency"
+      "pm-essential-skills-task-coordination",
+      "pm-essential-skills-workflow-improvement",
+      "pm-essential-skills-execution-efficiency"
     ],
     "context": "Three supplied traces establish recurring report failures from the same obsolete parameter template. The current schema is available. The user has authorized correcting the existing local template and its fixtures; no submission, global setting change, paid evaluation, or new integration is authorized. The proposed scoped remedy has been identified but not implemented. Required valid and invalid fixture cases are known.",
     "prompt": "Finish the approved recurring-error fix.",

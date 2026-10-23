@@ -116,12 +116,12 @@ class DistributionTests(unittest.TestCase):
             target = root / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / name, target)
-        shutil.copytree(ROOT / "skills/ibbuilds-pm-concise-communication", root / "skills/ibbuilds-pm-concise-communication")
+        shutil.copytree(ROOT / "skills/pm-essential-skills-concise-communication", root / "skills/pm-essential-skills-concise-communication")
         output = self.directory / "skill.zip"
-        result = package_installers.build(output, ["ibbuilds-pm-concise-communication"], root)
+        result = package_installers.build(output, ["pm-essential-skills-concise-communication"], root)
         self.assertFalse(result["license_included"])
         (root / "LICENSE").write_bytes(b"Owner-selected terms fixture\n")
-        result = package_installers.build(output, ["ibbuilds-pm-concise-communication"], root)
+        result = package_installers.build(output, ["pm-essential-skills-concise-communication"], root)
         self.assertTrue(result["license_included"])
         with zipfile.ZipFile(output) as archive:
             self.assertEqual(archive.read("LICENSE"), (root / "LICENSE").read_bytes())

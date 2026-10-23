@@ -33,7 +33,7 @@ class ActivationTests(unittest.TestCase):
             home = self.home / name
             result = install_suite.install(home, None, [name])
             self.assertEqual(result["skills"], [name])
-            self.assertEqual("same-project" in result["defaults"], name == "ibbuilds-pm-context-management")
+            self.assertEqual("same-project" in result["defaults"], name == "pm-essential-skills-context-management")
             self.assertEqual(install_suite.load_receipt(home)["defaults"], result["defaults"])
             self.assertTrue((home / "skills" / name / "SKILL.md").is_file())
             rule = (home / "AGENTS.md").read_text()
@@ -43,15 +43,15 @@ class ActivationTests(unittest.TestCase):
                 self.assertNotIn(f"/{other}/SKILL.md", rule)
 
     def test_installing_another_skill_keeps_the_first(self):
-        install_suite.install(self.home, None, ["ibbuilds-pm-source-selection"])
-        result = install_suite.install(self.home, install_suite.load_receipt(self.home), ["ibbuilds-pm-context-management"])
-        self.assertEqual(result["skills"], ["ibbuilds-pm-context-management", "ibbuilds-pm-source-selection"])
+        install_suite.install(self.home, None, ["pm-essential-skills-source-selection"])
+        result = install_suite.install(self.home, install_suite.load_receipt(self.home), ["pm-essential-skills-context-management"])
+        self.assertEqual(result["skills"], ["pm-essential-skills-context-management", "pm-essential-skills-source-selection"])
         self.assertIn("same-project", result["defaults"])
-        result = install_suite.install(self.home, install_suite.load_receipt(self.home), ["ibbuilds-pm-execution-efficiency"])
+        result = install_suite.install(self.home, install_suite.load_receipt(self.home), ["pm-essential-skills-execution-efficiency"])
         self.assertIn("same-project", result["defaults"])
 
     def test_required_workflow_contract_reaches_install_and_both_hook_events(self):
-        selected = ["ibbuilds-pm-task-coordination", "ibbuilds-pm-context-management"]
+        selected = ["pm-essential-skills-task-coordination", "pm-essential-skills-context-management"]
         install_suite.install(self.home, None, selected, with_hooks=True)
         rule = (self.home / "AGENTS.md").read_text()
         self.assertEqual(rule.count(activation.WORKFLOW_CONTRACT), 1)
@@ -61,7 +61,7 @@ class ActivationTests(unittest.TestCase):
             self.assertIn("disabled", context)
             self.assertIn("suggest-only", context)
             self.assertIn("stay", context)
-            self.assertNotIn("ibbuilds-pm-source-selection/SKILL.md", context)
+            self.assertNotIn("pm-essential-skills-source-selection/SKILL.md", context)
             self.assertNotIn("I authorize", context)
 
     def test_skill_catalogs_cover_every_shipped_entrypoint(self):
@@ -74,7 +74,7 @@ class ActivationTests(unittest.TestCase):
         original = b"Keep my existing preferences.\n"
         self.home.mkdir(parents=True)
         (self.home / "AGENTS.md").write_bytes(original)
-        install_suite.install(self.home, None, ["ibbuilds-pm-context-management", "ibbuilds-pm-execution-efficiency", "ibbuilds-pm-source-selection"], with_hooks=True)
+        install_suite.install(self.home, None, ["pm-essential-skills-context-management", "pm-essential-skills-execution-efficiency", "pm-essential-skills-source-selection"], with_hooks=True)
         state = install_suite.load_receipt(self.home)
         before = {name: (self.home / "skills" / name / "SKILL.md").read_bytes()
                   for name in state["skills"]}
@@ -115,14 +115,14 @@ class ActivationTests(unittest.TestCase):
         self.assertEqual(json.loads(path.read_text())["hooks"], {"Stop": config["hooks"]["Stop"]})
 
     def test_hook_context_uses_selected_paths_without_prompt_or_project_content(self):
-        install_suite.install(self.home, None, ["ibbuilds-pm-source-selection"], with_hooks=True)
+        install_suite.install(self.home, None, ["pm-essential-skills-source-selection"], with_hooks=True)
         before = {path: path.stat().st_mtime_ns for path in self.home.rglob("*") if path.is_file()}
         for event in ("SessionStart", "UserPromptSubmit"):
             response = activation.handle({"hook_event_name": event, "prompt": "UNTRUSTED_PROMPT"}, self.home)
             self.assertEqual(response["hookSpecificOutput"]["hookEventName"], event)
             context = response["hookSpecificOutput"]["additionalContext"]
-            self.assertIn("ibbuilds-pm-source-selection/SKILL.md", context)
-            self.assertNotIn("ibbuilds-pm-context-management/SKILL.md", context)
+            self.assertIn("pm-essential-skills-source-selection/SKILL.md", context)
+            self.assertNotIn("pm-essential-skills-context-management/SKILL.md", context)
             self.assertNotIn("UNTRUSTED_PROMPT", context)
             self.assertLess(len(context.split()), 220)
             self.assertEqual(set(response), {"hookSpecificOutput"})
@@ -130,7 +130,7 @@ class ActivationTests(unittest.TestCase):
 
     def test_prompt_reminder_is_self_contained_with_one_shared_directory(self):
         # No SessionStart or earlier prompt is needed to resolve selected skills.
-        selected = ["ibbuilds-pm-source-selection", "ibbuilds-pm-concise-communication"]
+        selected = ["pm-essential-skills-source-selection", "pm-essential-skills-concise-communication"]
         install_suite.install(self.home, None, selected, with_hooks=True)
         context = activation.handle({"hook_event_name": "UserPromptSubmit"}, self.home)["hookSpecificOutput"]["additionalContext"]
         directory = (self.home / "skills").as_posix()
@@ -147,13 +147,13 @@ class ActivationTests(unittest.TestCase):
         self.assertIn("Reuse loaded guidance", context)
         self.assertIn("No new authority is granted.", context)
         # Deleted entrypoints must not survive in a cached or stale prompt catalog.
-        (self.home / "skills/ibbuilds-pm-source-selection/SKILL.md").unlink()
+        (self.home / "skills/pm-essential-skills-source-selection/SKILL.md").unlink()
         context = activation.handle({"hook_event_name": "UserPromptSubmit"}, self.home)["hookSpecificOutput"]["additionalContext"]
-        self.assertNotIn("ibbuilds-pm-source-selection/SKILL.md", context)
-        self.assertIn("ibbuilds-pm-concise-communication/SKILL.md", context)
+        self.assertNotIn("pm-essential-skills-source-selection/SKILL.md", context)
+        self.assertIn("pm-essential-skills-concise-communication/SKILL.md", context)
         # A shared-directory preamble would add overhead for a single skill.
         self.assertNotIn("Skill paths relative", context)
-        self.assertIn(f"`{self.home.as_posix()}/skills/ibbuilds-pm-concise-communication/SKILL.md`", context)
+        self.assertIn(f"`{self.home.as_posix()}/skills/pm-essential-skills-concise-communication/SKILL.md`", context)
 
     def test_prompt_reminder_is_smaller_than_session_guidance(self):
         install_suite.install(self.home, None, with_hooks=True)
@@ -196,7 +196,7 @@ class ActivationTests(unittest.TestCase):
                 self.assertNotIn("plugin.json", archive.namelist())
                 self.assertNotIn(".pm-context/index.md", archive.namelist())
                 guide = archive.read("START-HERE.txt").decode("utf-8")
-                self.assertEqual("superseded-source archival" in guide, skill == "ibbuilds-pm-context-management")
+                self.assertEqual("superseded-source archival" in guide, skill == "pm-essential-skills-context-management")
                 archive.extractall(extracted)
             home = self.home / skill
             script = extracted / "scripts/install_suite.py"
@@ -250,7 +250,7 @@ class ActivationTests(unittest.TestCase):
     @unittest.skipUnless(os.name == "nt", "Windows hook shell execution")
     def test_windows_registered_hook_executes_through_cmd_and_powershell(self):
         home = self.home / "O'Brien&Co"
-        install_suite.install(home, None, ["ibbuilds-pm-source-selection"], with_hooks=True)
+        install_suite.install(home, None, ["pm-essential-skills-source-selection"], with_hooks=True)
         state = install_suite.load_receipt(home)
         command = state["hooks"]["groups"]["UserPromptSubmit"]["hooks"][0]["command"]
         for shell in (["cmd.exe", "/d", "/s", "/c"],
@@ -262,7 +262,7 @@ class ActivationTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 output = json.loads(result.stdout)
                 context = output["hookSpecificOutput"]["additionalContext"]
-                self.assertIn("ibbuilds-pm-source-selection/SKILL.md", context)
+                self.assertIn("pm-essential-skills-source-selection/SKILL.md", context)
                 self.assertIn(home.as_posix(), context)
         # The launcher exposes recovery without requiring users to locate Python.
         environment = dict(os.environ, CODEX_HOME=str(home))
@@ -292,13 +292,13 @@ class ActivationTests(unittest.TestCase):
             if command == "status":
                 (self.home / "config.toml").write_text(
                     '[skills]\ninclude_instructions = false\n'
-                    '[[skills.config]]\nname = "ibbuilds-pm-source-selection"\nenabled = false\n', encoding="utf-8")
+                    '[[skills.config]]\nname = "pm-essential-skills-source-selection"\nenabled = false\n', encoding="utf-8")
             # The only cmd shell usage is the batch entrypoint under test; deletion stays in Python.
             result = subprocess.run(["cmd.exe", "/d", "/c", "Install.cmd", command], cwd=extracted,
                                     env=environment, text=True, capture_output=True, timeout=45)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             if command == "status":
-                self.assertIn("Disabled in inspected user configuration: ibbuilds-pm-source-selection", result.stdout)
+                self.assertIn("Disabled in inspected user configuration: pm-essential-skills-source-selection", result.stdout)
                 self.assertIn("Host activation: not verified", result.stdout)
                 self.assertIn("Skill instruction inclusion is disabled", result.stdout)
         self.assertFalse((self.home / "AGENTS.md").exists())
