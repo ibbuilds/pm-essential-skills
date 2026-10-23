@@ -96,7 +96,9 @@ Both PM bugs were independently reproduced, fixed, and merged in
 These results cover the reported defects and checks, not the full suites.
 
 No comparable token usage was available, so token savings remain unknown.
-Other skill behaviors and the end-to-end user experience remain unvalidated.
+Later [cloud observations](docs/cloud-workflow-evaluation-2026-10-23.md#later-functional-observations-23-october-2026)
+demonstrate selected-skill application; broader behavior and end-to-end user
+experience remain unvalidated.
 The evidence does not establish a suite-wide quality advantage, reduced user
 supervision, or token savings; it also does not establish that either suite
 is ineffective.

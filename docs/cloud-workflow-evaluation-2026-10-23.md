@@ -60,3 +60,35 @@ The measurement route now works without Codex: independent artifact acceptance p
 - [Recorded comparison](cloud-workflow-evaluation-2026-10-23.json).
 
 The accompanying reproducibility bundle contains the wrapper, fixture provenance/hashes, both final artifacts, recorded read/check events, frozen and supplementary acceptance checks, mechanism inputs/outputs, and scope notes. Instrumentation is not a security sandbox or a complete trace: only wrapper-observed reads/checks are counted; ordinary edits and non-wrapper activity are outside its coverage. No installed runtime skill needs this harness.
+
+## Later functional observations: 23 October 2026
+
+These observations supplement, not replace, the earlier comparisons:
+
+- With explicitly activated Context Management, a source-authored brief and one
+  fresh successor yielded the two authorized migration documents after one
+  scripted necessary location choice, without a user-written summary. One schema
+  error was safely corrected. Transport was controller-assisted and host identity
+  assurances simulated; this was not autonomous native discovery or activation.
+- A recovery follow-on retrieved historical migration content and produced a
+  correct comparison note. A strict full pass was **not established**: the note
+  lacked the required immutable historical citation, separate transport capture
+  was unavailable, and an initially overbroad read preceded the narrow read.
+- Explicitly activated SWE Verification at `77efd89` verified the actual PM
+  decoder-boundary patch, rejecting a synthetic wrong-path/no-tests proposal
+  without requesting user rescue. The recorded suite ran 310 tests (OK, three
+  Windows-only skips); 18 independent probes supported the repair and state safety.
+  This was patch verification, not an unguided-assistant comparison.
+
+[PM PR #36](https://github.com/ibbuilds/pm-essential-skills/pull/36) and
+[PM PR #37](https://github.com/ibbuilds/pm-essential-skills/pull/37) merged bounded
+JSON/unknown-field diagnostics and decoder-failure handling. These are shipped
+robustness corrections, not measured user-effort or token savings. Fixed diagnostic
+sizes apply only to the exercised malformed-input cases, not arbitrary resource
+exhaustion. Neither correction changes skill entrypoint text, discovery metadata
+or reference prose, or adds a mandatory workflow step. The observations above
+concern frozen runs, not reruns of current main.
+
+Local receipts and independent artifact checks support bounded functional
+application, not complete native-session telemetry. Causal usefulness, automatic
+host selection, broad user-effort reduction and provider billing remain unknown.
