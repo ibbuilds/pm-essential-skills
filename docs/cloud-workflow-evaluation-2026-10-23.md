@@ -1,5 +1,7 @@
 # Cloud-only workflow evaluation — 2026-10-23
 
+Follow-up: [evaluation corrections and guarded entrypoint refactors](efficiency-corrections-2026-10-23.md). The follow-up separates legitimate inspection cost from skill overhead and records an unsuccessful activation-change hypothesis.
+
 ## What was measured
 
 This pass used isolated cloud execution, with no Codex task/CLI, external model API, or user screenshot required. It measures accepted work and instrumented workflow costs, **not Codex quota, billing, hidden reasoning, or total model tokens**. No claim is made that cloud inference itself is universally free.
