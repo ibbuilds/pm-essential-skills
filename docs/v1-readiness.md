@@ -10,8 +10,9 @@ manifest remains the unreleased 0.4.0 candidate; this document does not change i
 results below describe earlier snapshots, not the latest candidate. Subsequent
 changes are summarized in the [23 October research audit](research-audit-2026-10-23.md).
 Use the selected candidate's exact source revision and applicable local/remote
-check results for current integration status. The urgent-work/location exception
-remains pending; live adherence and net savings remain unverified.
+check results for current integration status. The workflow/location policy is
+settled: required questions wait for the user's answer, including during urgent
+incidents. Live adherence and net savings remain unverified.
 
 ## Conclusion
 
@@ -39,13 +40,12 @@ implementation change is justified by this readiness pass. The local repository 
 Current integration status must be tied to the selected candidate’s exact revision
 and applicable checks; it is not a reason to keep expanding the product.
 
-One material policy limitation remains explicit: Context Management can require
-an unanswered location choice before urgent domain work. An urgent-work exception
-is **pending the user's explicit choice**. Broad permission to finish the
-repository does not authorize changing the request/location/critical-pressure
-policy. The current policy must not be presented as already containing that
-exception. Other skills can be tried independently; a full-suite trial must use
-and assess the current disclosed behavior unless the user chooses otherwise.
+The workflow/location policy is settled: required questions must wait for the
+user's answer before dependent domain work, including during urgent incidents.
+There is no urgency-based bypass and no outstanding choice about adding one.
+Existing critical-pressure, authorization, opt-out and ownership safeguards remain
+unchanged. Other skills can be tried independently; a full-suite trial must use
+and assess this disclosed behavior without reopening the settled decision.
 
 ## Requirements traced to executable procedures and guidance
 
@@ -136,13 +136,13 @@ output directory; their distribution-manifest checksums matched. No archive was
 installed into a user profile or published as a release. Runtime files match the
 starting candidate; the integration adds documentation only.
 
-## Known limits and pending choice
+## Known limits and settled policy
 
-1. **Urgent-work exception — pending, not denied or implemented.** The current
-   long-chat request gate waits before domain investigation/implementation;
-   critical pressure follows its existing authorized safe-transfer rules.
-   Urgency alone is not an exception. Only the user can choose whether to change
-   this policy. No such change was made in this audit.
+1. **Required-answer pause — retained by explicit decision.** The long-chat
+   request gate waits for the required answer before dependent domain work,
+   including urgent incidents. Urgency alone is not an exception. Critical
+   pressure follows its existing authorized safe-transfer rules; authorization,
+   persistent preferences and ownership safeguards remain unchanged.
 2. **Live behavior remains a trial question.** Skill discovery, actual selection,
    post-delivery request identification and destination recovery depend on the
    host and model. Supported tools and real authority remain necessary.
@@ -170,13 +170,13 @@ candidate; do not reopen research merely to find more features:
 3. The user's selected source checkout or archive is identified and contains the
    actual final skills/resources. If archives are rebuilt, check their manifest
    and checksums; local output or CI artifacts are not a published release.
-4. The user receives the candidate, the current Context Management limitation and
+4. The user receives the candidate, the settled Context Management policy and
    the short trial below. No hidden urgent-policy edit, live-adherence claim or
    measured-savings claim is included.
 
 A published release, paid/model benchmark, universal host certification and a
 future improvement backlog are **not** first-version completion criteria. The
-pending policy choice blocks that proposed change, not unrelated completed work.
+settled policy is part of the candidate; no urgency exception is pending.
 
 ## Short user trial
 
