@@ -436,6 +436,87 @@ class UsageEvaluationTests(unittest.TestCase):
         self.assertEqual(result["pairs"][0]["observation_deltas"]["repeated_reads"], -2)
         self.assertIsNone(result["total_token_delta"])
 
+    def test_manual_work_reduction_is_reported_without_usage_or_a_success_score(self):
+        runs = self.pair()
+        counters = ("managerial_reminders", "repeated_explanations",
+                    "manual_summary_requests", "unnecessary_approval_requests")
+        for record, count in zip(runs, (3, 1)):
+            record.pop("usage")
+            record["observations"] = dict.fromkeys(counters, count)
+            record["observations"]["necessary_decisions"] = 2
+        result = USAGE.compare({"runs": runs})
+        self.assertEqual(result["pairs"][0]["observation_deltas"],
+                         dict.fromkeys(counters, -2) | {"necessary_decisions": 0})
+        self.assertEqual(result["pairs"][0]["status"], "usage_incomplete_or_unavailable")
+        self.assertTrue(result["all_quality_passed"])
+        self.assertIsNone(result["total_token_delta"])
+        self.assertFalse(result["observed_improvement"])
+
+    def test_required_decisions_and_manual_work_do_not_change_legacy_token_verdict(self):
+        for tokens, expected in (([100, 100], False), ([70, 70], True)):
+            runs = [self.record("a", "baseline", [100, 100]),
+                    self.record("a", "suite", tokens)]
+            before = USAGE.compare({"runs": runs})
+            runs[0]["observations"] = {"necessary_decisions": 3, "managerial_reminders": 4}
+            runs[1]["observations"] = {"necessary_decisions": 1, "managerial_reminders": 0}
+            result = USAGE.compare({"runs": runs})
+            self.assertEqual(result["observed_improvement"], expected)
+            self.assertEqual(result["pairs"][0]["observation_deltas"],
+                             {"necessary_decisions": -2, "managerial_reminders": -4})
+            result["pairs"][0]["observation_deltas"] = {}
+            self.assertEqual(result, before)
+
+    def test_optional_manual_counters_keep_absent_or_null_unknown(self):
+        for baseline, suite in (({}, {"managerial_reminders": 0}),
+                                ({"managerial_reminders": 0}, {}),
+                                ({"managerial_reminders": None}, {"managerial_reminders": 0}),
+                                ({"managerial_reminders": 0}, {"managerial_reminders": None})):
+            runs = self.pair()
+            runs[0]["observations"], runs[1]["observations"] = baseline, suite
+            self.assertEqual(USAGE.compare({"runs": runs})["pairs"][0]["observation_deltas"], {})
+
+    def test_new_counters_reject_nonintegers_and_negative_values(self):
+        for counter in ("managerial_reminders", "repeated_explanations", "manual_summary_requests",
+                        "necessary_decisions", "unnecessary_approval_requests"):
+            for value in (-1, True, False, 1.5, "1", [], {}):
+                with self.subTest(counter=counter, value=value):
+                    runs = self.pair()
+                    runs[0]["observations"] = {counter: value}
+                    with self.assertRaisesRegex(ValueError, "nonnegative integer"):
+                        USAGE.compare({"runs": runs})
+
+    def test_manual_deltas_preserve_conditions_and_quality_rules(self):
+        for field in ("conditions_id", "model", "effort"):
+            for value in (None, "different"):
+                with self.subTest(field=field, value=value):
+                    runs = self.pair()
+                    runs[0]["observations"] = {"managerial_reminders": 3}
+                    runs[1]["observations"] = {"managerial_reminders": 0}
+                    runs[1][field] = value
+                    result = USAGE.compare({"runs": runs})
+                    self.assertEqual(result["pairs"][0]["observation_deltas"], {})
+                    self.assertEqual(result["pairs"][0]["status"], "conditions_unmatched_or_unknown")
+                    self.assertFalse(result["observed_improvement"])
+        for quality, expected in (({}, "unknown"), ({"accepted": False}, "failed")):
+            runs = self.pair()
+            runs[0]["observations"] = {"managerial_reminders": 3}
+            runs[1]["observations"] = {"managerial_reminders": 0}
+            runs[1]["quality"] = quality
+            result = USAGE.compare({"runs": runs})
+            self.assertEqual(result["pairs"][0]["observation_deltas"], {"managerial_reminders": -3})
+            self.assertEqual(result["pairs"][0]["quality"], expected)
+            self.assertFalse(result["observed_improvement"])
+
+    def test_cli_accepts_new_counters_in_existing_output_envelope(self):
+        runs = self.pair()
+        runs[0]["observations"] = {"manual_summary_requests": 2, "necessary_decisions": 1}
+        runs[1]["observations"] = {"manual_summary_requests": 0, "necessary_decisions": 1}
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/evaluate_usage.py")],
+                                input=json.dumps({"runs": runs}), text=True,
+                                capture_output=True, check=True)
+        self.assertEqual(json.loads(result.stdout)["pairs"][0]["observation_deltas"],
+                         {"manual_summary_requests": -2, "necessary_decisions": 0})
+
     def test_cli_accepts_supplied_exports_without_writing_logs(self):
         result = subprocess.run([sys.executable, str(ROOT / "scripts/evaluate_usage.py")],
                                 input=json.dumps({"runs": self.pair()}), text=True,

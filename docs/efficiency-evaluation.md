@@ -8,6 +8,8 @@ Use this maintainer workflow when evaluating a change. It is not an activation s
 
 Pair runs using the same `task_id`, with `variant` equal to `baseline` or `suite`. Both need matching, nonempty `conditions_id`, `model`, and `effort`. The conditions ID identifies a documented matching task/source setup; the script cannot verify that conditions were genuinely comparable. For repeated trials, use a distinct task ID per pair.
 
+The primary comparison is the same ordinary user request without the optional skills (`baseline`) versus with the installed optional skills (`suite`), keeping sources, environment, model, effort, permissions, and acceptance criteria matched. Do not coach only one side with the desired workflow. If testing a coached baseline (extra management instructions, reminders, or a detailed workflow prompt), identify it explicitly in the accompanying report and its conditions ID, and use a separate task ID/pair rather than mixing it with the ordinary-request comparison. Record which skills and optional reminders were installed; installation itself is the intended treatment, not a conditions mismatch.
+
 Each run can supply:
 
 ```json
@@ -43,9 +45,25 @@ Include every model request attributable to the task: discovery, skill loading, 
 
 Use only the host's per-request `total_tokens` with stable IDs. Do not add input/output/cached-input/reasoning subtotals to totals again. The evaluator rejects unknown request fields and duplicate IDs across runs to reduce double counting. A host's cumulative thread counter, account quota, or dollar spend is not a per-request token total. If an export cannot be normalized accurately, do not calculate token deltas.
 
-For each comparable complete pair, report suite minus baseline usage, with a negative value meaning lower observed usage. All pairs, including quality failures, remain in the report. An incomplete/unpaired/conditions-unknown run prevents an aggregate usage claim; the evaluator does not silently select only successful pairs. `observed_improvement` requires every pair to be measured, every quality check to pass, and a negative aggregate token delta. It is not a causal or statistical guarantee.
+For each comparable complete pair, report suite minus baseline usage, with a negative value meaning lower observed usage. All pairs, including quality failures, remain in the report. An incomplete/unpaired/conditions-unknown run prevents an aggregate usage claim; the evaluator does not silently select only successful pairs. `observed_improvement` requires every pair to be measured, every quality check to pass, and a negative aggregate token delta. This legacy field is strictly a **token comparison**, not an overall product-value verdict. `false` does not mean “the product is useless”: usage may be unknown or equal while organization, experience, maintainability, or manual supervision improves. It is not a causal or statistical guarantee.
 
-When token telemetry is unavailable, supplied observations can still reveal repeated reads, user interruptions, calls, or elapsed time. These remain separate measures; fewer calls do not automatically mean lower tokens or equal quality. Review missed exceptions, lost constraints, needless handoffs, and the suite's own overhead. Reject changes that reduce counts by narrowing the requested work or making users supervise routine management.
+## Separate manual work from legitimate decisions
+
+Optional `observations` counters accept nonnegative integers or `null`. Omitted/null counters are unknown, not zero. Record zero only after reviewing the complete relevant task trace. Existing counters remain supported, including `user_interventions`; that broad count alone is not a measure of avoidable burden.
+
+| Counter | Counting rule |
+| --- | --- |
+| `managerial_reminders` | User messages reminding the assistant to continue, track, verify, or finish already-requested work that it could proceed with under existing authority. Exclude new scope, necessary choices, and answers to required questions. |
+| `repeated_explanations` | User messages restating already-provided, still-applicable requirements or context because the assistant lost or ignored them. Exclude new facts, changed requirements, and genuine ambiguity resolution. |
+| `manual_summary_requests` | User messages requesting a recap/reconstruction solely to restore task state or organize continuation that the assistant failed to maintain. Exclude summaries that are requested deliverables or an ordinary preference for a recap. |
+| `necessary_decisions` | Distinct user choices actually resolved during the task that require user preference, missing material information, or authorization. Count each choice once, even across several messages. These are legitimate participation, not bad interruptions. |
+| `unnecessary_approval_requests` | Assistant requests for permission to perform already-authorized routine work where no material ambiguity or applicable permission/safety boundary requires another decision. Count each request once; never label a required authorization unnecessary. |
+
+Count each qualifying message once per message-based category. A message can fit multiple categories, and legacy `user_interventions` can overlap all of them; these counters are not additive and must not be summed into a burden score. One message may resolve several distinct necessary decisions; count the choices, not the message, for that category. Preserve trace references and brief classification reasons in the accompanying evaluation notes, not in new runtime tracking. If evidence is insufficient to classify a category, leave it unknown. Do not estimate human minutes from these counts or treat `elapsed_ms` as human working time.
+
+For matched pairs, `observation_deltas` reports suite minus baseline only where both counters are known, even without token telemetry; negative means fewer counted events. Missing deltas remain unknown. Unmatched/unknown conditions suppress these deltas. Quality verdicts remain visible: a lower count with failed or unknown quality is not evidence of a successful outcome. Fewer `necessary_decisions` is not automatically better and never triggers `observed_improvement`; inspect whether legitimate user control was preserved.
+
+A useful manual-work reduction can coexist with equal or unknown tokens. Report these dimensions separately, alongside evidence about organization, usability, maintainability, and completed work; the counters do not measure all experience quality. When token telemetry is unavailable, supplied observations can also reveal repeated reads, calls, or elapsed time. Fewer calls do not automatically mean lower tokens or equal quality. Review missed exceptions, lost constraints, needless handoffs, and the suite's own overhead. Reject changes that reduce counts by narrowing the requested work or making users supervise routine management.
 
 See the [cloud-only measured pilot](cloud-workflow-evaluation-2026-10-23.md) for actual workflow burdens and component-level payload comparisons without Codex usage. It includes unfavorable results and does not establish total-token savings.
 

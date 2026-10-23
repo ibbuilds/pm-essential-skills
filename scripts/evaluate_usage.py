@@ -13,7 +13,10 @@ import sys
 
 QUALITY = ("completed", "coverage_met", "constraints_preserved", "accepted")
 RUN_FIELDS = {"task_id", "conditions_id", "model", "effort", "variant", "quality", "usage", "observations"}
-METRICS = {"tool_calls", "repeated_reads", "user_interventions", "elapsed_ms"}
+# Optional descriptive counters, not a score or a substitute for quality checks.
+METRICS = {"tool_calls", "repeated_reads", "user_interventions", "elapsed_ms",
+           "managerial_reminders", "repeated_explanations", "manual_summary_requests",
+           "necessary_decisions", "unnecessary_approval_requests"}
 
 
 def integer(value, label):
