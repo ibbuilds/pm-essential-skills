@@ -84,6 +84,67 @@ class TransferTests(unittest.TestCase):
                     self.change("request", self.gates | {key: False})
         self.assertEqual(STATE.update(self.path, "status", {})["attempts"], 0)
 
+    def test_unknown_fields_report_only_fixed_schema_without_mutating_state(self):
+        original = self.path.read_bytes()
+        snapshot = json.dumps(self.state, sort_keys=True)
+        fields = {
+            "request": STATE.GATES | {"failure_resolved"}, "unknown": set(),
+            "failed": {"definite_failure"}, "absent": {"definitive_absence"},
+            "confirm": {"destination_thread_id", "destination_ready", "project_id", "handoff_id"},
+            "supersede": {"routing_saved"}, "cancel": set(),
+        }
+        hostile = "PRIVATE-KEY\n" + "x" * 10000
+        for event, allowed in fields.items():
+            expected = (f"Unknown event-data field. Allowed fields for {event}: "
+                        + (", ".join(sorted(allowed)) or "(none; use an empty object)"))
+            with self.subTest(event=event):
+                for change in (lambda: STATE.transition(self.state, event, {hostile: "PRIVATE-VALUE"}),
+                               lambda: STATE.update(self.path, event, {hostile: "PRIVATE-VALUE"}, 0)):
+                    with self.assertRaises(ValueError) as error:
+                        change()
+                    self.assertEqual(str(error.exception), expected)
+                    self.assertLess(len(str(error.exception)), 400)
+                self.assertEqual(json.dumps(self.state, sort_keys=True), snapshot)
+                self.assertEqual(self.path.read_bytes(), original)
+                self.assertFalse(self.path.with_name(self.path.name + ".lock").exists())
+
+    def test_unknown_events_report_only_fixed_supported_events(self):
+        original = self.path.read_bytes()
+        snapshot = json.dumps(self.state, sort_keys=True)
+        hostile = "PRIVATE-EVENT\n" + "x" * 10000
+        cases = (
+            (lambda: STATE.transition(self.state, hostile, {}), "transition", STATE.EVENTS - {"prepare", "status"}),
+            (lambda: STATE.update(self.path, hostile, {}, 0), "transfer", STATE.EVENTS),
+        )
+        for change, kind, events in cases:
+            with self.subTest(kind=kind), self.assertRaises(ValueError) as error:
+                change()
+            self.assertEqual(str(error.exception),
+                             f"Unknown {kind} event. Supported events: " + ", ".join(sorted(events)))
+            self.assertLess(len(str(error.exception)), 200)
+        self.assertEqual(json.dumps(self.state, sort_keys=True), snapshot)
+        self.assertEqual(self.path.read_bytes(), original)
+        self.assertFalse(self.path.with_name(self.path.name + ".lock").exists())
+
+    def test_unknown_request_fields_cli_preserves_envelope_and_safe_correction(self):
+        original = self.path.read_bytes()
+        payload = self.gates | {"PRIVATE-KEY" + "x" * 10000: "PRIVATE-VALUE"}
+        command = [sys.executable, str(Path(STATE.__file__)), "--state", str(self.path),
+                   "--event", "request", "--expected-revision", "0"]
+        run = subprocess.run(command, input=json.dumps(payload), text=True,
+                             capture_output=True, timeout=3, check=False)
+        self.assertEqual(run.returncode, 2)
+        self.assertEqual(run.stdout, "")
+        self.assertEqual(json.loads(run.stderr), {"error":
+                         "Unknown event-data field. Allowed fields for request: "
+                         + ", ".join(sorted(STATE.GATES | {"failure_resolved"}))})
+        self.assertLess(len(run.stderr), 450)
+        self.assertEqual(self.path.read_bytes(), original)
+        self.assertFalse(self.path.with_name(self.path.name + ".lock").exists())
+        corrected = self.change("request", self.gates)
+        self.assertEqual((corrected["phase"], corrected["revision"], corrected["attempts"]),
+                         ("requesting", 1, 1))
+
     def test_brief_without_exact_source_reference_cannot_be_prepared(self):
         for content in ("Goal and next step only", "Source title only", "Source ID: source-aa"):
             with self.subTest(content=content):
