@@ -218,3 +218,15 @@ whitespace-only description case is a demonstrated local false-green against the
 host's normalized nonempty requirement. All checked-in skills already meet these
 field constraints; this work does not establish a current live-loading failure
 or guarantee future host selection.
+
+
+### Preserve hook ownership on malformed optional-installer receipts
+
+A temporary fixture reproduced a malformed `hooks.groups` traceback. Review then
+found a consequential falsey-record case: changing an installed receipt’s `hooks`
+to `[]` let uninstall remove the managed helper while leaving registered hooks.
+The receipt reader now rejects present malformed or empty ownership before any
+mutation; absence still means no hooks, and valid `original: null` remains valid.
+A local regression checks structured failure and unchanged receipt, helper,
+guidance and hook bytes, alongside valid ownership restoration. This changes
+only the optional legacy installer, not normal skill installation or host policy.

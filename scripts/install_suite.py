@@ -237,6 +237,13 @@ def load_receipt(home):
         for mode in (record.get("mode"), record.get("original_mode")):
             if mode is not None and (type(mode) is not int or not 0 <= mode <= 0o7777):
                 raise ValueError("Invalid receipt mode; preserve it for recovery")
+    if "hooks" in state:
+        owned = state["hooks"]
+        if (not isinstance(owned, dict) or not isinstance(owned.get("groups"), dict)
+                or not owned["groups"] or "original" not in owned
+                or (owned["original"] is not None and not isinstance(owned["original"], str))):
+            raise ValueError("Invalid reminder hook receipt; preserve it for recovery")
+        decode(owned["original"])
     if state.get("instructions") not in ("AGENTS.md", "AGENTS.override.md"):
         raise ValueError("Invalid global instruction target")
     return state
@@ -403,6 +410,8 @@ def hooks_content(home, owned=None, add=False):
         raise ValueError("Invalid hooks.json; preserving user configuration")
     hooks = config.setdefault("hooks", {})
     if owned:
+        if not isinstance(owned, dict) or not isinstance(owned.get("groups"), dict):
+            raise ValueError("Invalid reminder hook receipt; preserve and reconcile it")
         for event, group in owned["groups"].items():
             groups = hooks.get(event, [])
             if not isinstance(groups, list) or groups.count(group) != 1:
