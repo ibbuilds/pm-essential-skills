@@ -60,6 +60,16 @@ def decode(value):
     return None if value is None else base64.b64decode(value, validate=True)
 
 
+def unique_state_fields(pairs):
+    """Reject ambiguous durable recovery evidence before interpreting any fields."""
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"Duplicate installation state field: {key}; preserve it for recovery")
+        result[key] = value
+    return result
+
+
 def safe_path(home, relative):
     """Validate receipt/package paths before any writes or deletes."""
     parts = PurePosixPath(relative)
@@ -144,7 +154,7 @@ def recover(home):
     raw = read(journal)
     if raw is None:
         return {"status": "nothing_to_recover"}
-    transaction = json.loads(raw)
+    transaction = json.loads(raw, object_pairs_hook=unique_state_fields)
     if (not isinstance(transaction, dict) or transaction.get("version") != 1
             or not isinstance(transaction.get("files"), dict)):
         raise ValueError("Invalid recovery journal; preserve it for manual recovery")
@@ -203,7 +213,7 @@ def load_receipt(home):
     raw = read(safe_path(home, RECEIPT))
     if raw is None:
         return None
-    state = json.loads(raw)
+    state = json.loads(raw, object_pairs_hook=unique_state_fields)
     if not isinstance(state, dict) or state.get("version") != 1:
         raise ValueError("Unsupported installation receipt; preserve it for recovery")
     if (not isinstance(state.get("files"), dict)

@@ -356,6 +356,58 @@ class InstallSuiteTests(unittest.TestCase):
         self.assertEqual(first.read_bytes(), b"old instructions")
         self.assertEqual(second.read_bytes(), b"old hooks")
 
+    def test_duplicate_recovery_fields_preserve_target_and_journal(self):
+        target = self.home / "AGENTS.md"
+        target.write_bytes(b"installed")
+        journal = self.home / INSTALL.JOURNAL
+        journal.parent.mkdir(parents=True)
+        raw = (b'{"version":1,"files":{"AGENTS.md":{"before":"b3JpZ2luYWw=",'
+               b'"before":null,"after":"aW5zdGFsbGVk"}}}')
+        journal.write_bytes(raw)
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/install_suite.py"),
+                                 "recover", "--codex-home", str(self.home)],
+                                capture_output=True, text=True, timeout=5)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("Duplicate installation state field: before", json.loads(result.stderr)["error"])
+        self.assertEqual(target.read_bytes(), b"installed")
+        self.assertEqual(journal.read_bytes(), raw)
+        # A single null before value legitimately records a newly created file.
+        journal.write_text(json.dumps({"version": 1, "files": {"AGENTS.md": {
+            "before": None, "after": INSTALL.encode(b"installed")}}}))
+        self.assertEqual(INSTALL.recover(self.home)["status"], "recovered")
+        self.assertFalse(target.exists())
+        self.assertFalse(journal.exists())
+
+    def test_duplicate_receipt_fields_preserve_original_evidence(self):
+        receipt = self.home / INSTALL.RECEIPT
+        receipt.parent.mkdir(parents=True)
+        target = self.home / INSTALL.HELPER
+        target.write_bytes(b"installed")
+        state = {"version": 1, "files": {INSTALL.HELPER: {
+            "original": INSTALL.encode(b"original"), "sha256": INSTALL.digest(b"installed")}},
+            "instructions": "AGENTS.md", "instructions_existed": True,
+            "block": INSTALL.encode(INSTALL.BEGIN + b"\nmanaged\n" + INSTALL.END)}
+        guidance = self.home / "AGENTS.md"
+        guidance.write_bytes(INSTALL.decode(state["block"]))
+        valid = json.dumps(state)
+        fixtures = [valid.replace('"original": "b3JpZ2luYWw="',
+                                  '"original": "b3JpZ2luYWw=", "original": null'),
+                    valid.replace('"version": 1', '"version": 1, "version": 1')]
+        for raw in fixtures:
+            with self.subTest(raw=raw):
+                receipt.write_text(raw)
+                result = subprocess.run([sys.executable, str(ROOT / "scripts/install_suite.py"),
+                                         "uninstall", "--codex-home", str(self.home)],
+                                        capture_output=True, text=True, timeout=5)
+                self.assertEqual(result.returncode, 2)
+                self.assertIn("Duplicate installation state field", json.loads(result.stderr)["error"])
+                self.assertEqual(receipt.read_text(), raw)
+                self.assertEqual(target.read_bytes(), b"installed")
+                self.assertEqual(guidance.read_bytes(), INSTALL.decode(state["block"]))
+                self.assertFalse((self.home / INSTALL.JOURNAL).exists())
+        receipt.write_text(valid)
+        self.assertEqual(INSTALL.load_receipt(self.home), state)
+
     def test_transaction_read_preserves_missing_and_regular_file_semantics(self):
         target = self.home / "AGENTS.md"
         self.assertIsNone(INSTALL.read(target))

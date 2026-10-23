@@ -121,6 +121,17 @@ procedure is efficient for every task.
   Inconsistent state is rejected unchanged; history still does not prove host
   outcomes or grant authorization.
 
+- Conflicting duplicate JSON fields in recovery evidence were accepted with
+  last-value semantics: a duplicated `before` could turn restoration into
+  deletion and remove the journal. Persistent receipt/journal parsing now rejects
+  duplicates before mutation, while a valid `before: null` still restores the
+  intentional absence of a newly created file.
+- The optional hook independently read its receipt and could block on a FIFO or
+  emit guidance from malformed selection metadata. Its standalone reader now
+  rejects nonregular inputs, checks the opened descriptor and validates selection
+  shape. Broken metadata produces the established neutral result; valid selected
+  skills still work, without reflecting prompt text or adding installer imports.
+
 These are isolated local reproductions and regression checks, unlike the
 upstream tests inspected above. They do not establish live host integration or
 change the pending user-owned handoff policy.
