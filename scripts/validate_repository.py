@@ -88,8 +88,17 @@ def main():
             if not name.startswith("pm-essential-skills-"):
                 raise ValueError("skill name must use the pm-essential-skills repository prefix")
             description = metadata.get("description")
-            if not isinstance(description, str) or not 1 <= len(description) <= 1024:
+            if not isinstance(description, str) or not description.strip() or len(description) > 1024:
                 raise ValueError("description must be nonempty text under 1,025 characters")
+            # Portable Agent Skills format, not an emulation of host coercions.
+            if "metadata" in metadata:
+                extra = metadata["metadata"]
+                if not isinstance(extra, dict) or any(
+                    not isinstance(key, str) or not isinstance(value, str)
+                    for key, value in extra.items()
+                ):
+                    raise ValueError("metadata must map string keys to string values; "
+                                     "quote scalar values, or omit unused metadata/use {}")
             ui = load_yaml((path.parent / "agents/openai.yaml").read_text(encoding="utf-8"))
             if not isinstance(ui, dict) or not isinstance(ui.get("interface"), dict):
                 raise ValueError("missing UI interface metadata")

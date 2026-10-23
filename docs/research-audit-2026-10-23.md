@@ -201,3 +201,20 @@ availability guidance is already covered. [GitSkills v3](https://arxiv.org/html/
 is descriptive, not effectiveness evidence. Identical entrypoint bytes do not
 establish identical referenced scripts or package provenance. No dataset-mining
 or popularity-based automation was imported.
+
+
+## Portable field validation versus native permissiveness
+
+The validators now consistently apply the published [Agent Skills field contract](https://agentskills.io/specification):
+nonblank descriptions up to 1,024 characters, and a string-to-string mapping when
+optional `metadata` is present. Missing metadata and an empty map remain valid;
+diagnostics explain quoting scalar values or omitting an unused field. Unknown
+root extensions are not rejected by an invented allowlist.
+
+These are bounded portable-format checks, not claims about every Codex rejection.
+The inspected Codex release preserves overlong descriptions and accepts some
+scalar coercions or blank metadata that the portable contract does not. PM's
+whitespace-only description case is a demonstrated local false-green against the
+host's normalized nonempty requirement. All checked-in skills already meet these
+field constraints; this work does not establish a current live-loading failure
+or guarantee future host selection.
