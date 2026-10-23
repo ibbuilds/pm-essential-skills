@@ -44,6 +44,30 @@ class InstallSuiteTests(unittest.TestCase):
         (self.home / INSTALL.RECEIPT).write_text(json.dumps(state))
         return INSTALL.load_receipt(self.home)
 
+    def test_deep_persisted_json_errors_preserve_state_and_release_locks(self):
+        for relative, command in ((INSTALL.RECEIPT, "status"),
+                                  (INSTALL.RECEIPT, "uninstall"),
+                                  (INSTALL.JOURNAL, "recover")):
+            for raw in ("[" * 10000, "[" * 10000 + '"PRIVATE_FIXTURE"' + "]" * 10000):
+                with self.subTest(relative=relative, command=command, balanced=raw.endswith("]")):
+                    target = self.home / relative
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text(raw, encoding="utf-8")
+                    before = target.read_bytes()
+                    result = subprocess.run(
+                        [sys.executable, str(ROOT / "scripts/install_suite.py"), command,
+                         "--codex-home", str(self.home)],
+                        capture_output=True, text=True, timeout=5)
+                    self.assertEqual(result.returncode, 2)
+                    self.assertEqual(result.stdout, "")
+                    self.assertEqual(json.loads(result.stderr), {"error":
+                        "Installation state JSON is nested too deeply; preserve it for recovery"})
+                    self.assertNotIn("PRIVATE_FIXTURE", result.stderr)
+                    self.assertNotIn("Traceback", result.stderr)
+                    self.assertEqual(target.read_bytes(), before)
+                    self.assertFalse((self.home / "pm-essential-skills/install.lock").exists())
+                    target.unlink()
+
     def test_legacy_receipt_status_and_explicit_uninstall_are_supported(self):
         state = self.legacy_installation()
         self.assertEqual(INSTALL.selected_skills(state), list(INSTALL.BARE_SKILLS))
@@ -413,7 +437,7 @@ class InstallSuiteTests(unittest.TestCase):
                                  "recover", "--codex-home", str(self.home)],
                                 capture_output=True, text=True, timeout=5)
         self.assertEqual(result.returncode, 2)
-        self.assertIn("Duplicate installation state field: before", json.loads(result.stderr)["error"])
+        self.assertIn("Duplicate installation state field; preserve it for recovery", json.loads(result.stderr)["error"])
         self.assertEqual(target.read_bytes(), b"installed")
         self.assertEqual(journal.read_bytes(), raw)
         for version in (True, 1.0):

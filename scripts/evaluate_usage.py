@@ -159,7 +159,7 @@ def unique(pairs):
     result = {}
     for key, value in pairs:
         if key in result:
-            raise ValueError(f"Duplicate field: {key}")
+            raise ValueError("Duplicate field; field names must be unique")
         result[key] = value
     return result
 

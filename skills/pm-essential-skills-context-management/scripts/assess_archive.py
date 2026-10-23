@@ -84,7 +84,7 @@ def unique(pairs):
     result = {}
     for key, value in pairs:
         if key in result:
-            raise ValueError(f"Duplicate JSON field: {key}")
+            raise ValueError("Duplicate JSON field; field names must be unique")
         result[key] = value
     return result
 
