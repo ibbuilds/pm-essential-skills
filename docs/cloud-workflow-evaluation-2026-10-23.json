@@ -1,0 +1,353 @@
+{
+  "agent_workflow": {
+    "baseline": {
+      "check_elapsed_ns": 1741822196,
+      "check_exit_statuses": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "check_invocations": 4,
+      "failed_invocations": 2,
+      "output_response_bytes": 64560,
+      "repeated_unchanged_bytes": 15506,
+      "repeated_unchanged_lines": 318,
+      "skill_catalog_content_bytes": 0,
+      "skill_loading_content_bytes": 0,
+      "source_content_bytes_including_skills": 49307,
+      "successful_source_reads": 10,
+      "wrapper_invocations": 16
+    },
+    "skill_enabled": {
+      "check_elapsed_ns": 3343025815,
+      "check_exit_statuses": [
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "check_invocations": 5,
+      "failed_invocations": 3,
+      "output_response_bytes": 108174,
+      "repeated_unchanged_bytes": 23499,
+      "repeated_unchanged_lines": 390,
+      "skill_catalog_content_bytes": 3296,
+      "skill_loading_content_bytes": 8969,
+      "source_content_bytes_including_skills": 83995,
+      "successful_source_reads": 17,
+      "wrapper_invocations": 24
+    },
+    "independent_acceptance": {
+      "a": 14,
+      "b": 14
+    },
+    "original_regressions_unchanged": true,
+    "only_modified_original_files": [
+      "arm_a/scripts/evaluate_usage.py",
+      "arm_b/scripts/evaluate_usage.py"
+    ],
+    "clarification_requests_observed": {
+      "a": 0,
+      "b": 0
+    },
+    "correction_rounds_requested_by_parent": {
+      "a": 0,
+      "b": 0
+    },
+    "source_payload_relative_change": 0.7035106577159429,
+    "emitted_response_relative_change": 0.6755576208178438,
+    "billing_tokens_or_quota": null
+  },
+  "mechanism": {
+    "source": "docs/efficiency-evaluation.md",
+    "repository": "https://github.com/ibbuilds/pm-essential-skills",
+    "repository_head": "e1d6beee43c71a77c42f86d716e8cd6f57665dac",
+    "source_sha256": "1914c1e6de0cc1acdeadd978ad448401d1e97576de7ef345ca036cb154fdbe73",
+    "helper_sha256": "9d0ff1a545f6be7a34ba15620809fbaf632525f2850c56a836cf09f356048f6f",
+    "helper_command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-B",
+      "/workspace/scratch/4f1d5abe5c81/pm-essential-skills/skills/pm-essential-skills-source-selection/scripts/read_source.py"
+    ],
+    "workloads": {
+      "substantial": {
+        "modified_line": 30,
+        "steps": [
+          {
+            "step": 1,
+            "range": [
+              1,
+              50
+            ],
+            "changed": false,
+            "action": "read",
+            "correct_coverage": true,
+            "helper_content_bytes": 3739,
+            "helper_response_bytes": 4250,
+            "helper_request_bytes": 133,
+            "receipt_extra_request_bytes": 0,
+            "plain_raw_bytes": 3739,
+            "plain_wrapped_response_bytes": 3997,
+            "plain_request_bytes": 133,
+            "fresh_helper_response_bytes": 4250
+          },
+          {
+            "step": 2,
+            "range": [
+              25,
+              70
+            ],
+            "changed": false,
+            "action": "read",
+            "correct_coverage": true,
+            "helper_content_bytes": 3056,
+            "helper_response_bytes": 3478,
+            "helper_request_bytes": 398,
+            "receipt_extra_request_bytes": 264,
+            "plain_raw_bytes": 5490,
+            "plain_wrapped_response_bytes": 5715,
+            "plain_request_bytes": 134,
+            "fresh_helper_response_bytes": 5973
+          },
+          {
+            "step": 3,
+            "range": [
+              25,
+              70
+            ],
+            "changed": false,
+            "action": "reuse",
+            "correct_coverage": true,
+            "helper_content_bytes": 0,
+            "helper_response_bytes": 349,
+            "helper_request_bytes": 398,
+            "receipt_extra_request_bytes": 264,
+            "plain_raw_bytes": 5490,
+            "plain_wrapped_response_bytes": 5715,
+            "plain_request_bytes": 134,
+            "fresh_helper_response_bytes": 5973
+          },
+          {
+            "step": 4,
+            "range": [
+              25,
+              70
+            ],
+            "changed": true,
+            "action": "read",
+            "correct_coverage": true,
+            "helper_content_bytes": 5545,
+            "helper_response_bytes": 6026,
+            "helper_request_bytes": 398,
+            "receipt_extra_request_bytes": 264,
+            "plain_raw_bytes": 5545,
+            "plain_wrapped_response_bytes": 5768,
+            "plain_request_bytes": 134,
+            "fresh_helper_response_bytes": 6026
+          }
+        ],
+        "totals": {
+          "helper_content_bytes": 12340,
+          "helper_response_bytes": 14103,
+          "helper_request_bytes": 1327,
+          "receipt_extra_request_bytes": 792,
+          "plain_raw_bytes": 20264,
+          "plain_wrapped_response_bytes": 21195,
+          "plain_request_bytes": 535,
+          "fresh_helper_response_bytes": 22222,
+          "helper_response_minus_plain_raw_bytes": -6161,
+          "helper_response_minus_plain_wrapped_bytes": -7092,
+          "helper_response_minus_fresh_helper_bytes": -8119,
+          "helper_roundtrip_minus_plain_wrapped_bytes": -6300,
+          "helper_roundtrip_minus_fresh_helper_bytes": -7327
+        }
+      },
+      "small": {
+        "modified_line": 3,
+        "steps": [
+          {
+            "step": 1,
+            "range": [
+              1,
+              3
+            ],
+            "changed": false,
+            "action": "read",
+            "correct_coverage": true,
+            "helper_content_bytes": 261,
+            "helper_response_bytes": 655,
+            "helper_request_bytes": 126,
+            "receipt_extra_request_bytes": 0,
+            "plain_raw_bytes": 261,
+            "plain_wrapped_response_bytes": 403,
+            "plain_request_bytes": 126,
+            "fresh_helper_response_bytes": 655
+          },
+          {
+            "step": 2,
+            "range": [
+              2,
+              4
+            ],
+            "changed": false,
+            "action": "read",
+            "correct_coverage": true,
+            "helper_content_bytes": 1,
+            "helper_response_bytes": 395,
+            "helper_request_bytes": 383,
+            "receipt_extra_request_bytes": 257,
+            "plain_raw_bytes": 201,
+            "plain_wrapped_response_bytes": 343,
+            "plain_request_bytes": 126,
+            "fresh_helper_response_bytes": 597
+          },
+          {
+            "step": 3,
+            "range": [
+              2,
+              4
+            ],
+            "changed": false,
+            "action": "reuse",
+            "correct_coverage": true,
+            "helper_content_bytes": 0,
+            "helper_response_bytes": 342,
+            "helper_request_bytes": 383,
+            "receipt_extra_request_bytes": 257,
+            "plain_raw_bytes": 201,
+            "plain_wrapped_response_bytes": 343,
+            "plain_request_bytes": 126,
+            "fresh_helper_response_bytes": 597
+          },
+          {
+            "step": 4,
+            "range": [
+              2,
+              4
+            ],
+            "changed": true,
+            "action": "read",
+            "correct_coverage": true,
+            "helper_content_bytes": 75,
+            "helper_response_bytes": 471,
+            "helper_request_bytes": 383,
+            "receipt_extra_request_bytes": 257,
+            "plain_raw_bytes": 75,
+            "plain_wrapped_response_bytes": 217,
+            "plain_request_bytes": 126,
+            "fresh_helper_response_bytes": 471
+          }
+        ],
+        "totals": {
+          "helper_content_bytes": 337,
+          "helper_response_bytes": 1863,
+          "helper_request_bytes": 1275,
+          "receipt_extra_request_bytes": 771,
+          "plain_raw_bytes": 738,
+          "plain_wrapped_response_bytes": 1306,
+          "plain_request_bytes": 504,
+          "fresh_helper_response_bytes": 2320,
+          "helper_response_minus_plain_raw_bytes": 1125,
+          "helper_response_minus_plain_wrapped_bytes": 557,
+          "helper_response_minus_fresh_helper_bytes": -457,
+          "helper_roundtrip_minus_plain_wrapped_bytes": 1328,
+          "helper_roundtrip_minus_fresh_helper_bytes": 314
+        }
+      },
+      "short_source": {
+        "modified_line": 3,
+        "steps": [
+          {
+            "step": 1,
+            "range": [
+              1,
+              3
+            ],
+            "changed": false,
+            "action": "read",
+            "correct_coverage": true,
+            "helper_content_bytes": 261,
+            "helper_response_bytes": 660,
+            "helper_request_bytes": 133,
+            "receipt_extra_request_bytes": 0,
+            "plain_raw_bytes": 261,
+            "plain_wrapped_response_bytes": 410,
+            "plain_request_bytes": 133,
+            "fresh_helper_response_bytes": 660
+          },
+          {
+            "step": 2,
+            "range": [
+              2,
+              4
+            ],
+            "changed": false,
+            "action": "read",
+            "correct_coverage": true,
+            "helper_content_bytes": 1,
+            "helper_response_bytes": 399,
+            "helper_request_bytes": 397,
+            "receipt_extra_request_bytes": 264,
+            "plain_raw_bytes": 201,
+            "plain_wrapped_response_bytes": 350,
+            "plain_request_bytes": 133,
+            "fresh_helper_response_bytes": 602
+          },
+          {
+            "step": 3,
+            "range": [
+              2,
+              4
+            ],
+            "changed": false,
+            "action": "reuse",
+            "correct_coverage": true,
+            "helper_content_bytes": 0,
+            "helper_response_bytes": 346,
+            "helper_request_bytes": 397,
+            "receipt_extra_request_bytes": 264,
+            "plain_raw_bytes": 201,
+            "plain_wrapped_response_bytes": 350,
+            "plain_request_bytes": 133,
+            "fresh_helper_response_bytes": 602
+          },
+          {
+            "step": 4,
+            "range": [
+              2,
+              4
+            ],
+            "changed": true,
+            "action": "read",
+            "correct_coverage": true,
+            "helper_content_bytes": 75,
+            "helper_response_bytes": 476,
+            "helper_request_bytes": 397,
+            "receipt_extra_request_bytes": 264,
+            "plain_raw_bytes": 75,
+            "plain_wrapped_response_bytes": 224,
+            "plain_request_bytes": 133,
+            "fresh_helper_response_bytes": 476
+          }
+        ],
+        "totals": {
+          "helper_content_bytes": 337,
+          "helper_response_bytes": 1881,
+          "helper_request_bytes": 1324,
+          "receipt_extra_request_bytes": 792,
+          "plain_raw_bytes": 738,
+          "plain_wrapped_response_bytes": 1334,
+          "plain_request_bytes": 532,
+          "fresh_helper_response_bytes": 2340,
+          "helper_response_minus_plain_raw_bytes": 1143,
+          "helper_response_minus_plain_wrapped_bytes": 547,
+          "helper_response_minus_fresh_helper_bytes": -459,
+          "helper_roundtrip_minus_plain_wrapped_bytes": 1339,
+          "helper_roundtrip_minus_fresh_helper_bytes": 333
+        }
+      }
+    }
+  }
+}
