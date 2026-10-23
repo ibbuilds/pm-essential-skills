@@ -230,3 +230,26 @@ mutation; absence still means no hooks, and valid `original: null` remains valid
 A local regression checks structured failure and unchanged receipt, helper,
 guidance and hook bytes, alongside valid ownership restoration. This changes
 only the optional legacy installer, not normal skill installation or host policy.
+
+## Direct Codex review of real repository code
+
+A user-authorized Codex chat reviewed fixed SWE `a36c47d` and PM `8facb21`
+source using the supplied Software Review and Execution Efficiency instructions.
+Relevant source was provided directly after isolated-run setup failed; this was
+not automatic skill discovery, a baseline comparison, or an evaluation of every
+skill. The SWE validator review reported no actionable finding within its scope.
+
+The PM usage-evaluator review produced two static findings, both independently
+reproduced against the actual source before correction:
+
+- An unpaired run with a known quality failure was reported as unknown. The
+  aggregate improvement guard already remained false; the correction preserves
+  the failure without calling an incomplete successful pair passed.
+- Accepted integer totals could overflow the derived floating-point ratio and
+  escape the CLI's structured-error boundary. That boundary now handles overflow;
+  large exact totals with representable ratios remain accepted.
+
+Focused regressions cover these failures and neighboring valid cases. This is
+concrete useful review output, not evidence that the skills caused better review
+quality or reduced tokens. Review usage and net savings were unavailable, and
+setup failures do not count as successful negative controls.

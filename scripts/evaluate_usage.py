@@ -98,7 +98,9 @@ def compare(value):
     for task, pair in grouped.items():
         result = {"task_id": task, "token_delta": None, "relative_token_change": None}
         if set(pair) != {"baseline", "suite"}:
-            result.update(status="unpaired", quality="unknown")
+            result.update(status="unpaired", quality=(
+                "failed" if any(record["quality"] == "failed" for record in pair.values())
+                else "unknown"))
         else:
             baseline, suite = pair["baseline"], pair["suite"]
             same = (all(item is not None for item in baseline["conditions"])
@@ -155,7 +157,7 @@ def main():
         except RecursionError as exc:
             raise ValueError(str(exc)) from exc
         result = compare(value)
-    except (ValueError, OSError, TypeError) as exc:
+    except (ValueError, OSError, TypeError, OverflowError) as exc:
         print(json.dumps({"error": str(exc)}), file=sys.stderr)
         return 2
     print(json.dumps(result, separators=(",", ":")))

@@ -342,6 +342,37 @@ class UsageEvaluationTests(unittest.TestCase):
         self.assertIsNone(result["total_token_delta"])
         self.assertFalse(result["observed_improvement"])
 
+    def test_unpaired_quality_preserves_failure_without_claiming_pair_success(self):
+        for variant in ("baseline", "suite"):
+            for flags, expected in (({"completed": False}, "failed"), ({}, "unknown"),
+                                    (dict.fromkeys(USAGE.QUALITY, True), "unknown")):
+                with self.subTest(variant=variant, quality=flags):
+                    record = self.record("unpaired", variant, [10])
+                    record["quality"] = flags
+                    result = USAGE.compare({"runs": [record]})
+                    self.assertEqual(result["pairs"][0]["status"], "unpaired")
+                    self.assertEqual(result["pairs"][0]["quality"], expected)
+                    self.assertFalse(result["all_quality_passed"])
+                    self.assertFalse(result["observed_improvement"])
+                    self.assertIsNone(result["total_token_delta"])
+
+    def test_ratio_overflow_returns_structured_cli_error(self):
+        runs = [self.record("large", "baseline", [1]),
+                self.record("large", "suite", [10 ** 400])]
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/evaluate_usage.py")],
+                                input=json.dumps({"runs": runs}), text=True,
+                                capture_output=True, timeout=5)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.stdout, "")
+        self.assertTrue(json.loads(result.stderr)["error"])
+        self.assertNotIn("Traceback", result.stderr)
+        # Large exact totals remain supported when their relative change is representable.
+        runs[0]["usage"]["requests"][0]["total_tokens"] = 10 ** 400
+        result = USAGE.compare({"runs": runs})
+        self.assertEqual(result["total_token_delta"], 0)
+        self.assertEqual(result["relative_token_change"], 0)
+        self.assertFalse(result["observed_improvement"])
+
     def test_duplicate_requests_and_token_subtotals_are_rejected(self):
         runs = self.pair()
         runs[1]["usage"]["requests"][0]["request_id"] = runs[0]["usage"]["requests"][0]["request_id"]
