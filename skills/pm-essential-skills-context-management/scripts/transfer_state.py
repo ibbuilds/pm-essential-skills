@@ -79,6 +79,31 @@ def validate(state):
             raise ValueError("Invalid transfer event")
     if events[-1]["revision"] != state["revision"] or events[-1]["phase"] != state["phase"]:
         raise ValueError("Journal state disagrees with event history")
+    # Version 1 retains the complete history; the writer never prunes events or
+    # appends idempotent no-ops. Check consistency, not host outcomes/permission.
+    if events[0]["event"] != "prepare" or events[0]["phase"] != "prepared":
+        raise ValueError("Transfer history must start with prepare/prepared")
+    phase, attempts = "prepared", 0
+    for entry in events[1:]:
+        event = entry["event"]
+        allowed = {
+            "request": ({"prepared"}, "requesting"),
+            "unknown": ({"requesting"}, "uncertain"),
+            "failed": ({"requesting", "uncertain"}, "prepared" if attempts < 2 else "failed"),
+            "absent": ({"uncertain"}, "prepared" if attempts < 2 else "failed"),
+            "confirm": ({"requesting", "uncertain"}, "confirmed"),
+            "supersede": ({"confirmed"}, "superseded"),
+            "cancel": ({"prepared", "failed"}, "cancelled"),
+        }
+        if event not in allowed or phase not in allowed[event][0]:
+            raise ValueError("Invalid lifecycle transition in transfer history")
+        phase = allowed[event][1]
+        if event == "request":
+            attempts += 1
+        if attempts > 2 or entry["phase"] != phase:
+            raise ValueError("Transfer history phase or retry limit is inconsistent")
+    if state["attempts"] != attempts:
+        raise ValueError("Transfer attempts disagree with request event history")
     for key in ["handoff_id", "project_id", "source_thread_id", "brief_path"]:
         text(state[key], key)
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,79}", state["handoff_id"]):

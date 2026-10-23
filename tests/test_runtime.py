@@ -173,6 +173,65 @@ class TransferTests(unittest.TestCase):
             STATE.update(self.path, "status", {})
         self.assertEqual(self.path.read_text(), '{"phase":"confirmed"}')
 
+    def test_corrupt_attempt_count_cannot_bypass_resolved_retry_gate(self):
+        self.change("request", self.gates)
+        self.change("failed", {"definite_failure": True})
+        corrupt = self.state | {"attempts": 0}
+        self.path.write_text(json.dumps(corrupt), encoding="utf-8")
+        original = self.path.read_bytes()
+        for event, data in [("status", {}), ("request", self.gates)]:
+            with self.subTest(event=event), self.assertRaisesRegex(ValueError, "attempts disagree"):
+                STATE.update(self.path, event, data, self.state["revision"])
+            self.assertEqual(self.path.read_bytes(), original)
+            self.assertFalse(self.path.with_name(self.path.name + ".lock").exists())
+
+    def test_internally_inconsistent_history_fails_closed(self):
+        self.change("request", self.gates)
+        self.change("unknown")
+        for case in ("missing_prepare", "invalid_transition", "false_source_owner"):
+            corrupt = json.loads(json.dumps(self.state))
+            if case == "missing_prepare":
+                corrupt["events"][0]["event"] = "cancel"
+            elif case == "invalid_transition":
+                corrupt["events"][1]["event"] = "confirm"
+            else:
+                # A matching final snapshot/history phase is not enough to
+                # resume the source after an unresolved host outcome.
+                corrupt["phase"] = corrupt["events"][-1]["phase"] = "prepared"
+            self.path.write_text(json.dumps(corrupt), encoding="utf-8")
+            original = self.path.read_bytes()
+            with self.subTest(case=case), self.assertRaises(ValueError):
+                STATE.update(self.path, "status", {})
+            self.assertEqual(self.path.read_bytes(), original)
+
+    def test_corrupt_history_cli_returns_error_without_owner(self):
+        self.state["events"][0]["event"] = "cancel"
+        self.path.write_text(json.dumps(self.state), encoding="utf-8")
+        original = self.path.read_bytes()
+        run = subprocess.run([sys.executable, str(Path(STATE.__file__)),
+                              "--state", str(self.path), "--event", "status"],
+                             capture_output=True, text=True, check=False)
+        self.assertEqual(run.returncode, 2)
+        self.assertEqual(run.stdout, "")
+        self.assertIn("history must start", json.loads(run.stderr)["error"])
+        self.assertEqual(self.path.read_bytes(), original)
+
+    def test_absence_reconciliation_and_terminal_cancel_histories_remain_valid(self):
+        self.change("request", self.gates)
+        self.change("unknown")
+        self.change("absent", {"definitive_absence": True})
+        self.change("request", self.gates | {"failure_resolved": True})
+        self.change("unknown")
+        self.change("absent", {"definitive_absence": True})
+        self.assertEqual(self.state["phase"], "failed")
+        self.change("cancel")
+        revision = self.state["revision"]
+        self.change("cancel")
+        restored = STATE.update(self.path, "status", {})
+        self.assertEqual(restored["revision"], revision)
+        self.assertEqual(restored["attempts"], 2)
+        self.assertEqual(STATE.summary(restored)["active_writer"], "source-a")
+
     def test_status_cli_works_after_process_restart(self):
         self.change("request", self.gates)
         run = subprocess.run([sys.executable, str(ROOT / "skills/pm-essential-skills-context-management/scripts/transfer_state.py"),
