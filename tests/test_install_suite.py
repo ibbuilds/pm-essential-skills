@@ -207,7 +207,8 @@ class InstallSuiteTests(unittest.TestCase):
         receipt.parent.mkdir(parents=True)
         valid = {"version": 1, "files": {}, "instructions": "AGENTS.md",
                  "instructions_existed": False, "block": INSTALL.encode(b"managed block")}
-        for fields in ({"files": []}, {"files": None}, {"instructions_existed": "false"},
+        for fields in ({"version": True}, {"version": 1.0},
+                       {"files": []}, {"files": None}, {"instructions_existed": "false"},
                        {"block": None}, {"block": ""}, {"instructions": []},
                        {"files": {INSTALL.HELPER: []}},
                        {"files": {INSTALL.HELPER: {"original": 4, "sha256": "0" * 64}}},
@@ -371,6 +372,15 @@ class InstallSuiteTests(unittest.TestCase):
         self.assertIn("Duplicate installation state field: before", json.loads(result.stderr)["error"])
         self.assertEqual(target.read_bytes(), b"installed")
         self.assertEqual(journal.read_bytes(), raw)
+        for version in (True, 1.0):
+            with self.subTest(version=version):
+                raw = json.dumps({"version": version, "files": {"AGENTS.md": {
+                    "before": None, "after": INSTALL.encode(b"installed")}}}).encode()
+                journal.write_bytes(raw)
+                with self.assertRaisesRegex(ValueError, "Invalid recovery journal"):
+                    INSTALL.recover(self.home)
+                self.assertEqual(target.read_bytes(), b"installed")
+                self.assertEqual(journal.read_bytes(), raw)
         # A single null before value legitimately records a newly created file.
         journal.write_text(json.dumps({"version": 1, "files": {"AGENTS.md": {
             "before": None, "after": INSTALL.encode(b"installed")}}}))

@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -105,6 +106,62 @@ class TransferTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.change("request", self.gates)
         self.assertEqual(STATE.update(self.path, "status", {})["phase"], "prepared")
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "POSIX named pipes")
+    def test_durable_fifo_inputs_fail_without_blocking_or_retaining_lock(self):
+        original = self.path.read_bytes()
+        original_brief = self.brief.read_bytes()
+        for case in ("status_journal", "request_journal", "prepare_brief", "request_brief"):
+            self.path.unlink(missing_ok=True)
+            self.brief.unlink(missing_ok=True)
+            self.path.write_bytes(original)
+            self.brief.write_bytes(original_brief)
+            target = self.path if case.endswith("journal") else self.brief
+            target.unlink()
+            os.mkfifo(target)
+            event = case.split("_")[0]
+            if event == "prepare":
+                self.path.unlink()
+            data = self.data if event == "prepare" else self.gates if event == "request" else {}
+            command = [sys.executable, str(Path(STATE.__file__)), "--state", str(self.path),
+                       "--event", event, "--expected-revision", "0"]
+            with self.subTest(case=case):
+                run = subprocess.run(command, input=json.dumps(data), text=True,
+                                     capture_output=True, timeout=3, check=False)
+                self.assertEqual(run.returncode, 2)
+                self.assertEqual(run.stdout, "")
+                self.assertIn("regular file", json.loads(run.stderr)["error"])
+                self.assertFalse(self.path.with_name(self.path.name + ".lock").exists())
+                if case == "request_brief":
+                    self.assertEqual(self.path.read_bytes(), original)
+                elif case == "prepare_brief":
+                    self.assertFalse(self.path.exists())
+
+    def test_symlinked_regular_brief_is_resolved_and_remains_usable(self):
+        link = self.brief.with_name("brief-link.md")
+        try:
+            link.symlink_to(self.brief)
+        except (OSError, NotImplementedError):
+            self.skipTest("Symbolic links unavailable")
+        journal = self.path.with_name("linked-brief-state.json")
+        state = STATE.update(journal, "prepare", self.data | {"brief_path": str(link)})
+        self.assertEqual(state["brief_path"], str(self.brief.resolve()))
+        self.assertEqual(state["brief_sha256"], self.state["brief_sha256"])
+        self.assertEqual(STATE.update(journal, "request", self.gates, 0)["phase"], "requesting")
+        journal_link = self.path.with_name("journal-link.json")
+        journal_link.symlink_to(journal)
+        with self.assertRaisesRegex(ValueError, "symbolic link"):
+            STATE.update(journal_link, "status", {})
+
+    @unittest.skipUnless(Path("/dev/stdin").exists(), "stdin descriptor path unavailable")
+    def test_event_input_path_can_still_read_a_pipe(self):
+        run = subprocess.run([sys.executable, str(Path(STATE.__file__)),
+                              "--state", str(self.path), "--event", "request",
+                              "--expected-revision", "0", "--input", "/dev/stdin"],
+                             input=json.dumps(self.gates), text=True, capture_output=True,
+                             timeout=3, check=False)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertEqual(json.loads(run.stdout)["phase"], "requesting")
 
     def test_uncertain_result_cannot_resume_source_or_retry_blindly(self):
         self.change("request", self.gates)

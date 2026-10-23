@@ -155,7 +155,8 @@ def recover(home):
     if raw is None:
         return {"status": "nothing_to_recover"}
     transaction = json.loads(raw, object_pairs_hook=unique_state_fields)
-    if (not isinstance(transaction, dict) or transaction.get("version") != 1
+    if (not isinstance(transaction, dict) or type(transaction.get("version")) is not int
+            or transaction["version"] != 1
             or not isinstance(transaction.get("files"), dict)):
         raise ValueError("Invalid recovery journal; preserve it for manual recovery")
     originals = {}
@@ -214,7 +215,8 @@ def load_receipt(home):
     if raw is None:
         return None
     state = json.loads(raw, object_pairs_hook=unique_state_fields)
-    if not isinstance(state, dict) or state.get("version") != 1:
+    if (not isinstance(state, dict) or type(state.get("version")) is not int
+            or state["version"] != 1):
         raise ValueError("Unsupported installation receipt; preserve it for recovery")
     if (not isinstance(state.get("files"), dict)
             or type(state.get("instructions_existed")) is not bool

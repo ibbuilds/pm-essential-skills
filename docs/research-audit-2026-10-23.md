@@ -119,7 +119,9 @@ procedure is efficient for every task.
   intact bypassed the resolved-failure retry gate. Version-1 history is complete
   and unpruned, so validation now checks lifecycle consistency and request count.
   Inconsistent state is rejected unchanged; history still does not prove host
-  outcomes or grant authorization.
+  outcomes or grant authorization. Durable journal/brief reads also reject
+  nonregular files before blocking; failed preparation releases its owned lock.
+  Regular symlinked briefs and explicit event-input streams remain supported.
 
 - Conflicting duplicate JSON fields in recovery evidence were accepted with
   last-value semantics: a duplicated `before` could turn restoration into
@@ -134,4 +136,4 @@ procedure is efficient for every task.
 
 These are isolated local reproductions and regression checks, unlike the
 upstream tests inspected above. They do not establish live host integration or
-change the pending user-owned handoff policy.
+change the existing handoff permission policy.
