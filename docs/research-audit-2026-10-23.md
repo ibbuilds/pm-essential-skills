@@ -137,3 +137,39 @@ procedure is efficient for every task.
 These are isolated local reproductions and regression checks, unlike the
 upstream tests inspected above. They do not establish live host integration or
 change the existing handoff permission policy.
+
+
+## Malformed-input diagnostics remain usable
+
+Isolated malformed YAML exceeded the parser's recursion capacity and escaped
+both repository validators as a traceback. Decoder-local handling now collects
+a concise file-labelled error and continues other checks; it does not impose a
+new depth limit or catch arbitrary business-logic exceptions. PM additionally
+collects unreadable Markdown/Python and invalid manifest-shape errors, while
+resource failures still prevent package creation. Containment checks continue
+to precede existence checks for already-outside links.
+
+The stateless JSON helpers preserve their existing exit-2/JSON-error contract
+when the decoder reaches its own nesting limit. The local source reader likewise
+normalizes path-resolution failures without rejecting valid regular-file aliases.
+Tests preserve normal stdin/file input and avoid tying acceptance to a particular
+Python version's diagnostic wording. These are error-path corrections, not a
+change to skill-selection or handoff policy.
+
+
+## Duplicate metadata and host compatibility
+
+A temporary skill with repeated `name` or `description` keys passed the prior
+PyYAML-based validators because the later value replaced the earlier one.
+Codex [0.163.0's typed frontmatter parser](https://github.com/openai/codex/blob/83086188ae0614bd882818ff1aa23f3194962012/codex-rs/skills/src/parser.rs)
+uses a derived deserializer whose [pinned duplicate-field handling](https://github.com/serde-rs/serde/blob/v1.0.228/serde_derive/src/de/struct_.rs#L265-L272)
+rejects repeated recognized fields. Its loader records that parse failure rather
+than adding the skill. This is a source-backed discovery mismatch, not a live
+host-selection test.
+
+The validator now rejects duplicate explicit string keys before merge expansion,
+with file/key location diagnostics. Tests retain optional metadata, shared aliases
+and legal merge overrides instead of confusing inherited values with explicit
+duplicates. Invalid optional UI metadata is a separate case: the Codex metadata
+loader can discard it without discarding the skill itself. No claim is made that
+these checks emulate every host parser or prove model adherence.

@@ -1,6 +1,8 @@
 """Synthetic policy and read/usage scenarios; no measured live savings claims."""
 
+from contextlib import redirect_stderr
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -8,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -53,6 +56,42 @@ class BoundedReaderTests(unittest.TestCase):
                                 capture_output=True, timeout=3)
         self.assertEqual(result.returncode, 2, result.stderr)
         self.assertIn("requires a regular file", result.stderr)
+
+    def test_path_resolution_runtime_errors_use_cli_error_envelope(self):
+        for operation, diagnostic in (("expanduser", "Could not determine home directory."),
+                                      ("resolve", "Symlink loop from fixture source")):
+            with self.subTest(operation=operation):
+                stderr = io.StringIO()
+                with mock.patch.object(Path, operation, side_effect=RuntimeError(diagnostic)), \
+                     mock.patch.object(sys, "argv", ["read_source.py"]), \
+                     mock.patch.object(sys, "stdin", io.StringIO(json.dumps({"path": str(self.path)}))), \
+                     redirect_stderr(stderr):
+                    self.assertEqual(READ.main(), 2)
+                self.assertEqual(json.loads(stderr.getvalue()), {"error": diagnostic})
+        self.assertEqual(self.read()["action"], "read")
+
+    def test_symlink_loop_errors_but_regular_alias_reads_canonical_source(self):
+        alias = self.path.parent / "alias.txt"
+        loop = self.path.parent / "loop.txt"
+        try:
+            alias.symlink_to(self.path.name)
+            loop.symlink_to(loop.name)
+        except (OSError, NotImplementedError) as exc:
+            self.skipTest(f"Symlink creation unavailable: {exc}")
+        for path, code in ((loop, 2), (alias, 0), (self.path.parent / "missing.txt", 2)):
+            with self.subTest(path=path):
+                result = subprocess.run([sys.executable, str(Path(READ.__file__))],
+                                        input=json.dumps({"path": str(path)}), text=True,
+                                        capture_output=True, timeout=3)
+                self.assertEqual(result.returncode, code)
+                if code:
+                    self.assertEqual(result.stdout, "")
+                    self.assertIn("error", json.loads(result.stderr))
+                    self.assertNotIn("Traceback", result.stderr)
+                else:
+                    value = json.loads(result.stdout)
+                    self.assertEqual(value["source_id"], self.path.resolve().as_uri())
+                    self.assertEqual(value["content"][0]["text"], self.path.read_text())
 
     def test_unchanged_available_source_returns_no_duplicate_content(self):
         first = self.read()

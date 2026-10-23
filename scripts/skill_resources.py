@@ -9,10 +9,18 @@ from urllib.parse import unquote
 
 
 def resource_errors(folder):
-    folder = Path(folder).resolve()
+    folder = Path(folder)
+    try:
+        folder = folder.resolve()
+    except (OSError, RuntimeError) as exc:
+        return [f"Cannot resolve skill folder {folder}: {exc}"]
     errors = []
     for path in sorted(folder.rglob("*.md")):
-        text = path.read_text(encoding="utf-8")
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as exc:
+            errors.append(f"Cannot read skill resource {path.relative_to(folder)}: {exc}")
+            continue
         text = re.sub(r"^(`{3,}|~{3,}).*?^\1\s*$", "", text,
                       flags=re.MULTILINE | re.DOTALL)
         for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", text):
@@ -23,10 +31,14 @@ def resource_errors(folder):
             if re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", target) or target.startswith("#"):
                 continue
             local = unquote(target.split("#", 1)[0].strip("<>"))
-            resolved = (path.parent / local).resolve()
             label = f"{path.relative_to(folder)}: {target}"
-            if not resolved.is_relative_to(folder):
-                errors.append(f"Resource outside independent skill: {label}")
-            elif not resolved.exists():
-                errors.append(f"Missing skill resource: {label}")
+            try:
+                resolved = (path.parent / local).resolve()
+                if not resolved.is_relative_to(folder):
+                    errors.append(f"Resource outside independent skill: {label}")
+                elif not resolved.exists():
+                    errors.append(f"Missing skill resource: {label}")
+            except (ValueError, OSError, RuntimeError) as exc:
+                errors.append(f"Unreadable skill resource: {label}: {exc}")
+                continue
     return errors

@@ -67,7 +67,12 @@ def read_source(value):
     budget = integer(value.get("max_chars", 12000), "max_chars", 1)
     if budget > 100000:
         raise ValueError("max_chars exceeds 100000; paginate or use a specialized reader")
-    path = Path(value["path"]).expanduser().resolve(strict=True)
+    try:
+        path = Path(value["path"]).expanduser().resolve(strict=True)
+    except RuntimeError as exc:
+        # pathlib reports unknown homes and, on Python <=3.12, symlink loops
+        # as RuntimeError rather than the ordinary invalid-path exceptions.
+        raise ValueError(str(exc)) from exc
     if not path.is_file():
         raise ValueError("Local reader requires a regular file; use a specialized reader")
     # Bound the actual read, including a concurrent growth of the file.
@@ -180,7 +185,11 @@ def main():
     args = parser.parse_args()
     try:
         raw = args.input.read_text(encoding="utf-8-sig") if args.input else sys.stdin.read()
-        result = read_source(json.loads(raw, object_pairs_hook=unique))
+        try:
+            value = json.loads(raw, object_pairs_hook=unique)
+        except RecursionError as exc:
+            raise ValueError(str(exc)) from exc
+        result = read_source(value)
     except (ValueError, OSError, TypeError) as exc:
         print(json.dumps({"error": str(exc)}), file=sys.stderr)
         return 2
