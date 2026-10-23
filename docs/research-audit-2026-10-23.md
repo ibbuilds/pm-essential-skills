@@ -173,3 +173,31 @@ and legal merge overrides instead of confusing inherited values with explicit
 duplicates. Invalid optional UI metadata is a separate case: the Codex metadata
 loader can discard it without discarding the skill itself. No claim is made that
 these checks emulate every host parser or prove model adherence.
+
+
+## Generalize the useful correction, not every successful step
+
+[XRepoSkill v1](https://arxiv.org/html/2609.36807v1) contrasts trajectories and
+separates source and evaluation cases. Its reported per-issue cost exceeds the
+no-skill baseline on both benchmark averages, with offline discovery outside
+those totals; it is not evidence of token savings for these suites. Inspected
+[scoring](https://github.com/XREPOSKILL/XRepoSkill/blob/26fd70345698108c0fdce2d8904293a38b9cd42f/src/xreposkill/score.py)
+and [generalization](https://github.com/XREPOSKILL/XRepoSkill/blob/26fd70345698108c0fdce2d8904293a38b9cd42f/src/xreposkill/generalize.py)
+also limit causal interpretation: issue stratification is not randomized rule
+assignment, and cluster membership need not mean every member was independently
+scored. No claim of actual benchmark contamination follows from this inspection.
+
+The existing workflow-improvement owner gains one conditional distinction:
+separate useful corrections from incidental work before widening a lesson.
+Available contrasting cases can support that judgment; absent broader evidence,
+keep its conditions rather than demanding a paid campaign. Two authored cases
+contrast cargo-cult full scans/tests with a separately supported narrow invariant.
+No retrieval engine, learning pipeline, fixed rule count or model evaluation was
+added.
+
+[Authoring Agent Skills v1](https://arxiv.org/html/2607.25032v1) is a design note,
+not a controlled efficiency study; its useful progressive-disclosure and
+availability guidance is already covered. [GitSkills v3](https://arxiv.org/html/2608.10906v3)
+is descriptive, not effectiveness evidence. Identical entrypoint bytes do not
+establish identical referenced scripts or package provenance. No dataset-mining
+or popularity-based automation was imported.

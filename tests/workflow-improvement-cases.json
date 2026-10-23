@@ -40,6 +40,22 @@
     "must_not": "Do not invent percentages, insist on live telemetry before fixing the template, run a paid benchmark, or add ongoing monitoring."
   },
   {
+    "id": "successful-run-incidental-work-not-universal-rule",
+    "available_skills": ["pm-essential-skills-workflow-improvement"],
+    "context": "A successful shared-function repair read an overlooked caller, scanned the whole repository, and ran the full test suite. The failed attempt missed that caller. A supplied contrasting repair succeeded with a focused caller inspection and existing targeted coverage. All required checks passed in both successful repairs; no evidence isolates a benefit from the broad scan or full-suite run. Local workflow guidance edits are authorized.",
+    "prompt": "Capture the useful lesson from these repairs without adding unnecessary work.",
+    "expected": "Keep the lesson conditional on changing shared behavior and inspect relevant callers at the existing owner. Distinguish the informative correction from incidental steps; retain uncertainty about broader transfer and preserve applicable required checks.",
+    "must_not": "Do not make repository-wide scans or full-suite runs universal because they appeared in one successful trace, claim causal proof or measured savings, or require a new benchmark."
+  },
+  {
+    "id": "independently-supported-invariant-no-paid-campaign",
+    "available_skills": ["pm-essential-skills-workflow-improvement"],
+    "context": "Repeated invoice imports accepted duplicate lines because a local validator ignored the documented per-invoice line identifier. The source incident suggested the correction. Separately supplied accepted cases confirm rejection of duplicate identifiers within one invoice and acceptance of the same identifier in different invoices; the current schema independently specifies that scope. Updating the existing validator and guidance is authorized. No paid model evaluation is authorized.",
+    "prompt": "Reuse the supported correction in our invoice workflow without a paid evaluation campaign.",
+    "expected": "Reuse the existing validator, enforce identifier uniqueness only within an invoice, and check the affected valid and invalid cases. Retain the schema scope and invalidation conditions; distinguish independent support from the incident that suggested the remedy without demanding broader model trials.",
+    "must_not": "Do not generalize uniqueness across invoices, refuse the supported correction until a paid campaign runs, create a new skill or tracker, or describe fixture checks as observed model behavior."
+  },
+  {
     "id": "simplify-with-consumer-and-authority-check",
     "available_skills": ["pm-essential-skills-workflow-improvement"],
     "context": "The user asks for local toolkit cleanup. Two wrappers duplicate the same transformation. One remains referenced by a required reporting workflow and includes a user-required approval gate. Available fixtures establish equivalent transformed outputs, but not equivalent approval behavior. No permission was given to alter the reporting requirement.",
