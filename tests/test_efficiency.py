@@ -302,6 +302,14 @@ class UsageEvaluationTests(unittest.TestCase):
         self.assertEqual(result["total_token_delta"], 20)
         self.assertFalse(result["observed_improvement"])
 
+    def test_interpretation_explicitly_limits_improvement_to_tokens(self):
+        for runs in (self.pair(), []):
+            with self.subTest(measured=bool(runs)):
+                result = USAGE.compare({"runs": runs})
+                self.assertEqual(result["interpretation"],
+                                 "observed_improvement is token-only, not an overall usefulness verdict; "
+                                 "supplied observations only; no causal or statistical guarantee")
+
     def test_smaller_complete_accepted_run_reports_observed_change(self):
         result = USAGE.compare({"runs": self.pair()})
         self.assertEqual(result["total_token_delta"], -60)
