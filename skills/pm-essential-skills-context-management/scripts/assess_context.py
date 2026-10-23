@@ -296,7 +296,11 @@ def main() -> int:
     args = parser.parse_args()
     try:
         raw = args.input.read_text(encoding="utf-8-sig") if args.input else sys.stdin.read()
-        result = assess(json.loads(raw, object_pairs_hook=_unique_object))
+        try:
+            value = json.loads(raw, object_pairs_hook=_unique_object)
+        except RecursionError as exc:
+            raise ValueError(str(exc)) from exc
+        result = assess(value)
     except (OSError, ValueError) as exc:
         print(json.dumps({"error": str(exc)}), file=sys.stderr)
         return 2
