@@ -84,28 +84,20 @@ and [behavioral cases](tests/behavioral-cases.md) for deeper scope and evidence.
 
 ## Validation status
 
-Two completed Codex reviews of the same source found two PM evaluator bugs
-and no defects in the SWE validator code reviewed. One review used supplied
-PM Execution Efficiency and SWE Software Review instructions; a fresh blind
-review omitted those supplied runtime skill bodies and found the same results.
-Global skill exposure and effective settings were not independently isolated,
-so this comparison does not establish the effect of those instructions.
+Cloud checks have exercised multi-turn planning, context handoff, scoped
+engineering verification and supported task admission. Real helper review also
+led to merged capture-path and Unicode-output fixes. See the
+[workflow evaluation](docs/cloud-workflow-evaluation-2026-10-23.md) for tested
+behaviors, source revisions and limitations.
 
-Both PM bugs were independently reproduced, fixed, and merged in
-[PM PR #25](https://github.com/ibbuilds/pm-essential-skills/pull/25); PM `main` CI passed.
-These results cover the reported defects and checks, not the full suites.
-
-No comparable token usage was available, so token savings remain unknown.
-Later [cloud observations](docs/cloud-workflow-evaluation-2026-10-23.md#later-functional-observations-23-october-2026)
-demonstrate selected-skill application; broader behavior and end-to-end user
-experience remain unvalidated.
-The evidence does not establish a suite-wide quality advantage, reduced user
-supervision, or token savings; it also does not establish that either suite
-is ineffective.
-
-A subsequent [workflow smoke test](docs/workflow-smoke-test-2026-10-23.md) required no extra user
-questions or setup in either arm; it did not establish lower token use or broader
-user-effort savings.
+These are bounded functional observations, not proof of automatic host activation
+or suite-wide benefit. Matched tasks succeeded in both conditions; reduced
+supervision, total usage and billing savings remain unestablished. Earlier
+reviews found the same two evaluator defects, fixed in
+[PR #25](https://github.com/ibbuilds/pm-essential-skills/pull/25); skill exposure
+and effective settings were not independently isolated. Those reviews and the
+[workflow smoke test](docs/workflow-smoke-test-2026-10-23.md) remain separate,
+scoped evidence rather than certification of the full suite.
 
 ## Optional legacy installer
 

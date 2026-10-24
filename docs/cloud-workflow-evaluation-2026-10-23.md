@@ -126,3 +126,29 @@ functional observation, not a comparative gain or guaranteed behavior elsewhere.
 The metadata trigger is unchanged; no installer, helper or extra tracking file is
 required. Four mock admission cases were reviewed as reasoning checks, not live
 integrations.
+
+### Additional applied coordination and engineering checks — 24 October 2026
+
+The [additional workflow report](https://github.com/ibbuilds/swe-essential-skills/blob/main/docs/core-workflow-checks-2026-10-24.md#additional-applied-workflows)
+records one two-turn synthetic Operations/PM Coordination check using PM
+`16e66f01` and SWE `6b878299`. All seven frozen functional gates passed:
+already-authorized containment preserved 120 records, an ambiguous rollback was
+not retried, and an unanswered owner strategy remained blocked. This was not
+restoration. One redundant pending-question delivery and missing explicit
+handoff source citations remain recorded compliance blemishes.
+
+Separate client-state repair passed 22/22 frozen checks; a historical PM helper
+review/debug replay repaired the actual symlink loop but failed its full frozen
+acceptance (2/3 oracle checks) because of a public-task/controller boundary-policy
+mismatch. Neither result was rerun to obtain a better score. These are bounded
+functional observations, not automatic host selection, causal skill advantage,
+production assurance or token/billing savings.
+
+The debugging adjudication also independently reproduced a current capture API
+edge case: a custom PathLike provider's RuntimeError was converted into ValueError
+because path construction occurred inside the resolve handler. A separate scoped
+fix moves construction outside that handler without changing historical symlink
+resolution normalization. The new unmocked regression fails before the fix and
+passes afterward, preserving the original exception and never launching a
+producer. This is diagnostic correctness, not measured token savings or a
+retrospective pass for the historical replay.

@@ -6,13 +6,15 @@ Reviewed 22 October 2026 against source revision
 published release, a claim of flawless behavior, or a benchmark target. The
 manifest remains the unreleased 0.4.0 candidate; this document does not change it.
 
-**Status clarification — 23 October 2026:** The dated reviews, test counts and CI
-results below describe earlier snapshots, not the latest candidate. Subsequent
-changes are summarized in the [23 October research audit](research-audit-2026-10-23.md).
-Use the selected candidate's exact source revision and applicable local/remote
-check results for current integration status. The workflow/location policy is
-settled: required questions wait for the user's answer, including during urgent
-incidents. Live adherence and net savings remain unverified.
+**Evidence update — 24 October 2026:** This readiness assessment and its gate
+counts remain historical. Later
+[cloud workflow observations](cloud-workflow-evaluation-2026-10-23.md) establish
+selected behaviors under the reported conditions, including planning and
+supported task admission. They do not establish native-host activation, complete
+seven-skill adherence or net savings. Use exact source revisions and applicable
+local/remote checks for current integration status. The workflow/location policy
+is settled: required questions wait for the user's answer, including during
+urgent incidents.
 
 ## Conclusion
 
