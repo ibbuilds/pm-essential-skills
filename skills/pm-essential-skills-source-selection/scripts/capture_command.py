@@ -84,7 +84,12 @@ def main():
         report, code = capture(argv, args.output_dir, args.preview_bytes)
     except (OSError, ValueError) as exc:
         report, code = {'status': 'capture_error', 'exit_code': None, 'error': str(exc)}, 2
-    print(json.dumps(report, ensure_ascii=True, separators=(',', ':')))
+    utf8_stdout = (sys.stdout.encoding or "ascii").lower().replace("-", "").replace("_", "") == "utf8"
+    payload = json.dumps(report, ensure_ascii=not utf8_stdout, separators=(',', ':'))
+    # POSIX paths can contain surrogateescaped bytes even with UTF-8 stdout.
+    if utf8_stdout:
+        payload = payload.encode('utf-8', errors='backslashreplace').decode('utf-8')
+    print(payload)
     return code
 
 
