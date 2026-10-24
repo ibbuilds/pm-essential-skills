@@ -92,3 +92,37 @@ concern frozen runs, not reruns of current main.
 Local receipts and independent artifact checks support bounded functional
 application, not complete native-session telemetry. Causal usefulness, automatic
 host selection, broad user-effort reduction and provider billing remain unknown.
+
+## Core workflow follow-through: 24 October 2026
+
+The [SWE core workflow report](https://github.com/ibbuilds/swe-essential-skills/blob/main/docs/core-workflow-checks-2026-10-24.md)
+adds a multi-turn planning pair (both 16/16) and a synthetic SQLite engineering
+pair (both 20/20; each passed 12 contract checks plus three reviewer probes).
+These extend observed functional coverage without demonstrating incremental suite
+benefit or replacing the earlier results. The planning instruction candidate
+remains held: 2,117 fewer read bytes, 2,764 more written-work bytes and the same
+11 operations do not establish an overall efficiency gain.
+
+[PM PR #40](https://github.com/ibbuilds/pm-essential-skills/pull/40) normalizes the
+capture helper's invalid-output-path failure before producer execution.
+[PM PR #41](https://github.com/ibbuilds/pm-essential-skills/pull/41) preserves JSON
+values while emitting direct UTF-8 where supported, safely escaping lone
+surrogates and retaining non-UTF-8 fallback. One fixed synthetic Unicode stdout
+sample shrank from 828 to 740 bytes; raw streams and stored summary behavior
+were preserved. Both were merged by PM revision `940c127`, not instruction-body
+changes, new mandatory steps or measured token/billing savings.
+
+The planning and engineering pairs used earlier frozen PM revisions (`108e228`
+and `5c0df50`, respectively) with SWE `6d2cf828`. They used cloud agents, not the
+user's actual Codex session; partial blinding and observer coverage limit claims.
+The planning holdout's documented prelaunch sequencing deviation remains a limit,
+not erased by later checks. See the linked report for scope and exclusions.
+
+A separate coordination clarification now distinguishes notification-only messages,
+supported work admission/start-or-resume, and completion. A bounded read-only
+follow-up through an existing completed owner verified the merged SWE skill tree
+and local case links without creating another worker. This is one cloud-host
+functional observation, not a comparative gain or guaranteed behavior elsewhere.
+The metadata trigger is unchanged; no installer, helper or extra tracking file is
+required. Four mock admission cases were reviewed as reasoning checks, not live
+integrations.
