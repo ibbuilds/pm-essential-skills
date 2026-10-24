@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / 'skills/pm-essential-skills-source-selection/scripts/capture_command.py'
@@ -85,6 +86,38 @@ class CaptureTests(unittest.TestCase):
             self.assertEqual(counter.read_text(), 'xx')
             self.assertNotEqual(first['artifact_dir'], second['artifact_dir'])
             self.assertEqual(first['stdout']['head'].strip(), '$(echo injected); *')
+
+    def test_output_resolution_runtime_error_does_not_launch_producer(self):
+        with patch.object(capture.Path, 'resolve', side_effect=RuntimeError('Symlink loop')):
+            with patch.object(capture.subprocess, 'run') as producer:
+                with self.assertRaisesRegex(ValueError, 'Symlink loop'):
+                    capture.capture(['unused-producer'], 'unused-output', 4)
+                producer.assert_not_called()
+        # Unrelated runtime failures remain visible rather than being normalized.
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(capture.subprocess, 'run', side_effect=RuntimeError('unrelated')):
+                with self.assertRaisesRegex(RuntimeError, 'unrelated'):
+                    capture.capture(['unused-producer'], directory, 4)
+
+    @unittest.skipUnless(os.name == 'posix', 'POSIX symlink fixture')
+    def test_output_symlink_loop_has_json_error_and_never_launches(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            loop = root / 'loop'
+            loop.symlink_to('loop')
+            marker = root / 'producer-ran'
+            result = subprocess.run([
+                sys.executable, str(SCRIPT), '--output-dir', str(loop), '--',
+                sys.executable, '-c',
+                'from pathlib import Path; Path(' + repr(str(marker)) + ').touch()',
+            ], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 2)
+            self.assertEqual(result.stderr, '')
+            report = json.loads(result.stdout)
+            self.assertEqual(report['status'], 'capture_error')
+            self.assertIsNone(report['exit_code'])
+            self.assertFalse(marker.exists())
+            self.assertEqual(list(root.iterdir()), [loop])
 
     @unittest.skipUnless(os.name == 'posix', 'POSIX signal status')
     def test_signal_status(self):
