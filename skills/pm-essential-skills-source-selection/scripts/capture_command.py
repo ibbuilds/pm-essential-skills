@@ -44,8 +44,9 @@ def capture(argv, output_dir, preview_bytes):
     """Return a report and wrapper exit code; never retry a producer."""
     if not argv or not 0 <= preview_bytes <= MAX_PREVIEW_BYTES:
         raise ValueError('command required; preview bytes must be between 0 and 65536')
+    output_path = Path(output_dir)
     try:
-        root = Path(output_dir).resolve(strict=True)
+        root = output_path.resolve(strict=True)
     except RuntimeError as exc:
         # Python <=3.12 reports a symlink loop as RuntimeError, not OSError.
         raise ValueError(str(exc)) from exc

@@ -88,6 +88,25 @@ class CaptureTests(unittest.TestCase):
             self.assertNotEqual(first['artifact_dir'], second['artifact_dir'])
             self.assertEqual(first['stdout']['head'].strip(), '$(echo injected); *')
 
+    def test_output_path_provider_runtime_error_remains_visible(self):
+        failure = RuntimeError('path provider programming failure')
+
+        class BrokenPath(os.PathLike):
+            def __fspath__(self):
+                raise failure
+
+        with tempfile.TemporaryDirectory() as directory:
+            marker = Path(directory) / 'producer-ran'
+            command = [sys.executable, '-c',
+                       'from pathlib import Path; Path(' + repr(str(marker)) + ').touch()']
+            try:
+                with self.assertRaises(RuntimeError) as raised:
+                    capture.capture(command, BrokenPath(), 4)
+                self.assertIs(raised.exception, failure)
+            finally:
+                self.assertFalse(marker.exists())
+                self.assertEqual(list(Path(directory).iterdir()), [])
+
     def test_output_resolution_runtime_error_does_not_launch_producer(self):
         with patch.object(capture.Path, 'resolve', side_effect=RuntimeError('Symlink loop')):
             with patch.object(capture.subprocess, 'run') as producer:
