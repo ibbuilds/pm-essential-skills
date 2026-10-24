@@ -13,9 +13,11 @@ Infer safe, reversible details. Ask a focused question with a recommended choice
 
 ## Coordinate only what helps
 
-For a trivial clear task, act directly without a plan, tracker, or setup. Otherwise identify only the useful next steps, dependencies, owners, and completion evidence. Keep that state in current context or the existing tracker; do not create project-management files by default.
+For trivial clear tasks, act directly without plans, trackers, or setup. Otherwise identify useful next steps, dependencies, owners, and completion evidence in current context or existing trackers; no default project-management files.
 
-Delegate separable outcomes only when useful. Check existing assignments before spawning work; preserve one active writer per outcome and avoid duplicate workers or overlapping edits. Give each owner the goal, boundaries, inputs, deliverable, and dependencies. Handoffs identify completed work, remaining work, and next owners; retain responsibility for integration. Carry outstanding skill obligations, their owner/status, pending decisions, and the scope of exceptions in existing context or handoff state. Reuse satisfied evidence while applicable; no separate ledger is needed.
+Delegate separable outcomes only when useful. Check assignments before spawning; preserve one active writer per outcome without duplicate workers or overlapping edits. Specify to each owner goals, boundaries, inputs, deliverables, and dependencies. Handoffs identify completed/remaining work and next owners; retain integration responsibility. Carry outstanding skill obligations and owner/status, pending decisions, and exception scope in existing context/handoffs. Reuse applicable satisfied evidence; no separate ledger.
+
+For delegated follow-up work, use the host's supported task-admission or start/resume mechanism. Notification-only messages do not start work; reuse documented admission semantics without redundant status polling. Admission is not completion.
 
 Before dependent work, compare promised deliverables with downstream needs. Reuse an accepted shared specification and applicable validation rather than repeating domain checks or duplicating them. Resolve material mismatches with the responsible owner; ask for user-owned decisions rather than inventing them. Compatible inputs need no new document or approval.
 
