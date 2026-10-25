@@ -1,6 +1,6 @@
 ---
 name: pm-essential-skills-context-management
-description: Assess new requests, growing context and safe checkpoints for useful handoffs from replaceable history or complete comparable costs. Respect benefit guards, pending choices, critical policy and opt-outs.
+description: Preserve task context and manage authorized chat handoffs at new phases or costly context pressure. Respect pending choices, benefit guards and stay/disabled preferences; no idle monitoring.
 ---
 
 # PM Essential Skills / Context Management
