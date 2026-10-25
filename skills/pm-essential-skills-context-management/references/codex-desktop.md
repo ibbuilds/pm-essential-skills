@@ -2,6 +2,12 @@
 
 Load only for Codex thread operations. Discover tools and inspect their current schemas. The following names were exposed by the desktop host during authoring; they are not universal skill APIs.
 
+## Collect a pending location choice
+
+Use the currently exposed user-input tool and its schema. For example, `request_user_input_async` can offer choices during ongoing work; a blocking `request_user_input` may be restricted to Plan mode. Availability of one never implies permission to use the other. Do not call app-server RPCs directly or change modes to manufacture a selector. The [official app-server documentation](https://learn.chatgpt.com/docs/app-server) describes structured user input; the current runtime determines callable tools and restrictions.
+
+Put the observed reason and self-contained question in the tool, with concise options in the user's language. Do not duplicate the question in commentary. Asynchronous dispatch is not an answer: keep the choice pending, preserve the prompt while awaiting input, and perform only work independent of it. For a location choice, domain investigation remains dependent. Reuse a clear textual answer and existing authority instead of asking again. Permission escalations must use their dedicated approval mechanism, not an ordinary choice widget.
+
 ## Resolve and authorize
 
 - Use `list_projects` for actual registered project IDs/locations. Use trusted current-thread context or a bounded `list_threads`/`read_thread` lookup to establish membership when needed. Match the actual root and host, not just a similar name. Verified projectless work follows [project setup](project-setup.md) when warranted; unknown membership must be resolved before creation. Do not silently register or move anything.

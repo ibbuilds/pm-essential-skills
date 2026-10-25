@@ -9,7 +9,7 @@ description: For multi-step, ambiguous, or delegated work; handle trivial clear 
 
 Reuse the user's settled goals, scope, decisions, constraints, and context without re-asking. Define observable completion against all accepted scope, including open original requirements, not implementation or the latest milestone. Keep agreed scope changes explicit. Include required workflow steps from applicable enabled skills, not only explicitly requested deliverables. Conditional no-op paths and optional methods remain conditional; do not load every skill.
 
-Infer safe, reversible details. Ask a focused question with a recommended choice only when a missing material user decision affects the outcome, authorization, or costly rework. Continue independent work while awaiting that answer. Do not impose a planning or approval gate on already authorized work.
+Infer reversible details. Ask only material unresolved decisions affecting outcome, authority or rework. For concrete alternatives, use permitted selectable input when available, with a recommendation; otherwise ask plainly. Accept clear written answers. Continue independent work; do not gate authorized work. Permission escalations use dedicated mechanisms.
 
 ## Coordinate only what helps
 

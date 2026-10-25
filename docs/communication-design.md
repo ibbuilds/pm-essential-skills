@@ -23,3 +23,27 @@ available execution choices; Workflow Improvement owns selective toolkit and
 knowledge maintenance; Concise Communication owns how results are conveyed.
 The [scope coverage map](pm-scope-coverage.md) records their boundaries rather than
 treating the number of existing skills as the product scope.
+
+## Concrete decisions and native input
+
+The observed QX handoff conversation asked for a location choice only in prose.
+Its follow-up blamed execution alone, although the skill specified asking/waiting
+without specifying the available interaction mechanism and supplied a prose
+example. The trace does not establish which tools that earlier chat exposed.
+The correction requires supported selectable input for concrete decisions when
+available and permitted, preserves textual answers, and keeps a truthful text
+fallback. It changes question presentation, not transfer thresholds or authority.
+
+The [official Codex app-server documentation](https://learn.chatgpt.com/docs/app-server)
+describes structured user input. Current runtime schemas determine callable
+tools, mode restrictions and acknowledgement semantics; documentation of an RPC
+does not authorize invoking it directly. Native input is distinct from dedicated
+permission approval. Open-ended facts do not need artificial choices.
+
+The same omission was addressed in PM coordination, execution, resources,
+workflow improvement and communication, and SWE discovery, definition, planning,
+requirements, architecture and platform choices. Retrieval-only source selection
+and engineering procedures without an owner-choice step need no new prompt rule.
+Each affected skill remains independently usable. The cases in
+`tests/decision-input-cases.json` are regression specifications, not executed
+model evaluations or proof of interactive rendering.

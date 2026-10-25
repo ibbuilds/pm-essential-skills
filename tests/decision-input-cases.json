@@ -1,0 +1,62 @@
+[
+  {
+    "id": "context-native-selector",
+    "available_skills": [
+      "pm-essential-skills-context-management"
+    ],
+    "context": "A registered project chat contains substantial resolved QX research replaceable by a brief. New analysis is requested, occupancy is unknown, no opt-out applies. Default mode exposes request_user_input_async with title/options; blocking request_user_input is Plan-only.",
+    "prompt": "Analyze the new opportunity.",
+    "expected": "Dispatch one native async location question with two concrete options, an observed reason and justified recommendation. Keep domain investigation pending until the human answers.",
+    "must_not": "Do not substitute a prose-only question, call the Plan-only tool, change mode, claim a percentage, or interpret dispatch acknowledgement as consent."
+  },
+  {
+    "id": "context-selector-unavailable",
+    "available_skills": [
+      "pm-essential-skills-context-management"
+    ],
+    "context": "The same qualifying new request, but no permitted user-input tool exists in this host.",
+    "prompt": "Analyze the new opportunity.",
+    "expected": "Ask the location choice plainly in text and wait before domain investigation.",
+    "must_not": "Do not invent clickable controls, install tooling, change modes or silently choose a destination."
+  },
+  {
+    "id": "context-written-answer",
+    "available_skills": [
+      "pm-essential-skills-context-management"
+    ],
+    "context": "A location choice is pending and the human replies clearly in text. Project and scope are verified; creation is authorized and readiness gates still apply.",
+    "prompt": "Sí, en otro chat dentro del mismo proyecto.",
+    "expected": "Accept the written answer and prepare/execute the authorized transfer through readiness gates.",
+    "must_not": "Do not require a selector click, repeat the location question or start parallel source implementation."
+  },
+  {
+    "id": "coordination-async-pending",
+    "available_skills": [
+      "pm-essential-skills-task-coordination"
+    ],
+    "context": "An audience selector was dispatched. Only an acknowledgement returned; no human answer. Asset dimensions and factual inventory are settled and independent.",
+    "prompt": "Continue preparing the assets.",
+    "expected": "Retain the pending audience choice, prepare independent dimensions/inventory and wait before audience-specific copy.",
+    "must_not": "Do not treat a default, acknowledgement or elapsed time as a choice, duplicate the question or block independent preparation."
+  },
+  {
+    "id": "communication-open-facts",
+    "available_skills": [
+      "pm-essential-skills-concise-communication"
+    ],
+    "context": "A representative workflow example is material and unavailable in permitted sources. The user needs to describe an actual task in their own words; no meaningful alternatives are known.",
+    "prompt": "Help me map this unfamiliar workflow.",
+    "expected": "Request a concise free-form example through permitted input, without inventing choices.",
+    "must_not": "Do not force arbitrary multiple-choice options, ask settled facts or manufacture a binary answer."
+  },
+  {
+    "id": "efficiency-dedicated-permission",
+    "available_skills": [
+      "pm-essential-skills-execution-efficiency"
+    ],
+    "context": "The requested concrete edit is authorized, but writing its resolved external path requires the host dedicated filesystem escalation.",
+    "prompt": "Apply the agreed fix.",
+    "expected": "Use the dedicated permission mechanism for the concrete prepared edit, honoring the host restrictions.",
+    "must_not": "Do not use an ordinary choice widget as a permission grant or ask again for the already agreed scope."
+  }
+]

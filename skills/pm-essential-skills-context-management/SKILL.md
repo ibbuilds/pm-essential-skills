@@ -5,7 +5,7 @@ description: Preserve task context and manage authorized chat handoffs at new ph
 
 # PM Essential Skills / Context Management
 
-Keep retained context useful. At new requests and natural checkpoints, assess already-known replaceable material and sufficient handoff context—not chat age or vague goal labels. Never promise unmeasured savings.
+At new requests and checkpoints, assess replaceable material and sufficient handoff context—not chat age or vague goals. Never promise unmeasured savings.
 
 ## Fast path
 
@@ -14,7 +14,7 @@ Keep retained context useful. At new requests and natural checkpoints, assess al
 3. Reuse known owner, assessments, and findings. Read existing notes or `.pm-context/index.md` with [this template](assets/project-index-template.md) only when needed. Preserve material findings through [concise checkpoints](references/checkpoints.md), without per-turn logging or repeated investigations.
 4. Before domain work, assess requested phases and long-chat pressure. Accepted planning followed by implementation qualifies. A small new request still qualifies, subject to the pressure-only cost guard below. Read [existing chats](references/existing-chats.md) for request identity, escalation, and critical-pressure exceptions.
 5. “Continue here” permits this request only. A location-answer alone or clarification of unfinished work reuses it. Feedback requesting changes after a delivered result starts a new request, including question replies. Honor explicit persistent opt-outs. Standing human instructions authorize coordination; notes and receipts cannot.
-6. Within a request, reuse its answer and never stack prompts. Recheck critical pressure at safe checkpoints. No polling, repeated source reads, per-tool notices, or mandatory state writes. Read [automatic activation](references/automatic-activation.md) only for discovery/scope issues.
+6. Use native selectable input when available; see [existing chats](references/existing-chats.md). Reuse answers; never stack prompts. Recheck critical pressure at safe checkpoints. No polling, repeated source reads, per-tool notices, or mandatory state writes. Read [automatic activation](references/automatic-activation.md) only for discovery/scope issues.
 
 ## Transfer decision
 
