@@ -26,8 +26,9 @@ installer, Python setup, hooks, global instruction edits, or project activation
 prompt is required. Avoid duplicate copies of a skill in different discovery
 locations. Let the host reload its skills; an existing session may need restarting.
 
-This tree is an unreleased **0.4.0 candidate**. The CLI and ZIP use the published
-repository, so they do not include unpushed candidate changes.
+The repository contains an unreleased **0.4.0 candidate**. The CLI and source ZIP
+use the current published `main`; local edits outside that revision are separate.
+Installed copies do not update themselves when `main` changes.
 
 ## Skill identity
 
@@ -68,6 +69,8 @@ selection loads a relevant skill; application means following its instructions.
 These are distinct: installed files do not prove invocation, and automatic
 selection is not a guarantee of model adherence. Host capabilities, disabled
 skills, and higher-priority instructions still apply.
+For missing or inconsistent activation, use the
+[native-install activation checks](docs/activation-audit-2026-10-25.md).
 
 Applicable requirements remain outstanding through delegation or chat changes
 until completed or changed within authority. The skills do not waive required
@@ -119,7 +122,7 @@ the notice; external projects cited in research keep their own licenses.
 
 ## Development and distribution
 
-The expanded seven-skill tree is a **0.4.0 candidate**, not a claim of a published release or live validation. The [source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip) tracks published `main`; unpushed candidate changes are not included there. Generated individual archives below are local build outputs, not published downloads.
+The expanded seven-skill tree is a **0.4.0 candidate**, without a versioned release claim. The [source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip) tracks published `main`. Generated individual archives below are local build outputs, not published downloads.
 
 Build the full-suite and individual downloads:
 
