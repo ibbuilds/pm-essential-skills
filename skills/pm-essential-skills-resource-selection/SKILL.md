@@ -19,6 +19,8 @@ Use exposed, supported capabilities to match ambiguity, consequence of error, an
 
 Distinguish a recommendation from an executable switch. Change a model or effort only through an available, authorized mechanism; never silently downgrade, override an explicit choice, or invent a supported option. New credentials, paid services, or permission/configuration changes require their own explicit scope and applicable approvals; optimization alone grants none. If switching is unavailable, proceed with current capabilities when adequate; otherwise report the actual blocker and needed action without claiming a switch occurred.
 
+For necessary decisions with concrete alternatives, use the host's permitted selectable-input tool when available, with concise options and a justified recommendation. Use free text for open-ended facts or when no suitable tool is available. Accept clear written answers; defaults and timeouts are not consent. Permission escalations use their dedicated mechanism.
+
 ## Delegate only useful independence
 
 Delegate genuinely independent, bounded outcomes only when expected benefit exceeds handoff, duplicated context, review, and coordination costs. Keep one accountable owner per outcome and give each delegate the minimum sufficient context and acceptance criteria. Avoid trivial fanout and overlapping writers. Batch independent useful work where dependencies and tool semantics permit; do not manufacture work to fill agent slots.

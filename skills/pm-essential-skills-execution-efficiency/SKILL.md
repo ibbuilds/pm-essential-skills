@@ -7,6 +7,8 @@ description: For implementation or repair, not simple answers or retrieval-only 
 
 Complete the requested change with sufficient evidence. This standalone skill requires no setup, helper calls, or tracking files. Repairs include documents and spreadsheets. Domain workflows own implementation and required checks; this skill calibrates repetition, not priorities or chat routing.
 
+For necessary decisions with concrete alternatives, use the host's permitted selectable-input tool when available, with concise options and a justified recommendation. Use free text for open-ended facts or when no suitable tool is available. Accept clear written answers; defaults and timeouts are not consent. Permission escalations use their dedicated mechanism.
+
 ## Choose the next action
 
 - Reuse the request, accepted decisions, investigation, and applicable project instructions. Ask only for information materially affecting correctness, scope, or an irreversible choice; offer a specific choice and recommendation when useful. Do not invent answers or re-ask settled questions. Straightforward changes need no separate planning ceremony.
