@@ -87,6 +87,12 @@ and [behavioral cases](tests/behavioral-cases.md) for deeper scope and evidence.
 
 ## Validation status
 
+The [25 October functional validation](docs/functional-validation-2026-10-25.md)
+exercised all seven workflows on completed tasks, including a real validator
+repair, source-complete report, continuation decision, resource choice and a
+wording-only control. It also retains 29 replayable helper observations. This
+adds procedure/application evidence to the earlier installation checks.
+
 Cloud checks have exercised multi-turn planning, context handoff, scoped
 engineering verification and supported task admission. Real helper review also
 led to merged capture-path and Unicode-output fixes. See the

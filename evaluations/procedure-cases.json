@@ -1,0 +1,576 @@
+{
+  "cases": [
+    {
+      "case_id": "finished_no_successor",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "project",
+        "safe_checkpoint": true,
+        "completed": true
+      },
+      "expected_output_fields": {
+        "action": "complete"
+      }
+    },
+    {
+      "case_id": "current_choice_reused",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "project",
+        "safe_checkpoint": true,
+        "substantial_history": true,
+        "request_id": "r1",
+        "choice_request_id": "r1",
+        "boundary_choice": "current-thread"
+      },
+      "expected_output_fields": {
+        "action": "continue"
+      }
+    },
+    {
+      "case_id": "expired_choice_new_request",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "project",
+        "safe_checkpoint": true,
+        "substantial_history": true,
+        "request_id": "r2",
+        "choice_request_id": "r1",
+        "boundary_choice": "current-thread"
+      },
+      "expected_output_fields": {
+        "action": "ask_thread_choice"
+      }
+    },
+    {
+      "case_id": "pending_survives_compaction",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "project",
+        "safe_checkpoint": true,
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 10,
+          "window_tokens": 100,
+          "source": "synthetic audit meter",
+          "fresh": true
+        },
+        "choice_pending": true
+      },
+      "expected_output_fields": {
+        "action": "await_thread_choice"
+      }
+    },
+    {
+      "case_id": "critical_overrides_one_request_stay",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "project",
+        "safe_checkpoint": true,
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 90,
+          "window_tokens": 100,
+          "source": "synthetic audit meter",
+          "fresh": true
+        },
+        "boundary_choice": "current-thread"
+      },
+      "expected_output_fields": {
+        "action": "rollover"
+      }
+    },
+    {
+      "case_id": "persistent_stay_overrides_critical",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "project",
+        "safe_checkpoint": true,
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 90,
+          "window_tokens": 100,
+          "source": "synthetic audit meter",
+          "fresh": true
+        },
+        "settings": {
+          "mode": "stay"
+        }
+      },
+      "expected_output_fields": {
+        "action": "continue"
+      }
+    },
+    {
+      "case_id": "critical_access_missing",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "project",
+        "safe_checkpoint": true,
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 90,
+          "window_tokens": 100,
+          "source": "synthetic audit meter",
+          "fresh": true
+        },
+        "transfer_context_ready": false
+      },
+      "expected_output_fields": {
+        "action": "blocked_transfer"
+      }
+    },
+    {
+      "case_id": "unknown_membership_not_dispatch",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "unknown",
+        "safe_checkpoint": true,
+        "substantial_history": true
+      },
+      "expected_output_fields": {
+        "action": "review"
+      }
+    },
+    {
+      "case_id": "standalone_pressure_no_setup",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "standalone",
+        "safe_checkpoint": true,
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 90,
+          "window_tokens": 100,
+          "source": "synthetic audit meter",
+          "fresh": true
+        }
+      },
+      "expected_output_fields": {
+        "action": "checkpoint"
+      }
+    },
+    {
+      "case_id": "complete_beneficial_comparison",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "project",
+        "safe_checkpoint": true,
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 10,
+          "window_tokens": 100,
+          "source": "synthetic audit meter",
+          "fresh": true
+        },
+        "transfer_cost": {
+          "basis": "estimated",
+          "source": "synthetic supplied comparison",
+          "unit": "tool_calls",
+          "scope": "remaining_requested_work",
+          "fresh": true,
+          "continue": 10,
+          "handoff": 1,
+          "startup": 1,
+          "reconstruction": 1,
+          "destination_work": 2
+        }
+      },
+      "expected_output_fields": {
+        "action": "ask_thread_choice"
+      }
+    },
+    {
+      "case_id": "incomplete_cost_does_not_prove_benefit",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "project",
+        "safe_checkpoint": true,
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 10,
+          "window_tokens": 100,
+          "source": "synthetic audit meter",
+          "fresh": true
+        },
+        "transfer_cost": {
+          "basis": "estimated",
+          "source": "synthetic supplied comparison",
+          "unit": "tool_calls",
+          "scope": "remaining_requested_work",
+          "fresh": true,
+          "continue": 10,
+          "handoff": 1,
+          "startup": 1,
+          "reconstruction": 1
+        }
+      },
+      "expected_output_fields": {
+        "action": "continue"
+      }
+    },
+    {
+      "case_id": "costly_pressure_only_move_suppressed",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
+      "input_observations": {
+        "project_mode": "project",
+        "safe_checkpoint": true,
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 80,
+          "window_tokens": 100,
+          "source": "synthetic audit meter",
+          "fresh": true
+        },
+        "transfer_cost": {
+          "basis": "estimated",
+          "source": "synthetic supplied comparison",
+          "unit": "tool_calls",
+          "scope": "remaining_requested_work",
+          "fresh": true,
+          "continue": 10,
+          "handoff": 20,
+          "startup": 1,
+          "reconstruction": 1,
+          "destination_work": 2
+        }
+      },
+      "expected_output_fields": {
+        "action": "continue"
+      }
+    },
+    {
+      "case_id": "matching_current_reuse",
+      "helper_path": "pm-essential-skills-source-selection/scripts/assess_source.py",
+      "input_observations": {
+        "source_id": "source-a",
+        "loaded_source_id": "source-a",
+        "content_available": true,
+        "coverage_sufficient": true,
+        "freshness_required": true,
+        "loaded_revision": "v1",
+        "current_revision": "v1",
+        "revision_verified": true,
+        "access": "available"
+      },
+      "expected_output_fields": {
+        "action": "reuse"
+      }
+    },
+    {
+      "case_id": "changed_revision_invalidates",
+      "helper_path": "pm-essential-skills-source-selection/scripts/assess_source.py",
+      "input_observations": {
+        "source_id": "source-a",
+        "loaded_source_id": "source-a",
+        "content_available": true,
+        "coverage_sufficient": true,
+        "freshness_required": true,
+        "loaded_revision": "v1",
+        "current_revision": "v2",
+        "revision_verified": true,
+        "access": "available"
+      },
+      "expected_output_fields": {
+        "action": "fetch"
+      }
+    },
+    {
+      "case_id": "required_full_read_not_skipped",
+      "helper_path": "pm-essential-skills-source-selection/scripts/assess_source.py",
+      "input_observations": {
+        "source_id": "source-a",
+        "loaded_source_id": "source-a",
+        "content_available": true,
+        "coverage_sufficient": true,
+        "freshness_required": true,
+        "loaded_revision": "v1",
+        "current_revision": "v1",
+        "revision_verified": true,
+        "access": "available",
+        "needed": false,
+        "required_full_read": true,
+        "full_read_complete": false
+      },
+      "expected_output_fields": {
+        "action": "fetch"
+      }
+    },
+    {
+      "case_id": "denied_is_not_absence",
+      "helper_path": "pm-essential-skills-source-selection/scripts/assess_source.py",
+      "input_observations": {
+        "source_id": "source-a",
+        "loaded_source_id": "source-a",
+        "content_available": true,
+        "coverage_sufficient": true,
+        "freshness_required": true,
+        "loaded_revision": "v1",
+        "current_revision": "v1",
+        "revision_verified": true,
+        "access": "denied"
+      },
+      "expected_output_fields": {
+        "action": "blocked"
+      }
+    },
+    {
+      "case_id": "unknown_freshness_not_reused",
+      "helper_path": "pm-essential-skills-source-selection/scripts/assess_source.py",
+      "input_observations": {
+        "source_id": "source-a",
+        "loaded_source_id": "source-a",
+        "content_available": true,
+        "coverage_sufficient": true,
+        "freshness_required": true,
+        "loaded_revision": "v1",
+        "current_revision": "v1",
+        "revision_verified": false,
+        "access": "available"
+      },
+      "expected_output_fields": {
+        "action": "verify"
+      }
+    },
+    {
+      "case_id": "irrelevant_source_skipped",
+      "helper_path": "pm-essential-skills-source-selection/scripts/assess_source.py",
+      "input_observations": {
+        "source_id": "source-a",
+        "loaded_source_id": "source-a",
+        "content_available": true,
+        "coverage_sufficient": true,
+        "freshness_required": true,
+        "loaded_revision": "v1",
+        "current_revision": "v1",
+        "revision_verified": true,
+        "access": "available",
+        "needed": false
+      },
+      "expected_output_fields": {
+        "action": "skip"
+      }
+    },
+    {
+      "case_id": "all_declared_gates_ready",
+      "helper_path": "pm-essential-skills-context-management/scripts/preflight.py",
+      "input_observations": {
+        "membership": "project",
+        "project_id": "synthetic-project",
+        "source_thread_id": "synthetic-source",
+        "current_skill_available": true,
+        "destination_skill_available": true,
+        "create_thread_available": true,
+        "reconcile_thread_available": true,
+        "authorization_verified": true,
+        "safe_checkpoint": true,
+        "references_accessible": true,
+        "source_recovery_ready": true,
+        "settings_preserved": true,
+        "execution_mode_allows_transfer": true
+      },
+      "expected_output_fields": {
+        "transfer_ready": true
+      }
+    },
+    {
+      "case_id": "authorization_missing_blocks",
+      "helper_path": "pm-essential-skills-context-management/scripts/preflight.py",
+      "input_observations": {
+        "membership": "project",
+        "project_id": "synthetic-project",
+        "source_thread_id": "synthetic-source",
+        "current_skill_available": true,
+        "destination_skill_available": true,
+        "create_thread_available": true,
+        "reconcile_thread_available": true,
+        "authorization_verified": false,
+        "safe_checkpoint": true,
+        "references_accessible": true,
+        "source_recovery_ready": true,
+        "settings_preserved": true,
+        "execution_mode_allows_transfer": true
+      },
+      "expected_output_fields": {
+        "transfer_ready": false
+      }
+    },
+    {
+      "case_id": "recovery_missing_blocks",
+      "helper_path": "pm-essential-skills-context-management/scripts/preflight.py",
+      "input_observations": {
+        "membership": "project",
+        "project_id": "synthetic-project",
+        "source_thread_id": "synthetic-source",
+        "current_skill_available": true,
+        "destination_skill_available": true,
+        "create_thread_available": true,
+        "reconcile_thread_available": true,
+        "authorization_verified": true,
+        "safe_checkpoint": true,
+        "references_accessible": true,
+        "source_recovery_ready": false,
+        "settings_preserved": true,
+        "execution_mode_allows_transfer": true
+      },
+      "expected_output_fields": {
+        "transfer_ready": false
+      }
+    },
+    {
+      "case_id": "source_identity_missing_blocks",
+      "helper_path": "pm-essential-skills-context-management/scripts/preflight.py",
+      "input_observations": {
+        "membership": "project",
+        "project_id": "synthetic-project",
+        "source_thread_id": null,
+        "current_skill_available": true,
+        "destination_skill_available": true,
+        "create_thread_available": true,
+        "reconcile_thread_available": true,
+        "authorization_verified": true,
+        "safe_checkpoint": true,
+        "references_accessible": true,
+        "source_recovery_ready": true,
+        "settings_preserved": true,
+        "execution_mode_allows_transfer": true
+      },
+      "expected_output_fields": {
+        "transfer_ready": false
+      }
+    },
+    {
+      "case_id": "chosen_target_preserves_source_membership",
+      "helper_path": "pm-essential-skills-context-management/scripts/preflight.py",
+      "input_observations": {
+        "membership": "standalone",
+        "project_id": "synthetic-project",
+        "source_thread_id": "synthetic-source",
+        "current_skill_available": true,
+        "destination_skill_available": true,
+        "create_thread_available": true,
+        "reconcile_thread_available": true,
+        "authorization_verified": true,
+        "safe_checkpoint": true,
+        "references_accessible": true,
+        "source_recovery_ready": true,
+        "settings_preserved": true,
+        "execution_mode_allows_transfer": true,
+        "target_project_verified": true,
+        "project_selection_authorized": true
+      },
+      "expected_output_fields": {
+        "source_membership": "standalone"
+      }
+    },
+    {
+      "case_id": "confirmed_isolated_handoff_archive",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_archive.py",
+      "input_observations": {
+        "target_verified": true,
+        "authorized": true,
+        "archive_control_available": true,
+        "archive_effect_isolated": true,
+        "no_other_active_work": true,
+        "stage": "after_handoff",
+        "handoff_confirmed": true,
+        "routing_saved": true,
+        "source_superseded": true,
+        "source_recovery_ready": true,
+        "currently_archived": false
+      },
+      "expected_output_fields": {
+        "action": "archive_source"
+      }
+    },
+    {
+      "case_id": "other_work_preserved",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_archive.py",
+      "input_observations": {
+        "target_verified": true,
+        "authorized": true,
+        "archive_control_available": true,
+        "archive_effect_isolated": true,
+        "no_other_active_work": false,
+        "stage": "after_handoff",
+        "handoff_confirmed": true,
+        "routing_saved": true,
+        "source_superseded": true,
+        "source_recovery_ready": true,
+        "currently_archived": false
+      },
+      "expected_output_fields": {
+        "action": "keep"
+      }
+    },
+    {
+      "case_id": "direct_read_no_restore",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_archive.py",
+      "input_observations": {
+        "target_verified": true,
+        "authorized": true,
+        "archive_control_available": true,
+        "archive_effect_isolated": true,
+        "no_other_active_work": true,
+        "stage": "recover",
+        "read_result": "success"
+      },
+      "expected_output_fields": {
+        "action": "use_context"
+      }
+    },
+    {
+      "case_id": "generic_read_failure_not_archive_proof",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_archive.py",
+      "input_observations": {
+        "target_verified": true,
+        "authorized": true,
+        "archive_control_available": true,
+        "archive_effect_isolated": true,
+        "no_other_active_work": true,
+        "stage": "recover",
+        "read_result": "failed"
+      },
+      "expected_output_fields": {
+        "action": "fallback"
+      }
+    },
+    {
+      "case_id": "owned_restore_rearchives",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_archive.py",
+      "input_observations": {
+        "target_verified": true,
+        "authorized": true,
+        "archive_control_available": true,
+        "archive_effect_isolated": true,
+        "no_other_active_work": true,
+        "stage": "restore",
+        "recovery_receipt_saved": true,
+        "original_archived": true,
+        "currently_archived": false,
+        "restored_for_recovery": true
+      },
+      "expected_output_fields": {
+        "action": "rearchive_source"
+      }
+    },
+    {
+      "case_id": "unconfirmed_restore_reconciles",
+      "helper_path": "pm-essential-skills-context-management/scripts/assess_archive.py",
+      "input_observations": {
+        "target_verified": true,
+        "authorized": true,
+        "archive_control_available": true,
+        "archive_effect_isolated": true,
+        "no_other_active_work": true,
+        "stage": "restore",
+        "recovery_receipt_saved": true,
+        "original_archived": true,
+        "currently_archived": false
+      },
+      "expected_output_fields": {
+        "action": "reconcile_restore"
+      }
+    }
+  ]
+}
