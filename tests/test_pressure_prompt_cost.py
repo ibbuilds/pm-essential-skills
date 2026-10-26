@@ -1,4 +1,4 @@
-"""Known-cost suppression of new pressure-only prompts; no live/model claims."""
+"""Known-cost suppression of optional prompts at every below-critical boundary."""
 
 import unittest
 
@@ -36,14 +36,15 @@ class PressurePromptCostTests(unittest.TestCase):
             self.assertEqual(POLICY.assess(self.base | {"transfer_cost": cost})["action"],
                              "ask_thread_choice")
 
-    def test_explicit_phase_and_outcome_boundaries_still_get_choice(self):
+    def test_phase_and_outcome_boundaries_keep_the_value_guard(self):
         for guard in self.guards:
             for boundary in ("new_phase", "new_outcome"):
                 for substantial in (False, True):
                     with self.subTest(guard=guard, boundary=boundary, substantial=substantial):
                         result = POLICY.assess(self.base | guard |
                                               {boundary: True, "substantial_history": substantial})
-                        self.assertEqual(result["action"], "ask_thread_choice")
+                        self.assertEqual(result["action"],
+                                         "checkpoint" if guard.get("reconstruction_repeats_work") else "continue")
 
     def test_pending_questions_still_wait_including_after_compaction(self):
         for guard in self.guards:

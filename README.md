@@ -26,9 +26,11 @@ installer, Python setup, hooks, global instruction edits, or project activation
 prompt is required. Avoid duplicate copies of a skill in different discovery
 locations. Let the host reload its skills; an existing session may need restarting.
 
-The repository contains an unreleased **0.4.0 candidate**. The CLI and source ZIP
-use the current published `main`; local edits outside that revision are separate.
-Installed copies do not update themselves when `main` changes.
+The CLI and source ZIP install the current published `main`. The optional bundle
+manifest uses version **0.4.0**; no versioned release tag is implied. Installed
+copies need synchronization when the source changes. See the current
+[outcome contract and readiness](docs/v1-readiness.md) for implemented behavior
+and the evidence that supports it.
 
 ## Skill identity
 
@@ -87,6 +89,11 @@ and [behavioral cases](tests/behavioral-cases.md) for deeper scope and evidence.
 
 ## Validation status
 
+The [current outcome review](docs/v1-readiness.md) corrects negative-value handoff
+prompts and keeps related corrections in the chosen chat. It preserves explicit
+location decisions and transfer safeguards. Ordinary work uses only the relevant
+skill and references, with no mandatory helper or chat-management call.
+
 The [25 October functional validation](docs/functional-validation-2026-10-25.md)
 exercised all seven workflows on completed tasks, including a real validator
 repair, source-complete report, continuation decision, resource choice and a
@@ -128,7 +135,7 @@ the notice; external projects cited in research keep their own licenses.
 
 ## Development and distribution
 
-The expanded seven-skill tree is a **0.4.0 candidate**, without a versioned release claim. The [source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip) tracks published `main`. Generated individual archives below are local build outputs, not published downloads.
+The seven-skill tree is distributed from published `main`; the optional bundle manifest is **0.4.0**, without a versioned release tag. The [source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip) tracks published `main`. Generated individual archives below are local build outputs, not published downloads.
 
 Build the full-suite and individual downloads:
 

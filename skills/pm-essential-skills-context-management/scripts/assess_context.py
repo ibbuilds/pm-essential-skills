@@ -245,19 +245,17 @@ def assess(observation: Any) -> dict:
         if obs.get("project_mode", "unknown") == "unknown" and (phase_boundary or obs.get("substantial_history", False)):
             return finish("review", "phase_project_unverified")
         if obs.get("project_mode") == "project":
-            # Do not interrupt ongoing work merely to propose a move already known
-            # to repeat investigations or cost at least as much. Explicit requested
-            # boundaries, human answers, pending questions and critical pressure
-            # retain their existing precedence; unknown costs stay unknown.
-            if not obs.get("new_phase", False) and not obs.get("new_outcome", False):
-                if obs.get("transfer_context_ready") is False:
-                    return finish("continue", "transfer_context_unavailable")
-                if obs.get("reconstruction_repeats_work", False):
-                    return finish("checkpoint", "transfer_would_repeat_investigation")
-                if cost and cost["fresh"] and cost["transfer"] >= cost["continue"]:
-                    return finish("continue", "transfer_cost_not_beneficial")
+            # A new phase/outcome requests work, not a new chat. Known transfer
+            # costs still apply. Earlier branches preserve actual human location
+            # answers, pending questions, critical pressure and safe checkpoints.
+            if obs.get("transfer_context_ready") is False:
+                return finish("continue", "transfer_context_unavailable")
+            if obs.get("reconstruction_repeats_work", False):
+                return finish("checkpoint", "transfer_would_repeat_investigation")
+            if cost and cost["fresh"] and cost["transfer"] >= cost["continue"]:
+                return finish("continue", "transfer_cost_not_beneficial")
             result = finish("ask_thread_choice", "requested_phase_boundary" if phase_boundary else "long_chat_new_request")
-            result["prompt_level"] = min(3, obs.get("stay_count", 0) + 1)
+            result["prompt_level"] = 1
             return result
     if obs.get("new_outcome", False) and obs.get("project_mode") != "standalone":
         return transfer("distinct_requested_outcome")
@@ -272,7 +270,7 @@ def assess(observation: Any) -> dict:
                           "transfer_would_repeat_investigation")
         if obs.get("safe_checkpoint", False):
             result = finish("ask_thread_choice", "supplied_transfer_cost_beneficial")
-            result["prompt_level"] = min(3, obs.get("stay_count", 0) + 1)
+            result["prompt_level"] = 1
             return result
     if ratio is not None:
         if ratio >= settings["rollover_ratio"]:

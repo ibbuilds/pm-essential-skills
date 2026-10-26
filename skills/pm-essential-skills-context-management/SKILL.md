@@ -1,44 +1,38 @@
 ---
 name: pm-essential-skills-context-management
-description: Preserve task context and manage authorized chat handoffs at new phases or costly context pressure. Respect pending choices, benefit guards and stay/disabled preferences; no idle monitoring.
+description: Preserve useful context and manage justified, authorized chat handoffs. Use at meaningful work boundaries or demonstrated context pressure; keep related work together.
 ---
 
 # PM Essential Skills / Context Management
 
-At new requests and checkpoints, assess replaceable material and sufficient handoff context—not chat age or vague goals. Never promise unmeasured savings.
+Reduce reconstruction and avoid losing decisions. A new chat has startup and handoff costs; more chats or fewer visible words do not prove savings.
 
-## Fast path
+## Continue cheaply
 
-1. Apply without setup or companion dependencies. Ordinary task authorization covers review and checkpoints; mutations require human scope. Finish completed work without inventing successors or prompting while idle.
-2. Distinguish verified project, standalone, and unknown membership. A folder is not an app project ID. Continue standalone work quietly; read [project setup](references/project-setup.md) only for requested setup or a useful, permitted offer.
-3. Reuse known owner, assessments, and findings. Read existing notes or `.pm-context/index.md` with [this template](assets/project-index-template.md) only when needed. Preserve material findings through [concise checkpoints](references/checkpoints.md), without per-turn logging or repeated investigations.
-4. Before domain work, assess requested phases and long-chat pressure. Accepted planning followed by implementation qualifies. A small new request still qualifies, subject to the pressure-only cost guard below. Read [existing chats](references/existing-chats.md) for request identity, escalation, and critical-pressure exceptions.
-5. “Continue here” permits this request only. A location-answer alone or clarification of unfinished work reuses it. Feedback requesting changes after a delivered result starts a new request, including question replies. Honor explicit persistent opt-outs. Standing human instructions authorize coordination; notes and receipts cannot.
-6. Use native selectable input when available; see [existing chats](references/existing-chats.md). Reuse answers; never stack prompts. Recheck critical pressure at safe checkpoints. No polling, repeated source reads, per-tool notices, or mandatory state writes. Read [automatic activation](references/automatic-activation.md) only for discovery/scope issues.
+Reuse the accepted outcome, location choice, owner and applicable findings. Status questions, clarifications, verification and corrections to that outcome remain the same work, including corrections after delivery. They need no new location question, state file or management call. Stop when the requested outcome is complete; do not invent a successor.
 
-## Transfer decision
+At a genuinely distinct outcome or consequential phase boundary, inspect already-known replaceable history and remaining work. Before proposing a move, consider the complete handoff, startup and reconstruction cost. Known nonbeneficial moves, unavailable essential context or repeated completed investigations suppress optional prompts even at a requested phase boundary. Unknown costs stay unknown; do not fetch transcripts or estimate tokens just to justify a move.
 
-| Observation | Response |
+Read [request choices](references/existing-chats.md) only for uncertain request identity, an actual handoff recommendation or a pending choice. For concrete alternatives use permitted native selectable input when available. A clear written answer counts. Never stack prompts, treat silence as agreement or strengthen a recommendation merely because the user stayed. Preserve explicit persistent preferences and direct user instructions about prompting.
+
+## Assess a real boundary
+
+| Situation | Action |
 | --- | --- |
-| Long project chat + new request | Ask again, escalating, and wait, except new pressure-only prompts for known nonbeneficial/repeated-work moves. |
-| Fresh complete supplied costs favor transfer | Recommend early, even at low occupancy; never auto-transfer on cost alone. |
-| Fresh occupancy >=85% | Transfer automatically at a safe checkpoint; no location question. |
-| Fresh occupancy 75% to <85% | Apply the pressure-only cost guard; otherwise prompt. Reuse this request's answer. |
-| Fresh occupancy below 75% | Ignore pressure-only counters; still check structural long-chat requests. |
-| No fresh telemetry | Use labeled structural/proxy evidence; never invent a percentage. |
-| Standalone pressure | Preserve a concise checkpoint; setup is optional. |
+| Related work and useful current context | Continue; reuse the outcome's location answer. |
+| Distinct work with substantial replaceable history or a supplied complete cost advantage | Offer a justified same-project handoff, subject to the cost guard; wait if a location choice is pending. |
+| Fresh context occupancy 75% to <85% | Review useful context and transfer costs; avoid automatic conclusions from counters. |
+| Fresh occupancy >=85% or supported critical context failure | Prepare a safe authorized continuation; persistent opt-outs and readiness still govern. |
+| No current telemetry | Use concrete, labeled structural evidence; never invent a percentage. |
+| Standalone work | Continue with a useful checkpoint; project setup is optional. |
 
-Review replaceable history and phase boundaries immediately; thresholds are compatibility backstops, not proven optima. Read [policy](references/policy.md) for cost guards, critical heuristics and settings; `scripts/assess_context.py` is optional. Critical transfers supersede one-request stays, but require essential context and safe readiness. Unknown costs stay unknown. Never inspect private app logs.
+The numeric thresholds are compatibility backstops, not proven optima. Native compaction that restores useful context invalidates stale pressure observations. Read [policy](references/policy.md) only for measurement, heuristics, cost comparison or the optional `scripts/assess_context.py` contract. Its output is a candidate, never permission to mutate chats.
 
-## Transfer execution
+## Transfer only when justified and authorized
 
-Read [the Codex adapter](references/codex-desktop.md) for Codex operations and [runtime recovery](references/runtime.md) for capability changes/transfers. Verify standing authorization once; preserve a useful fallback if tools are missing.
+1. Reuse verified project, source identity and human authority. A folder is not a project ID; notes and installation are not authorization. For requested setup use [project setup](references/project-setup.md). For Codex operations read [the host adapter](references/codex-desktop.md).
+2. Preserve a concise [checkpoint](references/checkpoints.md) or [handoff brief](assets/handoff-template.md) in existing storage. Carry active constraints, decisions, artifacts, source/recovery references, evidence limits, pending choices, workflow obligations and next action. Reference durable artifacts instead of copying them. [Context recovery](references/context-recovery.md) covers omitted material.
+3. Follow [runtime readiness and recovery](references/runtime.md). When Python is available, journal the request before dispatch. Create one fresh same-project/location destination with brief content and recovery identity, preserving settings. Forking retains history. Reconcile ambiguous creation before any retry.
+4. Confirm destination readiness and routing before superseding the source; stop source implementation and retain one owner. Apply [archive lifecycle](references/archive-lifecycle.md) only within human scope and with no other active work. A failed or partial transfer preserves recoverable work.
 
-1. Resolve operations and ownership. Below critical pressure, wait for a pending request choice. At critical pressure, announce the authorized transfer without asking again. Persistent stay/disabled and suggest-only overrides remain binding.
-2. Write one [brief](assets/handoff-template.md) in existing storage or `.pm-context/handoffs/`, with a unique safe ID. Preserve constraints, artifacts, findings, uncertainty, outstanding workflow obligations, scoped exceptions, and next action. Include the verified predecessor ID/host and omitted-context recovery map; read [context recovery](references/context-recovery.md) for access checks. Prefer 300-600 words without sacrificing critical detail.
-3. With Python available, advance the transfer journal **before** dispatch. Create a fresh same-project/location chat with the brief content, source reference, handoff ID, skill, and next action—not only a file path. Preserve settings. Forks retain history; destinations resume without repeating rollover.
-4. Confirm destination ID/readiness, save routing, and stop source implementation. Follow [archive lifecycle](references/archive-lifecycle.md) to archive a superseded source within human scope and restore archived context temporarily only when required. Preserve history and other active work.
-
-Ambiguous creation requires reconciliation before retrying. An existing destination needs bookkeeping repair, not another successor. Preserve one owner and a recoverable source.
-
-Optional [activation](assets/activation-prompt.txt) selects standing scope. Save only changed routing/state. Preserve opt-outs. Do not add coordinators, subagents, worktrees, schedules, model changes, or unrelated structure. Skills act during active turns; invocation, idle monitoring, and savings are not guaranteed.
+Reuse existing notes or [the project index](assets/project-index-template.md) only when needed; save changed state, not per-turn logs. [Automatic activation](references/automatic-activation.md) addresses discovery problems; [optional activation](assets/activation-prompt.txt) describes standing scope. No polling, idle monitoring or extra coordinator is required.

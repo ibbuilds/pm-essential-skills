@@ -13,17 +13,20 @@ class PhaseChoiceTests(unittest.TestCase):
         self.phase = dict(new_phase=True, substantial_history=True,
                           project_mode="project", safe_checkpoint=True)
 
-    def test_unanswered_choice_blocks_transfer_even_with_pressure_or_costs(self):
+    def test_phase_prompt_respects_available_value_and_context_evidence(self):
         costs = dict(basis="estimated", source="synthetic remaining-work estimate",
                      unit="tokens", scope="remaining_requested_work", fresh=True,
                      continue_=1, handoff=10, startup=20, reconstruction=30)
         costs["continue"] = costs.pop("continue_")
-        for extra in ({}, {"context": context(10000)}, {"context": context(80000)},
-                      {"transfer_cost": costs}, {"transfer_context_ready": False},
-                      {"reconstruction_repeats_work": True}):
-            with self.subTest(extra=extra):
+        for extra, expected in (({}, "ask_thread_choice"),
+                                ({"context": context(10000)}, "ask_thread_choice"),
+                                ({"context": context(80000)}, "ask_thread_choice"),
+                                ({"transfer_cost": costs}, "continue"),
+                                ({"transfer_context_ready": False}, "continue"),
+                                ({"reconstruction_repeats_work": True}, "checkpoint")):
+            with self.subTest(extra=extra, expected=expected):
                 result = POLICY.assess(self.phase | extra)
-                self.assertEqual(result["action"], "ask_thread_choice")
+                self.assertEqual(result["action"], expected)
                 self.assertFalse(result["requires_transfer_checks"])
                 self.assertEqual(result["notice"], "none")
 

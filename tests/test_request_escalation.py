@@ -1,4 +1,4 @@
-"""Repeated requests, one-request stays, and critical automatic continuation."""
+"""Distinct logical requests, retained answers, and evidence-based recommendations."""
 
 import unittest
 
@@ -10,17 +10,17 @@ class RequestEscalationTests(unittest.TestCase):
         self.long = {"project_mode": "project", "safe_checkpoint": True,
                      "substantial_history": True, "request_id": "request-1"}
 
-    def test_declining_one_request_does_not_silence_next_request(self):
+    def test_distinct_request_can_prompt_without_escalating_from_decline_count(self):
         first = POLICY.assess(self.long)
         self.assertEqual((first["action"], first["prompt_level"]), ("ask_thread_choice", 1))
         answered = self.long | {"boundary_choice": "current-thread", "choice_request_id": "request-1",
                                 "last_prompt_request_id": "request-1", "stay_count": 1}
         self.assertEqual(POLICY.assess(answered)["action"], "continue")
         next_request = POLICY.assess(answered | {"request_id": "request-2"})
-        self.assertEqual((next_request["action"], next_request["prompt_level"]), ("ask_thread_choice", 2))
+        self.assertEqual((next_request["action"], next_request["prompt_level"]), ("ask_thread_choice", 1))
         third = POLICY.assess(answered | {"request_id": "request-3", "stay_count": 2})
-        self.assertEqual(third["prompt_level"], 3)
-        self.assertEqual(POLICY.assess(answered | {"request_id": "request-4", "stay_count": 100})["prompt_level"], 3)
+        self.assertEqual(third["prompt_level"], 1)
+        self.assertEqual(POLICY.assess(answered | {"request_id": "request-4", "stay_count": 100})["prompt_level"], 1)
 
     def test_repeated_assessments_never_stack_same_request_question(self):
         prompted = self.long | {"last_prompt_request_id": "request-1"}
