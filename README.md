@@ -4,6 +4,12 @@ Seven independent skills for AI assistants: coordinate outcomes, preserve contex
 choose resources and evidence, execute efficiently, improve recurring workflows,
 and communicate clearly. Install any one or any subset as regular skills.
 
+See [workflow coverage](docs/workflow-coverage.md) for the source-to-owner map,
+including deliberate plan challenges ("grill me"), stakeholder questionnaires
+and the boundary between PM coordination and software engineering.
+The [bounded validation](docs/coverage-validation-2026-10-26.md) distinguishes
+observed behavior from coverage judgments.
+
 ## Install as regular skills
 
 Use your usual skill manager. For example, with the Skills CLI:
