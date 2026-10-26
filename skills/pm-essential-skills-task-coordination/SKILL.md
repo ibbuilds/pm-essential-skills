@@ -1,15 +1,17 @@
 ---
 name: pm-essential-skills-task-coordination
-description: For multi-step, ambiguous, or delegated work; handle trivial clear tasks directly. Coordinate intake, scope, lightweight planning, ownership, handoffs, and completion across domains, not product strategy or conversation rollover.
+description: Coordinate multi-step work, dependencies and completion; pressure-test plans ("grill me") or draft stakeholder questionnaires. Handle trivial clear tasks directly. Cross-domain coordination, not product strategy or conversation rollover.
 ---
 
 # PM Essential Skills / Task Coordination
 
 ## Establish the outcome
 
-Reuse the user's settled goals, scope, decisions, constraints, and context without re-asking. Define observable completion against all accepted scope, including open original requirements, not implementation or the latest milestone. Keep agreed scope changes explicit. Include required workflow steps from applicable enabled skills, not only explicitly requested deliverables. Conditional no-op paths and optional methods remain conditional; do not load every skill.
+Reuse settled goals, decisions, constraints and context. Define completion against all accepted scope, including outstanding original requirements and applicable skill obligations. Keep agreed scope changes explicit. Optional methods remain optional; do not load every skill.
 
 Infer reversible details. Ask only material unresolved decisions affecting outcome, authority or rework. For concrete alternatives, use permitted selectable input when available, with a recommendation; otherwise ask plainly. Accept clear written answers. Continue independent work; do not gate authorized work. Permission escalations use dedicated mechanisms.
+
+For a requested plan challenge, decision interview or stakeholder questionnaire, use [decision interviews](references/decision-interviews.md). An accepted plan can still be deliberately challenged; ordinary clear execution needs no interview.
 
 ## Coordinate only what helps
 
@@ -37,4 +39,4 @@ Own active operations through their terminal result or the user's stopping condi
 
 Compare delivered results with every accepted requirement and applicable skill obligation. Report the artifact or outcome, relevant evidence, material risks, and remaining gaps. A passing test, draft, or opened PR is insufficient when the accepted goal includes more. Once the goal is met, stop rather than inventing endless optional work.
 
-This skill does not prescribe apps, services, Git policies, or models. Context-management owns actual conversation transfer; execution-efficiency owns technical verification and recovery. Do not load either automatically.
+Context-management owns chat transfer; execution-efficiency owns verification/recovery. Neither is an automatic dependency. This skill prescribes no apps, services, Git policy or models.
