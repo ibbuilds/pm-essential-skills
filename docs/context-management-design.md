@@ -4,16 +4,16 @@
 
 A chat can accumulate obsolete instructions, logs, and abandoned approaches. Subsequent work may carry unnecessary context. Moving everything to a fresh thread also costs time and context, and can lose decisions. The skill chooses useful boundaries and transfers the minimum sufficient state.
 
-The unit is a coherent requested phase or outcome, not elapsed time. Each new request in a long chat receives a location choice below critical pressure, even when the user stayed for the preceding request. Recommendations escalate after actual stays. At critical pressure, perform the safe authorized continuation automatically. The skill manages continuity across project types; domain execution, priority decisions, model selection, and release management belong elsewhere.
+The unit is a coherent requested phase or outcome, not elapsed time or each message. Reuse a location choice for related corrections and verification, including after delivery. Below-critical optional prompts must pass the cost/reconstruction guard at every boundary. A new phase requests work, not a chat, and repeated stays do not prove urgency. At critical pressure, perform only the safe authorized continuation. The skill owns continuity; domain execution and release policy remain elsewhere.
 
 ## Requirements
 
 - Resolve the current project's actual identity and location; never assume the working folder equals the app's project registration.
 - Distinguish project membership from standalone and unknown state. Continue standalone work quietly with concise checkpoints when useful. Setup is an optional, permitted offer; creating/moving requires consent and a chosen project.
-- Use normal skill selection without an activation interview. Below critical pressure, prompt per substantive new request in a long chat; reuse its answer only within that request. At critical pressure, announce and perform the safe authorized handoff rather than ask again. Honor explicit persistent opt-outs and verify scope before mutations.
+- Use normal skill selection without an activation interview. Below critical pressure, offer justified boundaries and reuse answers throughout the logical outcome, including corrections. At critical pressure, announce and perform the safe authorized handoff rather than ask again. Honor explicit persistent opt-outs and verify scope before mutations.
 - Carry only current constraints, decisions, evidence references, and remaining work into a fresh thread. Preserve critical user instructions even when they do not fit a target length.
 - Check context at the start of a managed turn and natural work checkpoints, without polling or recursively opening chats.
-- Assess available history immediately. Keep unknown counters unknown. Distinguish repeated per-request choices from duplicate notices within a request; cap recommendation strength without inventing measured urgency.
+- Assess available history immediately. Keep unknown counters unknown. Distinguish genuinely new outcomes from related follow-ups; never strengthen a recommendation merely because the user stayed.
 - Separate actual current-context telemetry from cumulative usage, account quotas, and proxy counters.
 - Keep the source usable until the destination is confirmed. Recover from failed or ambiguous creation without duplicate tasks.
 - Use existing project notes when suitable; add a small isolated state directory only when needed.
@@ -45,7 +45,7 @@ Defaults are starting heuristics, not empirical optimal thresholds. Adjust them 
 | --- | --- |
 | Same coherent outcome, useful context | Continue. |
 | Current outcome finished, nothing else requested | Complete; do not create an empty successor. |
-| A requested, distinct outcome is next | Fresh thread at a safe boundary. |
+| A requested, distinct outcome is next | Assess useful handoff and total cost at a safe boundary; requesting work alone is not chat-creation authority. |
 | Fresh measured current context at least 75% | Review relevance and handoff cost. |
 | Fresh measured current context at least 85% | Prepare rollover at the next safe checkpoint. |
 | No current telemetry; at least 20 substantive turns, 6 large outputs, or 2 compactions since the last accepted handoff | Review only; counters alone never trigger rollover. |
