@@ -1,5 +1,8 @@
 # PM workflow coverage — 26 October 2026
 
+See the [broader source audit](broad-workflow-coverage.md) for the subsequent
+16-repository mechanism review beyond this three-author catalog.
+
 PM owns coordination, context, resource/source choice, proportionate execution,
 workflow improvement and clear communication. Software design, product strategy,
 coding, testing, deployment and operations remain SWE responsibilities. A compendium

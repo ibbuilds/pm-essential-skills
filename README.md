@@ -10,6 +10,9 @@ and the boundary between PM coordination and software engineering.
 The [bounded validation](docs/coverage-validation-2026-10-26.md) distinguishes
 observed behavior from coverage judgments.
 
+The [broader workflow audit](docs/broad-workflow-coverage.md) adds official
+and specialist sources, exact adaptation decisions and explicit remaining limits.
+
 ## Install as regular skills
 
 Use your usual skill manager. For example, with the Skills CLI:
