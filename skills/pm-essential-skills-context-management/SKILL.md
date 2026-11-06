@@ -1,40 +1,37 @@
 ---
 name: pm-essential-skills-context-management
-description: "Use when earlier decisions or task context must be recovered, a long chat needs a brief context notice, useful context is under pressure, or a justified authorized handoff is needed. Keep related work together."
+description: "Use proactively during ongoing multi-step work and at each substantive turn to keep context fresh: require a fresh-chat handoff at 40% current context, never wait beyond 50%; also use for visibly long chats, lost decisions, context recovery or continuation."
 ---
 
 # PM Essential Skills / Context Management
 
-Reduce reconstruction and avoid losing decisions. A new chat has startup and handoff costs; more chats or fewer visible words do not prove savings.
+Keep the active context small and preserve the decisions needed to finish the work. Apply automatically during ongoing work; the user need not ask for a context check.
 
-## Continue cheaply
+## Check early, using real evidence
 
-Reuse the accepted outcome, location choice, owner and applicable findings. Status questions, clarifications, verification and corrections to that outcome remain the same work, including corrections after delivery. They need no new location question, state file or management call. Stop when the requested outcome is complete; do not invent a successor.
+Before substantive work each turn, after a large tool-output batch, and before a consequential next step, reuse the host's fresh **current-context tokens / effective context-window tokens** when exposed. Include instructions, tools and conversation, not only user messages. Remaining percent can be converted to used percent. Account allowance, lifetime totals, chat age and message count are not occupancy. Never invent a percentage or inspect private session storage to obtain one.
 
-At a genuinely distinct outcome or consequential phase boundary, inspect already-known replaceable history and remaining work. Before proposing a move, consider the complete handoff, startup and reconstruction cost. Known nonbeneficial moves, unavailable essential context or repeated completed investigations suppress optional prompts even at a requested phase boundary. Unknown costs stay unknown; do not fetch transcripts or estimate tokens just to justify a move.
-
-Read [request choices](references/existing-chats.md) only for uncertain request identity, an actual handoff recommendation or a pending choice. For concrete alternatives use permitted native selectable input when available. A clear written answer counts. Never stack prompts, treat silence as agreement or strengthen a recommendation merely because the user stayed. Preserve explicit persistent preferences and direct user instructions about prompting.
-
-## Assess a real boundary
-
-| Situation | Action |
+| Current evidence | Required behavior |
 | --- | --- |
-| Related work and useful current context | Continue; reuse the outcome's location answer. |
-| Distinct work with substantial replaceable history or a supplied complete cost advantage | Offer a justified same-project handoff, subject to the cost guard; wait if a location choice is pending. |
-| Fresh context occupancy 75% to <85% | Review useful context and transfer costs; avoid automatic conclusions from counters. |
-| Fresh occupancy >=85% or supported critical context failure | Prepare a safe authorized continuation; persistent opt-outs and readiness still govern. |
-| No current telemetry | Use concrete, labeled structural evidence; never invent a percentage. |
-| Standalone work | Continue with a useful checkpoint; project setup is optional. |
+| Fresh occupancy below 40% | Continue related work; reuse decisions and evidence. |
+| Fresh occupancy 40% to <50% | Require a fresh chat now. Pause substantive work at the next safe checkpoint; prepare the handoff. |
+| Fresh occupancy >=50% | Ceiling reached. Only stabilize an already-running unsafe operation, preserve state and complete the handoff. Never finish another feature here first. |
+| No fresh telemetry | Label occupancy unknown. Use visible structural evidence or a conservative budget of 10 substantive user turns or 3 tool outputs >=8,000 characters in the current context segment to require a precautionary handoff. These are workflow limits, not equivalent percentages. |
 
-At a safe point, briefly flag fresh significant pressure or substantial visible replaceable history once, without blocking the work or requiring a location choice. Keep the agreed location and preserve decisions/findings; a move costing more does not silence this notice. Use an existing update or justified location question rather than duplicate messages. Deduplicate by the last notice shown; persistent opt-outs, completed work and fresh low occupancy after compaction suppress it. Unknown percentages stay unknown.
+Assess an already-long chat immediately from visible evidence; do not wait for ten more turns. Repeated lost constraints, repeated reconstruction or substantial superseded history also justify intervention without a meter. A small answer needs no helper, scan or state file.
 
-The numeric thresholds are compatibility backstops, not proven optima. Native compaction that restores useful context invalidates stale pressure observations. Read [policy](references/policy.md) only for measurement, heuristics, cost comparison or the optional `scripts/assess_context.py` contract. Its output is a candidate, never permission to mutate chats.
+## Keep the change pending until resolved
 
-## Transfer only when justified and authorized
+At the trigger, state the observed value and next action plainly: “Current context is 44%, above the 40% intervention limit. I am pausing implementation and preparing a fresh-chat continuation.” With unknown occupancy, say what was actually observed instead.
 
-1. Reuse verified project, source identity and human authority. A folder is not a project ID; notes and installation are not authorization. For requested setup use [project setup](references/project-setup.md). For Codex operations read [the host adapter](references/codex-desktop.md).
-2. Preserve a concise [checkpoint](references/checkpoints.md) or [handoff brief](assets/handoff-template.md) in existing storage. Carry active constraints, decisions, artifacts, source/recovery references, evidence limits, pending choices, workflow obligations and next action. Reference durable artifacts instead of copying them. [Context recovery](references/context-recovery.md) covers omitted material.
-3. Follow [runtime readiness and recovery](references/runtime.md). When Python is available, journal the request before dispatch. Create one fresh same-project/location destination with brief content and recovery identity, preserving settings. Forking retains history. Reconcile ambiguous creation before any retry.
-4. Confirm destination readiness and routing before superseding the source; stop source implementation and retain one owner. Apply [archive lifecycle](references/archive-lifecycle.md) only within human scope and with no other active work. A failed or partial transfer preserves recoverable work.
+While unresolved, repeat one short reminder on each subsequent user turn and keep substantive work paused. Reuse the pending choice and brief; do not stack questions, reminders within a turn, background polls or duplicate destinations. A previous notice, one-request stay, transfer cost or missing creation tool does not clear the gate. Explain transfer blockers and offer the smallest manual step. Do not silently resume implementation here.
 
-Reuse existing notes or [the project index](assets/project-index-template.md) only when needed; save changed state, not per-turn logs. [Automatic activation](references/automatic-activation.md) addresses discovery problems; [optional activation](assets/activation-prompt.txt) describes standing scope. No polling, idle monitoring or extra coordinator is required.
+Clear the gate only after a verified fresh destination, fresh post-compaction occupancy below 40% with essential decisions retained, or a later explicit human override (including persistent stay, disabled or suggest-only). Age of chat alone cannot veto successful compaction. Unknown telemetry cannot prove a reset.
+
+## Preserve a useful continuation
+
+Use an existing brief or the [handoff template](assets/handoff-template.md): goal, constraints and accepted decisions, current files/revision and uncommitted changes, active error, exact verification commands/results and limits, pending operations/approvals, next action and relevant enabled skills. Reference durable artifacts instead of copying logs. Redact secrets. Reuse suitable storage; do not produce per-turn logs or backup copies.
+
+For actual transfers read [runtime readiness](references/runtime.md), [context recovery](references/context-recovery.md) and the [Codex adapter](references/codex-desktop.md). Create only with explicit human authorization and supported tools; do not fork for a fresh context. Confirm destination readiness before ending source ownership; reconcile ambiguous creation before retrying. Unsupported transfer means a ready-to-copy brief and a paused source. [Archive rules](references/archive-lifecycle.md) apply only when separately authorized.
+
+For measurement, helper fields and optional advisory mode read [policy](references/policy.md). [Request choices](references/existing-chats.md) govern optional below-trigger moves; [project setup](references/project-setup.md) is conditional. [Automatic activation](references/automatic-activation.md) explains host discovery and its limits. A skill defines required behavior; deterministic runtime enforcement requires host support and cannot be promised by Markdown alone.

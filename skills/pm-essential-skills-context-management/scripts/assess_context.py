@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-REVIEW_RATIO = 0.75
-ROLLOVER_RATIO = 0.85
+REVIEW_RATIO = 0.40
+ROLLOVER_RATIO = 0.50
 PROXY_LIMITS = {"substantive_turns": 20, "large_outputs": 6, "compactions": 2}
 BOOLEAN_FIELDS = {"completed", "new_outcome", "safe_checkpoint", "user_keep_thread",
                   "project_offer_dismissed", "project_setup_allowed", "admission_check",
@@ -23,8 +23,11 @@ NOTICE_RANK = {"none": 0, "review": 1, "rollover": 2}
 
 
 def _settings(value: Any) -> dict:
-    if not isinstance(value, dict) or set(value) - {"mode", "review_ratio", "rollover_ratio"}:
-        raise ValueError("settings accepts only mode, review_ratio, rollover_ratio")
+    if not isinstance(value, dict) or set(value) - {"mode", "review_ratio", "rollover_ratio", "enforcement"}:
+        raise ValueError("settings accepts only mode, review_ratio, rollover_ratio, enforcement")
+    enforcement = value.get("enforcement", "required")
+    if enforcement not in ("required", "advisory"):
+        raise ValueError("settings.enforcement must be required or advisory")
     mode = value.get("mode", "notify-and-transfer")
     if not isinstance(mode, str) or mode not in {"notify-and-transfer", "suggest-only", "stay"}:
         raise ValueError("settings.mode must be notify-and-transfer, suggest-only, or stay")
@@ -35,7 +38,10 @@ def _settings(value: Any) -> dict:
             raise ValueError(f"settings.{name} must be a finite number in (0, 1]")
     if not 0 < review < rollover <= 1:
         raise ValueError("settings ratios must satisfy 0 < review_ratio < rollover_ratio <= 1")
-    return {"mode": mode, "review_ratio": review, "rollover_ratio": rollover}
+    if enforcement == "required" and rollover > 0.50:
+        raise ValueError("required enforcement cannot set a ceiling above 50%")
+    return {"mode": mode, "review_ratio": review, "rollover_ratio": rollover,
+            "enforcement": enforcement}
 
 
 def _integer(value: Any, name: str, minimum: int = 0) -> int:
@@ -127,6 +133,38 @@ def _validate(observation: Any) -> tuple[dict, float | None, int]:
 
 def assess(observation: Any) -> dict:
     """Return a routing candidate, never authorization to perform a transfer."""
+    obs, ratio, evidence_count = _validate(observation)
+    settings = _settings(obs.get("settings", {}))
+    # Validate the complete observation even when the early gate decides routing.
+    _transfer_cost(obs.get("transfer_cost"))
+    finished = (obs.get("completed", False) and not any(obs.get(k, False) for k in
+                ("new_outcome", "new_phase", "user_requested_new_thread")))
+    disabled = obs.get("management_disabled", False) or settings["mode"] in ("stay", "suggest-only")
+    # These are conservative workflow budgets, NOT estimates of occupancy.
+    # Counters must describe the current context segment, reset after compaction.
+    early_proxy = any(obs.get(k) is not None and obs[k] >= limit for k, limit in
+                      (("substantive_turns", 10), ("large_outputs", 3)))
+    structural = (obs.get("critical_history", False) or obs.get("substantial_history", False)
+                  or (obs.get("admission_check", False) and evidence_count >= 2))
+    pressure = (ratio >= settings["review_ratio"] if ratio is not None
+                else early_proxy or structural)
+    if settings["enforcement"] == "required" and pressure and not finished and not disabled:
+        safe = obs.get("safe_checkpoint", False)
+        ready = obs.get("transfer_context_ready") is not False
+        reason = ("context_ceiling_reached" if ratio is not None and ratio >= settings["rollover_ratio"]
+                  else "context_change_required" if ratio is not None else "precautionary_context_budget")
+        return {"action": "defer" if not safe else "rollover" if ready else "blocked_transfer",
+                "reason": reason, "measurement": "measured" if ratio is not None else "heuristic",
+                "context_ratio": ratio, "obsolete_evidence_count": evidence_count,
+                "requires_transfer_checks": True, "notice": "rollover" if safe else "none",
+                "notice_reason": reason, "domain_work_allowed": False,
+                "allowed_work": "stabilize_checkpoint_and_handoff_only",
+                "remind": "each_user_turn_until_resolved", "ceiling_ratio": settings["rollover_ratio"]}
+    return _assess_advisory(observation)
+
+
+def _assess_advisory(observation: Any) -> dict:
+    """Optional legacy routing; explicit advisory policy retains economic choices."""
     obs, ratio, evidence_count = _validate(observation)
     settings = _settings(obs.get("settings", {}))
     cost = _transfer_cost(obs.get("transfer_cost"))
