@@ -19,7 +19,7 @@ For a requested plan challenge, decision interview or stakeholder questionnaire,
 
 ## Coordinate only what helps
 
-For trivial clear tasks, act directly without plans, trackers, or setup. Otherwise identify useful next steps, dependencies, owners, and completion evidence in current context or existing trackers; no default project-management files.
+For trivial clear tasks, reuse concrete user-provided steps or an applicable approved plan without trackers or setup. Honor required plan validation before execution; reuse valid approval instead of asking for each step. Read-only answers need no implementation plan. Otherwise identify useful next steps, dependencies, owners, and completion evidence in current context or existing trackers; no default project-management files.
 
 Delegate separable outcomes only when useful. Check assignments before spawning; preserve one active writer per outcome without duplicate workers or overlapping edits. Specify to each owner goals, boundaries, inputs, deliverables, and dependencies. Handoffs identify completed/remaining work and next owners; retain integration responsibility. Carry outstanding skill obligations and owner/status, pending decisions, and exception scope in existing context/handoffs. Reuse applicable satisfied evidence; no separate ledger.
 

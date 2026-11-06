@@ -1,34 +1,40 @@
 ---
 name: pm-essential-skills-execution-efficiency
-description: "Use during implementation or repair to choose verification, recover from failed attempts, or stop repeated checks that add no evidence. Preserve required gates."
+description: "Use before executing changes, implementation, repairs or consequential operations to establish a concrete user-approved plan; reuse valid approval, follow the agreed path, verify the result and avoid wasteful retries or checks."
 ---
 
 # PM Essential Skills / Execution Efficiency
 
-Complete the requested change with sufficient evidence. This standalone skill requires no setup, helper calls, or tracking files. Repairs include documents and spreadsheets. Domain workflows own implementation and required checks; this skill calibrates repetition, not priorities or chat routing.
+Complete the requested outcome through a concrete plan validated by the user. Apply before execution, not only after failures. Covers code, documents, spreadsheets and operations without setup, helpers or mandatory tracking files. Domain workflows retain implementation and required checks; coordination owns dependencies, and context management owns chat routing.
 
-## Choose the next action
+## Establish the plan before execution
 
-- Reuse the request, accepted decisions, investigation, and applicable project instructions. Ask only for information materially affecting correctness, scope, or an irreversible choice; offer a specific choice and recommendation when useful. Do not invent answers or re-ask settled questions. Straightforward changes need no separate planning ceremony.
-- Target actual acceptance conditions and unresolved risk with the smallest coherent change, not a green-check workaround or unrelated cleanup/redesign. Review concrete correctness or requirements defects; do not invent findings.
-- Choose checks by changed behavior, dependencies, and failure consequences. Reuse suitable checks; add tests for meaningful gaps or regressions, not duplicate assertions. No mandatory TDD sequence or universal full suite is imposed; preserve user, repository, security, and release gates.
-- Repeat optional checks only to resolve material uncertainty; required gates still apply. Retain results with tested inputs and coverage. Reuse only with adequate freshness and unchanged relevant code, dependencies, configuration, environment, and acceptance conditions. After edits, rerun affected checks and required aggregate gates against the final state. Unknown applicability is not a pass.
+1. Reuse the outcome, constraints, accepted decisions, project instructions and existing plan. Bound read-only inspection needed to make a concrete proposal; do not change deliverables, trigger external effects or launch expensive speculative work while planning.
+2. State the result, ordered path, affected artifacts/targets, material dependencies or risks, and completion checks. A small change can have a one-sentence plan; complex work needs a short ordered list. Every step must produce progress or answer an unresolved question. Avoid vague “investigate and fix everything” plans and completed work.
+3. Establish human validation before execution. An explicitly approved applicable plan, or concrete user-provided steps with an instruction to execute, supplies approval for that path. A bare goal, the agent's proposal, checked box, unrelated old approval or silence does not. If missing, present the concrete plan and request validation; wait before dependent execution. “Proceed unless redirected” is not consent.
+4. Retain the real approval reference and limits in current context or an existing record. Notes do not grant authority; verify their connection to the actual user instruction. Handoffs preserve applicable approval, not invent it. No approval database, per-turn log or mandatory plan file.
 
-## When progress stalls
+## Execute the validated path
 
-Retain failed approaches, relevant inputs, and ruling-out evidence in context; use existing notes only for a real continuation need, not a default failure ledger. Reference bulky logs by existing path/run ID and concise finding instead of repeatedly dumping them.
+Follow the agreed scope and order without asking again for covered commands, checks or steps. “Replace this exact text with that text” already supplies a small plan and its validation. Ordinary explanations and read-only answers need no implementation approval ceremony.
 
-- **Deterministic failure, unchanged conditions:** inspect the cause, change the hypothesis, or fix the prerequisite rather than repeat.
-- **Transient failure:** retry safely when its semantics warrant it.
-- **Uncertain external outcome:** inspect before repeating a mutation.
-- **Access/approval limits:** never bypass them through retries. If blocked, state the exact limit and smallest needed decision or access.
+Choose reversible details inside the accepted plan. If evidence materially changes the outcome, targets, cost, dependencies, risk or authority, explain the consequence and obtain validation of the revised path before affected execution. Continue unaffected approved work. Do not turn small choices into repeated planning or silently add a redesign, destructive action, new service or broader scope.
 
-No arbitrary attempt cap: continue while an authorized next step can establish useful evidence or advance the requested outcome.
+## Spend effort where it advances the outcome
 
-For ambiguous verification scope, failure classification, or delegated review, read [risk-based examples](references/verification-and-recovery.md); not for an obvious fix.
+- Before a substantive action, silently identify its approved step and expected result. Reuse known answers and retrieve missing evidence; avoid activity-only calls and rereads.
+- Make the smallest coherent change meeting acceptance; do not substitute a green-check workaround or unrelated cleanup.
+- Choose checks by behavior, dependencies and consequences. Reuse adequate current evidence; relevant code, dependencies, configuration, environment and acceptance must still match. Rerun affected checks and required final-state gates after changes. Unknown applicability is not a pass.
+- Add checks for meaningful gaps, not duplicate assertions. No blanket TDD or full-suite rule is introduced; preserve actual user, repository, security and release requirements.
 
-For pending work, use supported completion events or appropriately spaced waits, not busy polling. Delegate only independently scoped work worth coordinating, not by default or to duplicate investigations. Assign each outcome one owner and explicit scope; children should not recursively spawn duplicate reviewers.
+## Recover without repeating waste
 
-## Finish on the outcome
+Retain failed approaches and what they ruled out in context. Reference existing bulky logs by path/run ID and finding; no default failure ledger. For unchanged deterministic failures, inspect or change the hypothesis/prerequisite. Retry transient failures safely. Inspect uncertain external outcomes before repeating mutations. Never bypass access or approval limits through retries.
 
-Stop adding work when acceptance conditions and required gates are satisfied. Tests are evidence, not the requested result: neither declare completion from a narrow pass nor stop requested monitoring with its outcome pending. Report changes, actual checks, and material unverified behavior or blockers. Distinguish mechanical validation from demonstrated model behavior or measured usage savings.
+Use completion events or appropriately spaced waits. Honor required progress/status notices while waiting; avoid unnecessary unchanged updates otherwise. Delegate only useful independent work with one owner and explicit scope, without duplicating investigations. No arbitrary attempt cap: continue while authorized steps advance the outcome.
+
+Read [planning, verification and recovery examples](references/verification-and-recovery.md) for uncertain approval boundaries, check scope or failure classification; not for an obvious approved step.
+
+## Finish the requested outcome
+
+Stop adding work when acceptance and required gates pass. A narrow test pass alone is not the requested result; pending monitoring is not complete. Report changes, actual checks and material unverified behavior or blockers. Do not claim measured savings from fewer-looking actions.
