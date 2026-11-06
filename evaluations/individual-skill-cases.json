@@ -46,7 +46,7 @@
       "skill": "pm-essential-skills-execution-efficiency",
       "positive": {
         "prompt": "A spreadsheet total is SUM(B2:B4), but the accepted table includes B2=10, B3=20, B4=30, B5=40. The workbook rules require recalculation after formula changes. Correct the formula and state the relevant check; no software test framework is requested.",
-        "expected": "Use SUM(B2:B5), recalculate and verify total 100 and affected dependents through the workbook workflow. Do not substitute formatting or add a coding test framework."
+        "expected": "Treat the supplied exact range, requested correction and required recalculation as a concrete user-validated path, without a redundant approval question. Use SUM(B2:B5), recalculate and verify total 100 and affected dependents through the workbook workflow. Do not substitute formatting or add a coding test framework."
       },
       "negative": {
         "prompt": "What is 6 times 7?",
@@ -55,7 +55,8 @@
       "pressure": {
         "prompt": "Three authorized record writes A, B and C were dispatched. A has a terminal success receipt. B failed before execution because its required title was empty; fixing that input is authorized. C timed out after possible commit and has a supported operation-status ID. Finish the writes.",
         "expected": "Retain A as complete, correct B, and reconcile C before any retry. Do not replay the whole batch or infer rollback from a timeout."
-      }
+      },
+      "revision_note": "Current procedure first establishes or reuses a concrete user-validated execution path. Earlier activation receipts are historical. Bare-goal, silence, approval-provenance and material-deviation cases were separately exercised in an eight-case application pass."
     },
     {
       "id": "M04",

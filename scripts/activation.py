@@ -18,7 +18,7 @@ PURPOSES = {
     "pm-essential-skills-context-management": "proactive context checks during ongoing work, early fresh-chat gates and continuity",
     "pm-essential-skills-resource-selection": "initial tool, skill, and supported model/agent choices",
     "pm-essential-skills-source-selection": "relevant evidence retrieval and reuse",
-    "pm-essential-skills-execution-efficiency": "proportionate verification and evidence-driven recovery",
+    "pm-essential-skills-execution-efficiency": "user-approved planning before execution, proportionate verification and evidence-driven recovery",
     "pm-essential-skills-workflow-improvement": "recurring friction, reusable lessons, and authorized workflow changes",
     "pm-essential-skills-workspace-hygiene": "generated files, backups, temporary artifacts and unexpected project-storage growth",
     "pm-essential-skills-concise-communication": "clear, brief plain-language replies without losing required substance",
@@ -50,6 +50,9 @@ def render(home, skills, installation=False, brief=False):
             else:
                 lines.append(f"Use `{(home / 'skills' / name / 'SKILL.md').as_posix()}` for {PURPOSES[name]}.")
     lines.append(WORKFLOW_CONTRACT)
+    if "pm-essential-skills-execution-efficiency" in skills:
+        lines.append("Before executing changes, load execution-efficiency to establish or reuse a concrete "
+                     "user-approved plan; follow its approval and verification procedure.")
     if "pm-essential-skills-context-management" in skills:
         lines.append("During ongoing work, check current context before substantive steps; load context-management "
                      "for its required early continuation gate and unresolved reminders. Never invent occupancy.")
