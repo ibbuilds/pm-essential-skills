@@ -1,6 +1,6 @@
 ---
 name: pm-essential-skills-context-management
-description: "Use proactively during ongoing multi-step work and at each substantive turn to keep context fresh: require a fresh-chat handoff at 40% current context, never wait beyond 50%; also use for visibly long chats, lost decisions, context recovery or continuation."
+description: "Use proactively during ongoing multi-step work and at each substantive turn to keep context fresh: require a fresh-chat handoff at 40% current context, never wait beyond 50%; also use for long chats, lost decisions, context recovery and continuation with relevant images, videos or attachments."
 ---
 
 # PM Essential Skills / Context Management
@@ -31,6 +31,8 @@ Clear the gate only after a verified fresh destination, fresh post-compaction oc
 ## Preserve a useful continuation
 
 Use an existing brief or the [handoff template](assets/handoff-template.md): goal, constraints and accepted decisions, current files/revision and uncommitted changes, active error, exact verification commands/results and limits, pending operations/approvals, next action and relevant enabled skills. Reference durable artifacts instead of copying logs. Redact secrets. Reuse suitable storage; do not produce per-turn logs or backup copies.
+
+Carry necessary images, videos and attachments with original provenance, task purpose and verified destination access. Recover source-chat originals through supported tools; summaries or path mentions do not prove delivery. The destination opens needed media before dependent work. Missing essential media keeps the transfer incomplete. Read [media recovery](references/context-recovery.md#images-videos-and-other-attachments) when attachments matter; omit irrelevant media and reuse originals.
 
 For actual transfers read [runtime readiness](references/runtime.md), [context recovery](references/context-recovery.md) and the [Codex adapter](references/codex-desktop.md). Create only with explicit human authorization and supported tools; do not fork for a fresh context. Confirm destination readiness before ending source ownership; reconcile ambiguous creation before retrying. Unsupported transfer means a ready-to-copy brief and a paused source. [Archive rules](references/archive-lifecycle.md) apply only when separately authorized.
 

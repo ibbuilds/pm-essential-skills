@@ -50,6 +50,12 @@ For a requested coordinator workflow, `wait_threads` gives compact status with c
 
 Within verified human scope, use `set_thread_archived` for the superseded source after confirmed/saved handoff and no other active work, following [archive lifecycle](archive-lifecycle.md). Check host cascade effects before archiving. For archived-context recovery, try `read_thread` first, temporarily restore only if required, then restore the original archived state. Never delete history or change user settings to reduce context.
 
+## Media transport and consumption
+
+Inspect the actual `create_thread`/`send_message_to_thread` schemas before forwarding attachments. On the authoring desktop these tools expose a text `prompt`, with no media input; `read_thread` exposes status/turn summaries, not a guarantee of original attachment bytes. Do not invent an attachments parameter or assume a Markdown image in the prompt becomes native model input. The documented app-server image/localImage inputs do not grant direct RPC access in this host; do not start a second server or scrape its private storage.
+
+Use exposed native forwarding when supported. Otherwise put verified destination-accessible original paths/attachment locators and their purpose in the prompt, and instruct the destination to load relevant images with its viewer (for example `view_image` when exposed). Same-host paths still require existence and allowed access; remote hosts need their own verified route. Video consumption requires supported tooling and preservation of relevant timing/audio, not an invented universal video viewer. Follow [media recovery](context-recovery.md#images-videos-and-other-attachments) for selection, retention, adequate derived evidence and missing-media blockers. Reattachment is the fallback only when supported recovery cannot supply necessary content. Creation success alone proves neither media delivery nor visual inspection.
+
 ## Measurement and unsupported hosts
 
 The exposed desktop thread tools may provide summaries without current-context occupancy. Account usage is not a substitute. Do not call `/status` as though it were a shell command, parse private session databases, start another app-server process, or claim access to token telemetry merely because the protocol documents it. Use measurements actually supplied by the host; otherwise follow the heuristic policy.

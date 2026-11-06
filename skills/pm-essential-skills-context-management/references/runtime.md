@@ -20,11 +20,14 @@ Read when a readiness question, material capability change, or actual transfer r
   "safe_checkpoint": true,
   "references_accessible": true,
   "source_recovery_ready": true,
-  "settings_preserved": true
+  "settings_preserved": true,
+  "media_required": false
 }
 ```
 
 Verify destination skill availability from the same project's installed skill path or a verified personal installation on the target host. Do not assume that a skill mentioned in a prompt is installed. Preserve exact host/project identity and settings; if they cannot be established, readiness is degraded.
+
+Review known attachments for remaining-task relevance. Declare `media_required: false` only when none is needed. When true, also supply `media_context_ready: true` only after establishing usable access and sufficient fidelity for all required images/videos/files through [media recovery](context-recovery.md#images-videos-and-other-attachments). True required with missing/false/null readiness blocks `transfer_ready`, even if textual references pass. An explicitly unknown relevance review also blocks readiness. Legacy omitted media fields remain accepted; omission is not proof of review. These flags validate supplied observations, not actual file presence, transport or model inspection. A failed media preflight must keep the journal's existing `references_accessible`/`source_recovery_ready` gates false as appropriate; never bypass it by assembling all-true request flags. `destination_ready` must not claim complete visual continuity while required media is missing. The destination loads required media before dependent work.
 
 `source_recovery_ready` requires a verified predecessor reference in the brief/prompt plus a destination-accessible supported history route or sufficient durable fallback; see [context recovery](context-recovery.md). It is not established merely because a source ID is known. Reuse known access facts without mandatory extra calls. The journal checks that the brief contains the exact source ID and requires this declared recovery gate before dispatch; it cannot prove semantic completeness or host access on its own.
 

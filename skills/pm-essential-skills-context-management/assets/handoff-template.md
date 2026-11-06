@@ -17,6 +17,12 @@ Preserve current constraints, preferences, acceptance criteria, and decisions th
 
 List relevant paths or accessible document IDs and what is authoritative. Preserve current revision, uncommitted changes, active error, exact verification commands/results and evidence limits. Include verified results, incomplete changes, and any running operation that must be resolved before transfer. Avoid logs, credentials, and unrelated material. If an essential attachment cannot be accessed by the new thread, resolve that before automated transfer.
 
+## Relevant media (only when needed)
+
+For each necessary image, video or attachment record its original source chat/message/attachment identity (only exposed identifiers), purpose for the remaining task, authoritative version, exact destination-accessible file/attachment locator, delivery/read method and access evidence or blocker. For videos include relevant time ranges and whether motion or audio must be preserved. Distinguish original from derived frames/OCR/transcripts and record their coverage limits. A filename, source-chat summary or Markdown embed is not proof that the destination received or inspected it.
+
+Reuse accessible originals; make at most one scoped retained copy only when needed. Keep required files until continuation/recovery no longer needs them. Do not copy unrelated attachments, embed base64 blobs or duplicate the whole transcript. Mark essential missing media as blocking. The destination must open relevant media with its supported viewer before dependent work and report inaccessible or unsupported content instead of reconstructing it from memory.
+
 ## Suggested skills
 
 Name only enabled skills relevant to the next action, and why to load each through the host skill mechanism. Do not load the whole suite.

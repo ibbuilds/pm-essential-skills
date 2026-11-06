@@ -12,6 +12,7 @@ FLAGS = {"current_skill_available", "destination_skill_available", "create_threa
          "references_accessible", "source_recovery_ready", "settings_preserved", "setup_consent_verified",
          "target_project_verified", "project_selection_authorized"}
 FLAGS.add("execution_mode_allows_transfer")
+FLAGS.update({"media_required", "media_context_ready"})
 TEXT = {"project_id", "source_thread_id", "chosen_project_name"}
 
 
@@ -34,6 +35,13 @@ def assess(value):
                 "reconcile_thread_available", "authorization_verified", "safe_checkpoint",
                 "references_accessible", "source_recovery_ready", "settings_preserved", "execution_mode_allows_transfer"]
     missing = [key for key in required if value.get(key) is not True]
+    # A textual summary or source-chat ID cannot establish usable visual context.
+    # These are supplied observations, not an attachment discovery/download API.
+    if "media_required" in value and value["media_required"] is None:
+        missing.append("media_required")
+    if (value.get("media_required") is True and value.get("media_context_ready") is not True
+            or value.get("media_context_ready") is False):
+        missing.append("media_context_ready")
     selected_target = (value.get("target_project_verified") is True
                        and value.get("project_selection_authorized") is True)
     if membership != "project" and not selected_target:
