@@ -1,6 +1,6 @@
 # Request identity, useful handoffs and pending choices
 
-Required early intervention in [the entrypoint](../SKILL.md) takes precedence over optional cost/location advice below. At 40%, pause substantive work and require continuation even for standalone work; at 50%, only stabilization and handoff remain. Remind once per subsequent user turn until resolved. Missing tools or readiness preserve a paused source; they do not authorize in-place implementation. Persistent later human opt-outs remain authoritative.
+Required early intervention in [the entrypoint](../SKILL.md) takes precedence over optional cost/location advice below. At 40%, warn and prepare without pausing work solely for pressure; at 60%, require continuation even for standalone work and allow only stabilization and handoff. Remind once per subsequent user turn until resolved. At the hard gate, missing tools or readiness preserve a paused source; they do not authorize in-place implementation. Persistent later human opt-outs remain authoritative.
 
 Load when deciding whether to recommend a handoff, resolving the scope of an existing location answer, or recovering a pending choice. Ordinary same-outcome work needs no extra management call.
 
@@ -32,7 +32,7 @@ If the user chooses a new chat, preserve the outcome, decisions, evidence, proje
 
 ## Critical continuation and recovery
 
-Fresh occupancy at or above the configured critical threshold (ceiling default 50%; required intervention starts at 40%), or supported critical heuristics in [policy](policy.md), calls for a safe continuation assessment. Announce the actual evidence and execute only within verified human scope and readiness; no additional location question is needed when those already authorize it. Persistent opt-outs still apply. A helper candidate does not authorize chat creation.
+Fresh occupancy at or above the configured critical threshold (ceiling default 60%; warnings start at 40%), or supported critical heuristics in [policy](policy.md), calls for a safe continuation assessment. Announce the actual evidence and execute only within verified human scope and readiness; no additional location question is needed when those already authorize it. Persistent opt-outs still apply. A helper candidate does not authorize chat creation.
 
 Preserve essential context before dispatch. Active unsafe work, inaccessible references and missing tools defer or block the transfer. If native compaction has restored useful low context, use that fresh state rather than old counters. A vague “long chat” assertion is not critical evidence.
 

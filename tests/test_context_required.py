@@ -7,19 +7,23 @@ from test_context_policy import POLICY, context, SCRIPT
 
 
 class RequiredContextTests(unittest.TestCase):
-    def assess(self, used=40000, **extra):
+    def assess(self, used=60000, **extra):
         return POLICY.assess({"safe_checkpoint": True, "context": context(used), **extra})
 
     def test_default_boundaries(self):
-        for used, blocked in ((0, False), (39999, False), (40000, True),
-                              (49999, True), (50000, True), (99999, True)):
+        for used, blocked in ((0, False), (39999, False), (40000, False),
+                              (50000, False), (59999, False), (60000, True), (99999, True)):
             with self.subTest(used=used):
                 r = self.assess(used)
                 self.assertEqual(r.get("domain_work_allowed", True), not blocked)
                 if blocked:
                     self.assertEqual(r["action"], "rollover")
                     self.assertTrue(r["requires_transfer_checks"])
-                    self.assertEqual(r["reason"], "context_ceiling_reached" if used >= 50000 else "context_change_required")
+                    self.assertEqual(r["reason"], "context_ceiling_reached")
+                elif used >= 40000:
+                    self.assertEqual(r["action"], "review")
+                    self.assertEqual(r["notice"], "review")
+                    self.assertFalse(r["requires_transfer_checks"])
 
     def test_gate_survives_optional_location_and_cost_guards(self):
         cost = dict(basis="estimated", source="synthetic remaining work", unit="tokens",
@@ -37,8 +41,67 @@ class RequiredContextTests(unittest.TestCase):
                     self.assertEqual(r["notice"], "rollover")
                     self.assertEqual(r["remind"], "each_user_turn_until_resolved")
 
+    def test_warning_prepares_without_stopping_current_work(self):
+        for used in (40000, 44000, 50000, 55000, 59999):
+            for mode in ("project", "standalone", "unknown"):
+                with self.subTest(used=used, mode=mode):
+                    r = self.assess(used, project_mode=mode, user_keep_thread=True,
+                                    transfer_context_ready=False, last_notice_level="review")
+                    self.assertEqual(r["action"], "review")
+                    self.assertTrue(r["domain_work_allowed"])
+                    self.assertFalse(r["requires_transfer_checks"])
+                    self.assertEqual(r["notice"], "review")
+                    self.assertEqual(r["allowed_work"], "continue_and_prepare_handoff")
+
+    def test_warning_does_not_erase_an_existing_pending_choice(self):
+        for extra in ({"choice_pending": True},
+                      {"request_id": "r", "last_prompt_request_id": "r"}):
+            r = self.assess(44000, **extra)
+            self.assertEqual(r["action"], "await_thread_choice")
+            self.assertFalse(r["domain_work_allowed"])
+            self.assertEqual(r["notice"], "review")
+
+    def test_explicit_move_before_the_ceiling_remains_authoritative(self):
+        for extra in ({"user_requested_new_thread": True},
+                      {"request_id": "r", "choice_request_id": "r", "boundary_choice": "new-thread"}):
+            r = self.assess(44000, **extra)
+            self.assertEqual(r["action"], "rollover")
+            self.assertFalse(r["domain_work_allowed"])
+            self.assertTrue(r["requires_transfer_checks"])
+
+    def test_warning_does_not_interrupt_unsafe_work(self):
+        r = self.assess(55000, safe_checkpoint=False)
+        self.assertTrue(r["domain_work_allowed"])
+        self.assertEqual(r["action"], "review")
+        self.assertEqual(r["notice"], "none")
+
+    def test_fresh_compaction_into_warning_range_clears_hard_gate_only(self):
+        r = self.assess(55000, last_notice_level="rollover", large_outputs=20,
+                        substantial_history=True, critical_history=True)
+        self.assertTrue(r["domain_work_allowed"])
+        self.assertEqual(r["notice"], "review")
+        r = self.assess(12000, last_notice_level="rollover")
+        self.assertEqual(r["notice"], "none")
+
+    def test_explicit_45_55_configuration_has_separate_boundaries(self):
+        settings = {"review_ratio": .45, "rollover_ratio": .55}
+        for used, warning, allowed in ((44999, False, True), (45000, True, True),
+                                       (54999, True, True), (55000, False, False)):
+            r = self.assess(used, settings=settings)
+            self.assertEqual(r.get("domain_work_allowed", True), allowed)
+            self.assertEqual(r["notice"] == "review", warning)
+
+    def test_cli_40_percent_warns_without_a_pause(self):
+        run = subprocess.run([sys.executable, str(SCRIPT)],
+                             input=json.dumps({"context": context(40000), "safe_checkpoint": True}),
+                             capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        result = json.loads(run.stdout)
+        self.assertTrue(result["domain_work_allowed"])
+        self.assertEqual(result["notice"], "review")
+
     def test_unsafe_operations_only_reach_checkpoint(self):
-        for used in (40000, 50000, 90000):
+        for used in (60000, 80000, 90000):
             r = self.assess(used, safe_checkpoint=False)
             self.assertEqual(r["action"], "defer")
             self.assertFalse(r["domain_work_allowed"])
@@ -94,7 +157,7 @@ class RequiredContextTests(unittest.TestCase):
             self.assertFalse(r["domain_work_allowed"])
 
     def test_required_policy_rejects_late_or_malformed_ceilings(self):
-        for settings in ({"rollover_ratio": .51}, {"review_ratio": .75, "rollover_ratio": .85},
+        for settings in ({"rollover_ratio": .61}, {"review_ratio": .75, "rollover_ratio": .85},
                          {"enforcement": []}, {"enforcement": "automatic"}):
             with self.subTest(settings=settings), self.assertRaises(ValueError):
                 self.assess(settings=settings)
@@ -111,16 +174,16 @@ class RequiredContextTests(unittest.TestCase):
                 self.assess(**bad)
 
     def test_sequence_reminds_until_fresh_low_measurement(self):
-        for used in (41000, 44000, 51000):
+        for used in (60000, 64000, 91000):
             r = self.assess(used, last_notice_level="rollover", choice_pending=True)
             self.assertFalse(r["domain_work_allowed"])
             self.assertEqual(r["notice"], "rollover")
         r = self.assess(12000)
         self.assertNotEqual(r.get("domain_work_allowed"), False)
 
-    def test_cli_default_enforces_40_percent(self):
+    def test_cli_default_enforces_60_percent(self):
         run = subprocess.run([sys.executable, str(SCRIPT)],
-                             input=json.dumps({"context": context(40000), "safe_checkpoint": True}),
+                             input=json.dumps({"context": context(60000), "safe_checkpoint": True}),
                              capture_output=True, text=True)
         self.assertEqual(run.returncode, 0, run.stderr)
         self.assertFalse(json.loads(run.stdout)["domain_work_allowed"])

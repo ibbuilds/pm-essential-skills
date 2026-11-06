@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 REVIEW_RATIO = 0.40
-ROLLOVER_RATIO = 0.50
+ROLLOVER_RATIO = 0.60
 PROXY_LIMITS = {"substantive_turns": 20, "large_outputs": 6, "compactions": 2}
 BOOLEAN_FIELDS = {"completed", "new_outcome", "safe_checkpoint", "user_keep_thread",
                   "project_offer_dismissed", "project_setup_allowed", "admission_check",
@@ -38,8 +38,8 @@ def _settings(value: Any) -> dict:
             raise ValueError(f"settings.{name} must be a finite number in (0, 1]")
     if not 0 < review < rollover <= 1:
         raise ValueError("settings ratios must satisfy 0 < review_ratio < rollover_ratio <= 1")
-    if enforcement == "required" and rollover > 0.50:
-        raise ValueError("required enforcement cannot set a ceiling above 50%")
+    if enforcement == "required" and rollover > 0.60:
+        raise ValueError("required enforcement cannot set a ceiling above 60%")
     return {"mode": mode, "review_ratio": review, "rollover_ratio": rollover,
             "enforcement": enforcement}
 
@@ -148,6 +148,29 @@ def assess(observation: Any) -> dict:
                   or (obs.get("admission_check", False) and evidence_count >= 2))
     pressure = (ratio >= settings["review_ratio"] if ratio is not None
                 else early_proxy or structural)
+    if (settings["enforcement"] == "required" and ratio is not None
+            and settings["review_ratio"] <= ratio < settings["rollover_ratio"]
+            and not finished and not disabled):
+        # Warn and prepare early; the context gate alone does not stop work yet.
+        # Preserve an actual pending choice or explicit destination instruction.
+        current_choice = obs.get("request_id") == obs.get("choice_request_id")
+        explicit_new = (obs.get("user_requested_new_thread", False) or
+                        current_choice and obs.get("boundary_choice") == "new-thread")
+        pending = (obs.get("choice_pending", False) or
+                   obs.get("request_id") is not None and
+                   obs.get("last_prompt_request_id") == obs["request_id"])
+        result = _assess_advisory(obs) if explicit_new or pending else {
+            "action": "review", "reason": "context_warning_prepare_handoff",
+            "requires_transfer_checks": False}
+        allowed = result["action"] not in {"rollover", "defer", "blocked_transfer",
+                                          "await_thread_choice", "ask_thread_choice"}
+        result.update(measurement="measured", context_ratio=ratio,
+                      obsolete_evidence_count=evidence_count, domain_work_allowed=allowed,
+                      allowed_work="continue_and_prepare_handoff" if allowed else "resolve_existing_choice_or_handoff",
+                      notice="review" if obs.get("safe_checkpoint", False) else "none",
+                      notice_reason="context_warning_prepare_handoff",
+                      remind="each_user_turn_until_resolved", ceiling_ratio=settings["rollover_ratio"])
+        return result
     if settings["enforcement"] == "required" and pressure and not finished and not disabled:
         safe = obs.get("safe_checkpoint", False)
         ready = obs.get("transfer_context_ready") is not False

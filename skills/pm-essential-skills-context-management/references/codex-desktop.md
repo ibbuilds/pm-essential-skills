@@ -1,6 +1,6 @@
 # Codex desktop adapter
 
-Required early intervention in [the entrypoint](../SKILL.md) takes precedence over optional cost/location advice below. At 40%, pause substantive work and require continuation even for standalone work; at 50%, only stabilization and handoff remain. Remind once per subsequent user turn until resolved. Missing tools or readiness preserve a paused source; they do not authorize in-place implementation. Persistent later human opt-outs remain authoritative.
+Required early intervention in [the entrypoint](../SKILL.md) takes precedence over optional cost/location advice below. At 40%, warn and prepare without pausing work solely for pressure; at 60%, require continuation even for standalone work and allow only stabilization and handoff. Remind once per subsequent user turn until resolved. At the hard gate, missing tools or readiness preserve a paused source; they do not authorize in-place implementation. Persistent later human opt-outs remain authoritative.
 
 Load only for Codex thread operations. Discover tools and inspect their current schemas. The following names were exposed by the desktop host during authoring; they are not universal skill APIs.
 
