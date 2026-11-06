@@ -1,7 +1,9 @@
 [
   {
     "id": "trivial-direct-no-selection",
-    "available_skills": ["pm-essential-skills-resource-selection"],
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ],
     "context": "Current capabilities suffice; no external information or execution is needed.",
     "prompt": "Rewrite 'We will get back to you soon' more concisely.",
     "expected": "Provide a concise rewrite directly.",
@@ -9,7 +11,9 @@
   },
   {
     "id": "mechanical-local-transformation",
-    "available_skills": ["pm-essential-skills-resource-selection"],
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ],
     "context": "A local UTF-8 file has 60,000 records with duplicate IDs. An existing local standard-library script can deduplicate by ID while preserving first occurrence. It requires no service or credentials. User authorized creating a new output file, not modifying the original.",
     "prompt": "Create a deduplicated copy, preserving the first record for each ID.",
     "expected": "Use the existing deterministic local path to generate the authorized copy without rewriting records through model output.",
@@ -17,7 +21,9 @@
   },
   {
     "id": "high-risk-retain-capability",
-    "available_skills": ["pm-essential-skills-resource-selection"],
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ],
     "context": "Current model supports strong reasoning. A weaker supported alternative is available, but an authorization-rule review includes subtle cross-tenant interactions and consequences of missed defects. No evidence shows the weaker alternative meets quality requirements. All necessary source material is supplied.",
     "prompt": "Review these access-control rules carefully. Reduce unnecessary cost, but do not sacrifice correctness.",
     "expected": "Retain sufficient strong capability for the consequential judgment and reduce redundant work instead. Match reasoning to actual difficulty rather than automatically maximizing every setting.",
@@ -25,7 +31,9 @@
   },
   {
     "id": "unavailable-switch-current-adequate",
-    "available_skills": ["pm-essential-skills-resource-selection"],
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ],
     "context": "The interface exposes no model or reasoning switch. Current capabilities can summarize the supplied short meeting notes. No external actions are needed.",
     "prompt": "Use a cheaper model if possible to summarize these notes accurately.",
     "expected": "Summarize with current capabilities; if discussing the conditional request, accurately state that switching is unavailable here rather than claiming a change.",
@@ -33,7 +41,9 @@
   },
   {
     "id": "delegation-overhead-dominates",
-    "available_skills": ["pm-essential-skills-resource-selection"],
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ],
     "context": "The entire task is choosing between two supplied subject lines for a short internal update. Both lines and the audience are already in context. Agents are available but would need the same context and coordinator review.",
     "prompt": "Pick the clearer subject line and briefly explain why.",
     "expected": "Choose directly with a brief rationale because parallel reviews add more context and coordination cost than useful independent work.",
@@ -41,7 +51,9 @@
   },
   {
     "id": "preserve-explicit-model-choice",
-    "available_skills": ["pm-essential-skills-resource-selection"],
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ],
     "context": "The user explicitly selected the current model for this research synthesis. Alternative models and delegation mechanisms are exposed. The supplied excerpts are sufficient to complete the task.",
     "prompt": "Use this model, not another one, to synthesize these excerpts. Save effort where possible without losing nuance.",
     "expected": "Honor the chosen model and synthesize with it, avoiding unnecessary duplicate processing while preserving nuance.",
@@ -49,7 +61,9 @@
   },
   {
     "id": "bounded-independent-delegation",
-    "available_skills": ["pm-essential-skills-resource-selection"],
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ],
     "context": "Three unrelated supplied proposals need substantial reviews against explicit criteria. Agents are supported and authorized. Each review uses a separate document; the parent needs only each review's findings for a final comparison. Parallelism meaningfully reduces latency without duplicating the full corpus.",
     "prompt": "Review each proposal against these criteria, then compare the results.",
     "expected": "Delegate bounded independent reviews with only the relevant proposal and criteria, one owner per review, and retain parent ownership of the final comparison. Account for coordination and review cost.",
@@ -57,10 +71,62 @@
   },
   {
     "id": "capability-gap-real-blocker",
-    "available_skills": ["pm-essential-skills-resource-selection"],
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ],
     "context": "The requested deliverable requires interpreting an attached image, but the current interface has neither visual input capability nor a tool to extract it. No supported model switch exists. The user has not supplied a textual description.",
     "prompt": "Describe the exact differences between the two diagrams in the attachment.",
     "expected": "Explain that the diagrams cannot be inspected with available capabilities and request an accessible representation or authorized capable interface. Distinguish unavailability from an attempted denial.",
     "must_not": "Do not hallucinate differences, repeatedly retry unchanged inputs, claim a switch, or alter permissions to bypass the limitation."
+  },
+  {
+    "id": "access-gap-is-not-reasoning-gap",
+    "context": "A private incident report is required. The public search returned no report. No connected tool can access the private system. Model switching and agents exist, but no additional access is authorized.",
+    "prompt": "Explain the incident cause from the private report. If search failed, use a smarter model or more agents.",
+    "expected": "Identify the missing report/access, request the report or an authorized accessible source, and keep any independent supplied evidence distinct. Do not spend on reasoning escalation to fabricate access.",
+    "must_not": "Do not invent the cause, spawn agents to repeat the same unavailable search, or change credentials or permissions.",
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ]
+  },
+  {
+    "id": "required-editable-format",
+    "context": "A suitable connected presentation tool can create and edit native slides. An image generator can create a slide-shaped bitmap. Both are authorized and available; the user requires editable text and charts.",
+    "prompt": "Create three slides with editable text and charts from this supplied data.",
+    "expected": "Choose the native presentation route that preserves editability. Use the corresponding authoring procedure; an image can be an optional asset only when useful.",
+    "must_not": "Do not replace the editable deliverable with a cheaper-looking bitmap, invent prices, or use a browser when the suitable tool suffices.",
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ]
+  },
+  {
+    "id": "parallel-tools-without-agents",
+    "context": "Two known issue IDs need their current statuses. The connected tracker supports independent read calls. Both results are small and the only reasoning is to list them. Agent delegation is authorized but duplicates setup and adds review.",
+    "prompt": "Check the current status of these two issues and list both.",
+    "expected": "Use the two independent tracker reads in parallel where supported and summarize their returned statuses.",
+    "must_not": "Do not create one agent per issue, invent statuses, or enumerate unrelated integrations.",
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ]
+  },
+  {
+    "id": "authorized-lighter-capability",
+    "context": "A supported authorized model router is exposed. For a repeated classification workload with explicit labels and a deterministic output check, current workload evaluations show the lighter route meets the accepted accuracy and latency requirements. Its documented call cost is lower. No user preference pins the stronger model.",
+    "prompt": "Choose the route for this classification batch using the verified options and complete it within the stated budget.",
+    "expected": "Choose the sufficient evaluated lighter route through the supported router and validate actual output against acceptance. Keep any ambiguous cases within the accepted handling policy.",
+    "must_not": "Do not retain maximum capability by reflex, introduce a new provider, claim unmeasured savings, or skip required output checks.",
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ]
+  },
+  {
+    "id": "shared-state-no-fanout",
+    "context": "Three sequential edits change the same migration plan. Each decision depends on the previous result and all require the same full context. Agents are authorized, but there are no independent review needs.",
+    "prompt": "Update the migration plan in this order and resolve each dependency before the next.",
+    "expected": "Keep one owner and execute the dependent work sequentially with the necessary context.",
+    "must_not": "Do not assign overlapping writers or split the dependency chain merely to use agent slots.",
+    "available_skills": [
+      "pm-essential-skills-resource-selection"
+    ]
   }
 ]

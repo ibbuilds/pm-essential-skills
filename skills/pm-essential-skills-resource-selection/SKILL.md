@@ -1,28 +1,39 @@
 ---
 name: pm-essential-skills-resource-selection
-description: "Use when choosing tools, models or delegates materially changes task quality or cost, or the current approach lacks capability. Routine work needs no resource-selection ceremony."
+description: "Use when choosing or reconsidering tools, models or delegates materially affects task quality, time or cost, or the current approach lacks capability. Routine work needs no selection ceremony."
 ---
 
 # PM Essential Skills / Resource Selection
 
-Choose the least costly reliable approach to the accepted task. Preserve explicit user choices, quality requirements, authorization, and higher-priority instructions. Routine answers and straightforward edits need no resource-selection ceremony.
+Choose the simplest supported approach that meets the accepted quality requirements at reasonable total cost. Apply by context before a material resource choice and when evidence changes it. Preserve explicit user choices, authorization and higher-priority instructions. Routine answers and straightforward edits need no inventory, benchmark or resource report.
 
-## Choose an approach
+## Choose a sufficient route
 
-Select applicable installed skills by the actual task and observed risks, using their descriptions. Load the procedure before acting; use the host's native skill mechanism or read `SKILL.md` when file-based. Reuse loaded guidance and reconsider only when the work changes. No user invocation or full-suite load is required.
+Reuse the accepted outcome and constraints: required accuracy, output format or modality, access to inputs, consequence of error, and any stated deadline or budget. Select applicable installed skills from their descriptions and load the procedure before acting. Reuse loaded guidance; do not load the whole suite.
 
-Use existing deterministic tools for mechanical transformations, calculations, bulk processing, and reproducible outputs when they reduce error or effort; prefer suitable local paths over repeated model generation for costly bulk outputs. Do not transfer secrets to new services. Use direct model work when sufficient; do not wrap a simple answer in tools, agents, or planning.
+| Work requires | Prefer when sufficient |
+| --- | --- |
+| Explanation, synthesis or judgment using available context | Direct work with current capabilities. |
+| Exact calculation, repetitive transformation or bulk processing | An existing deterministic tool or small local script; keep model judgment for ambiguous parts. |
+| Data access, an editable artifact or an external action | A supported tool that reaches the actual source and produces the required result. Prefer a suitable purpose-built connector or native API over manual browser steps. |
+| Substantial separable work | Parallel tool calls first when they suffice; bounded agents only when independent reasoning or context isolation adds enough value. |
 
-Compare total expected accepted-task cost: setup, context duplication, coordination turns, latency, retries, and verification, not just nominal inference cost. Treat budgets as limits only when observed or user-stated. Do not invent remaining usage, prices, savings, or hard thresholds. No mandatory capability inventory, introspection call, benchmark, or usage report is needed.
+These routes can be combined. Check only uncertain capabilities needed for the next step; discover relevant tools rather than enumerating every integration. A tool that cannot access the input or preserve the required format is not a cheaper equivalent. Do not send secrets to new services.
 
-## Match capability to difficulty
+Compare setup, context duplication, coordination, latency, retries and verification, not just nominal inference cost. Use observed or user-stated limits; never invent usage, prices, savings or fixed thresholds. Explain a material tradeoff briefly when the user needs to choose; routine choices stay lightweight.
 
-Use exposed, supported capabilities to match ambiguity, consequence of error, and required quality. Retain stronger capability for difficult or high-risk judgment when reducing it could increase errors or rework. Do not automatically select maximum reasoning. Escalate on evidence of a capability gap, unresolved uncertainty affecting acceptance, or failed reasoning—not repeated unmodified attempts.
+## Match model capability to the work
 
-Distinguish a recommendation from an executable switch. Change a model or effort only through an available, authorized mechanism; never silently downgrade, override an explicit choice, or invent a supported option. New credentials, paid services, or permission/configuration changes require their own explicit scope and applicable approvals; optimization alone grants none. If switching is unavailable, proceed with current capabilities when adequate; otherwise report the actual blocker and needed action without claiming a switch occurred.
+Keep current capabilities when adequate. Where selection is supported and authorized, use lighter capability for well-defined, easily checked work when there is a reasonable basis it meets quality; retain stronger reasoning for ambiguity, interacting constraints or costly errors. Do not infer low risk from short input or automatically maximize reasoning.
+
+Before escalating, distinguish missing data, access or tool failure from insufficient reasoning. More agents or a stronger model do not supply unavailable evidence or permissions. Reconsider the route when a concrete limitation threatens acceptance; change the relevant tool, decomposition or supported capability instead of repeating an unchanged attempt. Reuse applicable evidence and check the changed result against the same acceptance requirements.
+
+Distinguish recommendation from execution. Change model or effort only through an available, authorized mechanism; never silently downgrade, override a user's choice, or route around it through a delegate. If switching is unavailable, continue with current capability when sufficient; otherwise state the actual blocker and needed action. Optimization grants no new credentials, paid service, permission or configuration change.
 
 ## Delegate only useful independence
 
-Delegate genuinely independent, bounded outcomes only when expected benefit exceeds handoff, duplicated context, review, and coordination costs. Keep one accountable owner per outcome and give each delegate the minimum sufficient context and acceptance criteria. Avoid trivial fanout and overlapping writers. Batch independent useful work where dependencies and tool semantics permit; do not manufacture work to fill agent slots.
+Delegate only when authorized and expected benefit exceeds handoff, duplicated context, review and coordination costs. Shared-state work or tightly dependent steps usually stay with one agent. An independent review can justify deliberate overlap when its quality benefit warrants it; avoid duplicate work by default.
 
-This skill owns resource choices only. Source selection and read scope belong to source-selection; actual checks and recovery belong to execution-efficiency; outcome ownership and scope belong to task-coordination. These boundaries do not require loading companion skills.
+Give each delegate a bounded outcome, minimum sufficient context, acceptance criteria and permitted side effects. Keep one accountable owner per outcome and integrate/check returned work; a delegate's claim alone is not completion. Do not manufacture work to fill agent slots.
+
+This skill owns resource choices. Source-selection owns evidence scope, execution-efficiency owns actual checks and recovery, and task-coordination owns outcome dependencies. These boundaries require no companion-skill load.
