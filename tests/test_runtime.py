@@ -444,6 +444,50 @@ class TransferTests(unittest.TestCase):
 
 
 class PreflightTests(unittest.TestCase):
+    def media_observation(self, **extra):
+        value = {key: True for key in PREFLIGHT.FLAGS
+                 if key not in {"media_required", "media_context_ready"}}
+        return value | dict(membership="project", project_id="project-a",
+                            source_thread_id="source-a") | extra
+
+    def test_textual_access_cannot_mask_required_missing_media(self):
+        for ready in ({}, {"media_context_ready": False}, {"media_context_ready": None}):
+            with self.subTest(ready=ready):
+                result = PREFLIGHT.assess(self.media_observation(media_required=True, **ready))
+                self.assertFalse(result["transfer_ready"])
+                self.assertEqual(result["transfer_missing"], ["media_context_ready"])
+
+    def test_recoverable_required_media_passes_declared_preflight(self):
+        result = PREFLIGHT.assess(self.media_observation(media_required=True, media_context_ready=True))
+        self.assertTrue(result["transfer_ready"])
+
+    def test_reviewed_irrelevant_media_needs_no_export_gate(self):
+        result = PREFLIGHT.assess(self.media_observation(media_required=False))
+        self.assertTrue(result["transfer_ready"])
+
+    def test_unknown_media_relevance_is_not_success(self):
+        result = PREFLIGHT.assess(self.media_observation(media_required=None))
+        self.assertFalse(result["transfer_ready"])
+        self.assertIn("media_required", result["transfer_missing"])
+
+    def test_explicit_access_failure_is_never_hidden(self):
+        for required in (True, False):
+            result = PREFLIGHT.assess(self.media_observation(media_required=required, media_context_ready=False))
+            self.assertFalse(result["transfer_ready"])
+
+    def test_text_only_legacy_client_does_not_claim_media_review(self):
+        observed = self.media_observation()
+        before = json.dumps(observed, sort_keys=True)
+        self.assertTrue(PREFLIGHT.assess(observed)["transfer_ready"])
+        self.assertNotIn("media_context_ready", observed)
+        self.assertEqual(json.dumps(observed, sort_keys=True), before)
+
+    def test_media_flags_reject_truthy_strings_and_numbers(self):
+        for key in ("media_required", "media_context_ready"):
+            for bad in ("true", 1, [], {}):
+                with self.subTest(key=key, bad=bad), self.assertRaises(ValueError):
+                    PREFLIGHT.assess(self.media_observation(**{key: bad}))
+
     def test_complete_transfer_requirements(self):
         value = {key: True for key in PREFLIGHT.FLAGS}
         value.update(membership="project", project_id="project-a", source_thread_id="source-a")
