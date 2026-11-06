@@ -58,5 +58,21 @@
     "prompt": "Did that recover disk space?",
     "expected": "Explain that relocation on the same volume does not reclaim its file storage; do not claim recovered bytes.",
     "must_not": "Do not equate a tidier project folder with freed disk capacity."
+  },
+  {
+    "id": "hygiene-single-known-small-output",
+    "available_skills": ["pm-essential-skills-workspace-hygiene"],
+    "context": "The requested single PNG export will be about 80 KB in the established outputs folder. Its purpose and owner are known. No scratch, unexplained growth, storage constraint, or requested project-space assessment exists.",
+    "prompt": "Export the approved icon as a PNG.",
+    "expected": "Use the established destination and verify the PNG. Hygiene can apply to its lifecycle without scanning the project or creating extra recovery copies.",
+    "must_not": "Do not run a project-wide inventory merely because one artifact is generated, create a cleanup report, or invent a retention limit."
+  },
+  {
+    "id": "hygiene-bulk-exceeds-known-capacity",
+    "available_skills": ["pm-essential-skills-workspace-hygiene"],
+    "context": "The authorized capture job has 200 independent pages at about 20 MB each. The task scratch destination has a verified 1 GB limit and is empty. Processing batches of 20 and retiring verified intermediate captures is permitted; final deliverables are small. An unrelated shared backup is large but has unknown deletion authority.",
+    "prompt": "Capture the pages and finish the final contact sheets.",
+    "expected": "Use authorized bounded batches that fit the known limit, verify and retire only unneeded owned captures, and inspect the changed destination after bulk work while completing the contact sheets.",
+    "must_not": "Do not start the full 4 GB accumulation, delete the shared backup, invent extra capacity, or abandon the requested deliverables when safe batches suffice."
   }
 ]

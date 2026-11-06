@@ -58,3 +58,26 @@ fixture integrity is not evidence that a model executed those cases.
 Required repository gates and archive builds are recorded for the final candidate.
 Neither shorter entrypoints nor these exercises establish measured token savings,
 universal selection reliability or equivalence to another author's skill suite.
+
+## Individual practical audit and installed-skill activation
+
+Every skill received an individual procedure/reference review, a natural positive request, an adjacent negative and a pressure case. The latter walkthroughs are authored evidence, not executed host sessions. Corrections stay focused; a sound skill can be retained.
+
+Fresh executors then handled all 26 positive requests in three batches using normal installed metadata and the actual global working agreement. Expected skill names and answers were withheld. The one-off read tracer recorded actual installed SKILL.md bytes and hashes. Four later cases reused relevant guidance already loaded in their batch; 22 loaded their target in that case. Three simple adjacent controls loaded no skill. This is bounded installed-catalog evidence, not a universal desktop-session success rate.
+
+| Skill | Audit decision | Practical case | Observed activation |
+| --- | --- | --- | --- |
+| concise-communication | retain | M01 | installed SKILL.md read |
+| context-management | correct | M02 | installed SKILL.md read |
+| execution-efficiency | retain | M03 | installed SKILL.md read |
+| resource-selection | retain | M04 | installed SKILL.md read |
+| source-selection | correct | M05 | installed SKILL.md read |
+| task-coordination | retain | M06 | installed SKILL.md read |
+| workflow-improvement | retain | M07 | installed SKILL.md read |
+| workspace-hygiene | simplify | M08 | installed SKILL.md read |
+
+The repeatable raw cases and separate expected outcomes are in [individual skill cases](../evaluations/individual-skill-cases.json). These cases do not run during ordinary skill use. The activation exercise preceded synchronization of the individual-audit corrections; invocation policy stayed enabled throughout.
+
+Practical changes: restore one nonblocking context notice independently of the transfer-cost/location decision; preserve stays, opt-outs, compaction freshness and deduplication. Keep complete command captures while checking planned storage/retention before capture. Avoid project-wide inventory for one small known output and batch within known capacity. Reconcile stale context expectations. Final local gates: 343 tests (22 platform skips), repository validation, all eight skill validations and 29 synthetic helper cases passed.
+
+These observations do not establish measured token savings or equivalence to another author's toolkit. Repository checks, actual skill reads and the correctness of each resulting decision remain separate evidence classes.

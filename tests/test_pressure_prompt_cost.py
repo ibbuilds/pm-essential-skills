@@ -21,7 +21,7 @@ class PressurePromptCostTests(unittest.TestCase):
                                       {"transfer_cost": self.cost | {"continue": remaining}})
                 self.assertEqual(result["action"], "continue")
                 self.assertEqual(result["reason"], "transfer_cost_not_beneficial")
-                self.assertEqual(result["notice"], "none")
+                self.assertEqual(result["notice"], "review")
                 self.assertFalse(result["requires_transfer_checks"])
                 self.assertNotIn("prompt_level", result)
 
@@ -29,7 +29,49 @@ class PressurePromptCostTests(unittest.TestCase):
         result = POLICY.assess(self.base | {"reconstruction_repeats_work": True})
         self.assertEqual((result["action"], result["reason"]),
                          ("checkpoint", "transfer_would_repeat_investigation"))
-        self.assertEqual(result["notice"], "none")
+        self.assertEqual(result["notice"], "review")
+
+    def test_nonblocking_notice_preserves_the_current_outcome_location(self):
+        result = POLICY.assess(self.base | {"boundary_choice": "current-thread",
+                                           "choice_request_id": "r", "transfer_cost": self.cost})
+        self.assertEqual(result["action"], "continue")
+        self.assertEqual(result["notice"], "review")
+        self.assertEqual(result["notice_reason"], "measured_context_review")
+        self.assertFalse(result["requires_transfer_checks"])
+        self.assertNotIn("prompt_level", result)
+
+    def test_notice_keeps_its_evidence_when_cost_guard_changes_routing_reason(self):
+        for signal, reason in (({"context": context(80000)}, "measured_context_review"),
+                               ({"context": None, "substantial_history": True},
+                                "substantial_replaceable_history")):
+            result = POLICY.assess(self.base | signal | {"transfer_cost": self.cost})
+            self.assertEqual(result["reason"], "transfer_cost_not_beneficial")
+            self.assertEqual(result["notice_reason"], reason)
+            self.assertEqual(result["notice"], "review")
+            if signal["context"] is None:
+                self.assertIsNone(result["context_ratio"])
+            else:
+                self.assertEqual(result["context_ratio"], 0.8)
+
+    def test_notice_deduplication_completion_opt_outs_and_compaction_are_independent(self):
+        for extra in ({"last_notice_level": "review"}, {"completed": True},
+                      {"management_disabled": True}, {"settings": {"mode": "stay"}},
+                      {"safe_checkpoint": False},
+                      {"context": context(10000), "substantial_history": True, "compactions": 10}):
+            with self.subTest(extra=extra):
+                result = POLICY.assess(self.base | {"transfer_cost": self.cost} | extra)
+                self.assertEqual(result["notice"], "none")
+                self.assertNotIn("notice_reason", result)
+
+    def test_standalone_replaceable_history_needs_no_telemetry_or_project_offer(self):
+        result = POLICY.assess({"project_mode": "standalone", "safe_checkpoint": True,
+                                "substantial_history": True})
+        self.assertEqual(result["action"], "continue")
+        self.assertEqual(result["notice"], "review")
+        self.assertEqual(result["notice_reason"], "substantial_replaceable_history")
+        self.assertIsNone(result["context_ratio"])
+        self.assertFalse(result["requires_transfer_checks"])
+        self.assertNotIn("prompt_level", result)
 
     def test_unknown_stale_or_beneficial_costs_do_not_suppress_prompt(self):
         for cost in (None, self.cost | {"fresh": False}, self.cost | {"continue": 121}):

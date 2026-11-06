@@ -128,9 +128,9 @@
   {
     "id": "next-request-after-stay",
     "available_skills": ["pm-essential-skills-context-management"],
-    "context": "Long verified project chat below critical pressure. The last request is complete; the user stayed here once for that request. A new substantive request arrives, even though it is only a small edit. No persistent stay or stop-asking preference exists.",
+    "context": "Long verified project chat below critical pressure. The delivered result's button labels are still available; the user stayed here for that outcome. This asks for a related correction. No independent handoff benefit or new outcome is established.",
     "prompt": "Now change the next button label too.",
-    "expected": "Ask new same-project chat or continue here for this new request, with a firmer recommendation after the earlier stay. Wait before the new edit; do not treat the prior request's answer as permanent."
+    "expected": "Apply the related label correction in place using the outcome's existing location answer. Delivery and another message do not alone establish a new outcome; do not strengthen recommendations from prior stay answers or create management work."
   },
   {
     "id": "same-request-clarification",
@@ -165,7 +165,7 @@
     "available_skills": ["pm-essential-skills-context-management"],
     "context": "Long verified project chat below critical pressure. A build was delivered and the assistant asked whether it works. The user stayed for the completed build request. This is a testing question, not a location question. There is no persistent opt-out.",
     "prompt": "<send_user_message_question_reply>It works. Now improve the snapping, change the menu label, and fix the duplicated icons.</send_user_message_question_reply>",
-    "expected": "Treat the requested changes after the delivered build as a new request despite the asynchronous wrapper. Reassess and ask the stronger continuation question before investigating or implementing the new changes. Do not keep the entire unfinished feature as one perpetual request."
+    "expected": "Interpret the requested corrections by their scope and dependencies, not the asynchronous wrapper or prior delivery. Reuse the build outcome's location answer for related corrections and proceed here; a genuinely distinct outcome would need its own supported assessment. Prior stay answers do not strengthen a recommendation."
   },
   {
     "id": "testing-reply-without-new-work",

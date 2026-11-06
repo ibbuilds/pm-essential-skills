@@ -28,7 +28,7 @@ class PhaseChoiceTests(unittest.TestCase):
                 result = POLICY.assess(self.phase | extra)
                 self.assertEqual(result["action"], expected)
                 self.assertFalse(result["requires_transfer_checks"])
-                self.assertEqual(result["notice"], "none")
+                self.assertEqual(result["notice"], "none" if extra.get("context") == context(10000) else "review")
 
     def test_missing_telemetry_remains_unknown(self):
         result = POLICY.assess(self.phase)
@@ -47,11 +47,12 @@ class PhaseChoiceTests(unittest.TestCase):
         self.assertEqual(POLICY.assess(self.phase | {"new_phase": False})["action"], "ask_thread_choice")
         self.assertEqual(POLICY.assess(self.phase | {"substantial_history": False})["action"], "continue")
 
-    def test_user_stays_without_pressure_prompt(self):
+    def test_user_stays_without_location_prompt_but_can_receive_one_factual_notice(self):
         result = POLICY.assess(self.phase | {"boundary_choice": "current-thread",
                                              "context": context(80000)})
         self.assertEqual(result["action"], "continue")
-        self.assertEqual(result["notice"], "none")
+        self.assertEqual(result["notice"], "review")
+        self.assertNotIn("prompt_level", result)
 
     def test_new_chat_choice_preserves_safe_transfer_gates(self):
         chosen = self.phase | {"boundary_choice": "new-thread"}
