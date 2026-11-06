@@ -45,6 +45,7 @@ jobs:
             work/downloads/pm-essential-skills-execution-efficiency.zip
             work/downloads/pm-essential-skills-workflow-improvement.zip
             work/downloads/pm-essential-skills-concise-communication.zip
+            work/downloads/pm-essential-skills-workspace-hygiene.zip
             work/downloads/SHA256SUMS
             work/downloads/distribution.json
           if-no-files-found: error

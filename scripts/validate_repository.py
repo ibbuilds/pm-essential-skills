@@ -49,7 +49,7 @@ def main():
     errors = []
     skills = sorted((ROOT / "skills").glob("*/SKILL.md"))
     if {path.parent.name for path in skills} != set(NAMES):
-        errors.append("Skill folders must match the seven repository-qualified catalog names")
+        errors.append("Skill folders must match the repository-qualified catalog names")
     if not skills:
         errors.append("No skills found")
     try:

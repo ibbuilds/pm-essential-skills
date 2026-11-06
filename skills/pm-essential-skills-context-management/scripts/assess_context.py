@@ -154,14 +154,24 @@ def assess(observation: Any) -> dict:
     def finish(action: str, reason: str) -> dict:
         result.update(action=action, reason=reason,
                       requires_transfer_checks=action in {"rollover", "defer"})
-        levels = {"measured_context_review": "review", "proxy_pressure_only": "review",
-                  "existing_history_review": "review", "measured_context_high": "rollover",
-                  "proxy_pressure_with_obsolete_context": "rollover",
-                  "critical_history_with_obsolete_context": "rollover"}
-        level = levels.get(reason, "none")
-        if (action in {"review", "rollover"} and obs.get("safe_checkpoint", False)
+        # A useful factual notice is independent of whether moving is worthwhile.
+        # Fresh low occupancy after compaction also overrides structural warnings.
+        level, notice_reason = "none", None
+        if ratio is not None:
+            if ratio >= settings["rollover_ratio"]:
+                level, notice_reason = "rollover", "measured_context_high"
+            elif ratio >= settings["review_ratio"]:
+                level, notice_reason = "review", "measured_context_review"
+        elif critical_history or (proxy_triggered and evidence_count >= 2):
+            level, notice_reason = "rollover", "supported_critical_history"
+        elif proxy_triggered or existing_history_signal or obs.get("substantial_history", False):
+            level = "review"
+            notice_reason = ("substantial_replaceable_history" if obs.get("substantial_history", False)
+                             else "observed_context_history")
+        if (action not in {"complete", "offer_project"} and obs.get("safe_checkpoint", False)
+                and not obs.get("management_disabled", False) and settings["mode"] != "stay"
                 and NOTICE_RANK[level] > NOTICE_RANK[obs.get("last_notice_level", "none")]):
-            result["notice"] = level
+            result.update(notice=level, notice_reason=notice_reason)
         return result
 
     def transfer(reason: str) -> dict:
@@ -284,7 +294,7 @@ def assess(observation: Any) -> dict:
         return finish("review", "proxy_pressure_only")
     if existing_history_signal:
         return finish("review", "existing_history_review")
-    return result
+    return finish("continue", "no_rollover_signal")
 
 
 def main() -> int:

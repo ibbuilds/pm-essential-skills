@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "pm-essential-skills",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Seven independent skills for task coordination, context, resource and source selection, efficient execution, workflow improvement, and concise communication.",
   "repository": "https://github.com/ibbuilds/pm-essential-skills",
   "extensions": {

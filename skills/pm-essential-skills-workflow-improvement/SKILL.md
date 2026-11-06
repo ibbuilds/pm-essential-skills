@@ -1,6 +1,6 @@
 ---
 name: pm-essential-skills-workflow-improvement
-description: Improve an existing workflow or reusable toolkit when explicitly requested, or when verified recurring costly friction warrants a scoped remedy. Not routine task execution or a one-off unexplained failure.
+description: "Use when improving skills or a reusable workflow, or when repeated avoidable errors justify a reusable correction. Ordinary one-off repairs stay in their task."
 ---
 
 # PM Essential Skills / Workflow Improvement
@@ -10,8 +10,6 @@ Reduce demonstrated repeat work through reusable remedies, not another managemen
 ## Establish the problem
 
 Identify costly friction, evidence, affected conditions, and success condition. Inspect relevant user rules, project information, tools, skills, and prior corrections before asking or inventing replacements. Ask only about material missing choices. One-off failures usually need fixes, not permanent rules.
-
-For necessary decisions with concrete alternatives, use the host's permitted selectable-input tool when available, with concise options and a justified recommendation. Use free text for open-ended facts or when no suitable tool is available. Accept clear written answers; defaults and timeouts are not consent. Permission escalations use their dedicated mechanism.
 
 ## Choose the smallest remedy
 

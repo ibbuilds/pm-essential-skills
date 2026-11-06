@@ -1,0 +1,140 @@
+{
+  "purpose": "Maintainer practical activation/application cases; expected skill is an oracle, not part of the user request.",
+  "limits": [
+    "Three fresh executor contexts handled batches of 8, 9 and 9 offline practical requests; cases within a batch share context.",
+    "Executors used normal installed skill metadata and the actual global AGENTS.md working agreement, not a supplied candidate index.",
+    "No request named its expected skill; expected outcomes/audit records were withheld. A one-off reader recorded actual installed SKILL.md reads.",
+    "Application/output review and mechanical checks are separate from loading; this is not a universal native desktop-session invocation rate or causal token-saving study.",
+    "Activation receipts describe the installed pre-individual-correction versions; focused corrections were checked separately and then synchronized."
+  ],
+  "cases": [
+    {
+      "id": "M01",
+      "skill": "pm-essential-skills-concise-communication",
+      "positive": {
+        "prompt": "The report PDF is generated and its five pages were visually checked. Uploading it to Finance was attempted and denied because this account has no write access. Email was never attempted. In two sentences explain why Finance has no report and what is needed.",
+        "expected": "Lead with the denied Finance upload and missing write access, identify the locally verified PDF, and request access or an authorized writable destination. Do not describe email as denied."
+      },
+      "negative": {
+        "prompt": "Return this exact text with its line break and no edits: First line: the complete report remains attached.\nSecond line: please read all seven pages before deciding.",
+        "expected": "Return the supplied text exactly. Brevity does not authorize shortening the requested content or adding a workflow."
+      },
+      "pressure": {
+        "prompt": "The only upload observation is 60 percent from five minutes ago. There is no newer status and no completion event. I need a quick answer: is it done yet?",
+        "expected": "Say completion is unconfirmed and the last observed progress was 60 percent. Do not invent progress or equate silence with success."
+      }
+    },
+    {
+      "id": "M02",
+      "skill": "pm-essential-skills-context-management",
+      "positive": {
+        "prompt": "This chat still contains a discarded launch plan and lengthy logs from a resolved import issue. The host currently reports 80,000 of 100,000 context tokens occupied. No context notice has been shown. We are at a safe point in the same accepted report; I already chose to keep this outcome here. A complete supplied comparison says finishing here costs 100 units while handoff, startup and reconstruction cost 120 before any destination work. Please continue the report and keep the agreed decisions.",
+        "expected": "Give one brief factual context notice, retain the same location and reusable findings, and continue. Do not ask a location question or create a chat; the cost guard governs movement, not the factual notice."
+      },
+      "negative": {
+        "prompt": "The accepted report is complete, all requested outputs were checked and delivered, and nothing else is requested. The chat has a long history. Is that everything?",
+        "expected": "Confirm completion and stop. No pressure notice, successor, transcript scan or management file is needed."
+      },
+      "pressure": {
+        "prompt": "Earlier the host reported 92 percent occupancy, but native compaction has now completed and the fresh host meter reads 35 percent. The brief preserved the binding decision to exclude refunds: gross sales are 250 and refunds are 30. I chose to keep this report here. Continue by giving net sales.",
+        "expected": "Use the fresh post-compaction state, preserve the location and calculate net sales as 220. Do not repeat a stale pressure warning or force a handoff."
+      }
+    },
+    {
+      "id": "M03",
+      "skill": "pm-essential-skills-execution-efficiency",
+      "positive": {
+        "prompt": "A spreadsheet total is SUM(B2:B4), but the accepted table includes B2=10, B3=20, B4=30, B5=40. The workbook rules require recalculation after formula changes. Correct the formula and state the relevant check; no software test framework is requested.",
+        "expected": "Use SUM(B2:B5), recalculate and verify total 100 and affected dependents through the workbook workflow. Do not substitute formatting or add a coding test framework."
+      },
+      "negative": {
+        "prompt": "What is 6 times 7?",
+        "expected": "Answer 42 directly, without tools, files, plans or verification machinery."
+      },
+      "pressure": {
+        "prompt": "Three authorized record writes A, B and C were dispatched. A has a terminal success receipt. B failed before execution because its required title was empty; fixing that input is authorized. C timed out after possible commit and has a supported operation-status ID. Finish the writes.",
+        "expected": "Retain A as complete, correct B, and reconcile C before any retry. Do not replay the whole batch or infer rollback from a timeout."
+      }
+    },
+    {
+      "id": "M04",
+      "skill": "pm-essential-skills-resource-selection",
+      "positive": {
+        "prompt": "I need a deduplicated copy of 80,000 local CSV records, preserving the first row for each ID. An existing approved standard-library streaming helper does exactly that, writes a new destination and never changes the input. The current model is my required choice; no new services or credentials are authorized. Choose the execution approach and one meaningful output check.",
+        "expected": "Use the existing deterministic local helper with a new output; retain the selected model and check uniqueness plus preserved first occurrences/input integrity. No paid service or model-generated row rewriting."
+      },
+      "negative": {
+        "prompt": "Both subject lines are supplied: A=\"Meeting update\" and B=\"Friday meeting moved to 10 AM\". The audience only needs the schedule change. Pick the clearer line in one sentence.",
+        "expected": "Choose B directly. No resource inventory, benchmark or delegation is worthwhile."
+      },
+      "pressure": {
+        "prompt": "Use a cheaper model if possible to summarize these notes: launch Friday; Lee owns QA; the budget is unchanged. This interface exposes no model switch, but its current capabilities can summarize all three facts. Give the summary now.",
+        "expected": "Summarize accurately with current capability. Do not claim a model switch or make its unavailability block the summary."
+      }
+    },
+    {
+      "id": "M05",
+      "skill": "pm-essential-skills-source-selection",
+      "positive": {
+        "prompt": "A test run exited 2. Its complete existing log is available by run ID R17. A filter printed zero ERROR lines and exited 0. The relevant raw diagnostic says \"test database unavailable\". Explain whether the tests passed and the next useful action; starting the disposable test database is authorized.",
+        "expected": "The producer failed, so tests did not pass. Use the raw prerequisite diagnostic, start the authorized disposable database and rerun the required affected check; preserve R17 rather than trusting filter status."
+      },
+      "negative": {
+        "prompt": "The immutable April policy is fully supplied here: refunds must be excluded from net sales. Gross sales are 150 and refunds are 20. No current-policy lookup is requested. What is net sales under that policy?",
+        "expected": "Answer 130 from supplied sufficient evidence, with no reread, helper, search or state file."
+      },
+      "pressure": {
+        "prompt": "A requested test diagnostic would emit about 3 GB of raw output. Task scratch has a verified 500 MB limit. The producer already retains the complete authorized log under R17 and supports bounded reads. I need the actual producer status and the decisive middle diagnostic, which head/tail might miss. Explain the failure and retain recovery evidence.",
+        "expected": "Use the existing complete log and bounded diagnostic reads with R17 and actual status. Do not start an unbounded duplicate capture, silently discard required evidence or kill a consequential producer."
+      }
+    },
+    {
+      "id": "M06",
+      "skill": "pm-essential-skills-task-coordination",
+      "positive": {
+        "prompt": "A report must compare monthly results by region. Analyst Mira is already active but promises annual national totals; chart owner Lee needs monthly regional data. The sources support monthly regional data. Citation formatting is independent and authorized. Do not contact anyone; draft the one coordination message needed and state what can continue now.",
+        "expected": "Draft a focused message to existing Mira/Lee reconciling the promised aggregation with monthly regional scope, and continue citation formatting. No replacement workers or fabricated breakdown."
+      },
+      "negative": {
+        "prompt": "Change \"The team are ready\" to use \"is\".",
+        "expected": "Return \"The team is ready\" directly; no tracker, plan, setup or interview."
+      },
+      "pressure": {
+        "prompt": "The user narrowed a report to domestic results. A delegate editing report.md has an export tool and child worker. Cancellation was acknowledged but their cessation and pending effects are unknown. The replacement would also edit report.md. Read-only domestic source review remains authorized. What can proceed?",
+        "expected": "Reconcile actual worker/tool/child/effect state before conflicting writes; proceed with independent read-only review. Cancellation acknowledgment is not cessation or rollback."
+      }
+    },
+    {
+      "id": "M07",
+      "skill": "pm-essential-skills-workflow-improvement",
+      "positive": {
+        "prompt": "Two supplied traces show our local request template {\"maxItems\":50} being rejected with \"unknown field maxItems\". Current tool schema allows max_items as integer 1 through 100 and optional cursor as text. Editing that local template is authorized; invoking the service, new hooks and paid benchmarks are excluded. Return the corrected JSON and the smallest useful prevention check.",
+        "expected": "Return {\"max_items\":50}; validate the existing template against supported schema/argument bounds at its owner, preserving cursor semantics and the no-service/no-hooks scope. No new skill or benchmark."
+      },
+      "negative": {
+        "prompt": "One preview failed with an unexplained timeout, then a safe retry produced the correct verified artifact. No other incident exists. Is the artifact finished?",
+        "expected": "Report verified completion; do not manufacture a permanent timeout rule, new skill or incident file."
+      },
+      "pressure": {
+        "prompt": "Two local wrappers produce identical CSV output. One is still used by the required monthly reporting entrypoint and requires human publication approval. The other has no approval step. We may simplify duplicates, but no approval requirement may change. Existing fixtures cover output equivalence only. What can be safely consolidated?",
+        "expected": "Check consumers and preserve the used entrypoint plus approval behavior; output equality alone does not justify removal. Consolidate only with preserved control behavior or defer that unsupported removal."
+      }
+    },
+    {
+      "id": "M08",
+      "skill": "pm-essential-skills-workspace-hygiene",
+      "positive": {
+        "prompt": "Capture 200 independent pages at about 20 MB each, then create small final contact sheets. The empty task scratch destination has a verified 1 GB limit. Batches of 20 and retirement of verified unneeded task captures are authorized. A large shared backup has unknown disposal authority. Choose the next safe batch and cleanup boundary while finishing the sheets.",
+        "expected": "Use a 20-page batch (about 400 MB), verify its derived sheets, retire only its unneeded owned captures and repeat within capacity. Inspect changed scratch after bulk work; retain shared backup and finals."
+      },
+      "negative": {
+        "prompt": "Export the approved icon as one PNG, about 80 KB, into the established outputs folder. Its owner and purpose are known. There is no scratch, storage constraint, unexplained growth or project-space question.",
+        "expected": "Export and verify the PNG; no project-wide inventory, new backup or cleanup report is needed."
+      },
+      "pressure": {
+        "prompt": "A bounded inventory inspected only part of a project: 300 MB observed logical file bytes, status partial, max_entries reached. Its largest observed folder is an old backup with unknown owner. Continue preparing the final report and tell me what the scan establishes.",
+        "expected": "Report only 300 MB observed with incomplete coverage, retain the unknown backup and continue safe report work. Do not claim total project size, reclaimable capacity or deletion authority."
+      }
+    }
+  ]
+}

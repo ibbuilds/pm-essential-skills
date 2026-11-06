@@ -1,9 +1,13 @@
 ---
 name: pm-essential-skills-task-coordination
-description: Coordinate multi-step work, dependencies and completion; pressure-test plans ("grill me") or draft stakeholder questionnaires. Handle trivial clear tasks directly. Cross-domain coordination, not product strategy or conversation rollover.
+description: "Use for multi-step outcomes, dependencies, delegated work or pending operations; also for requested plan challenges and stakeholder questionnaires. Act directly on trivial clear tasks."
 ---
 
 # PM Essential Skills / Task Coordination
+
+## Select relevant procedures
+
+Match available skill descriptions to the task and observed risks. Load applicable procedures through the host mechanism or read `SKILL.md`; reuse loaded guidance. Reconsider when scope, failures or generated-file growth change. Select relevant owners without asking for skill names or creating a checklist.
 
 ## Establish the outcome
 
@@ -19,15 +23,15 @@ For trivial clear tasks, act directly without plans, trackers, or setup. Otherwi
 
 Delegate separable outcomes only when useful. Check assignments before spawning; preserve one active writer per outcome without duplicate workers or overlapping edits. Specify to each owner goals, boundaries, inputs, deliverables, and dependencies. Handoffs identify completed/remaining work and next owners; retain integration responsibility. Carry outstanding skill obligations and owner/status, pending decisions, and exception scope in existing context/handoffs. Reuse applicable satisfied evidence; no separate ledger.
 
-For delegated follow-up work, use the host's supported task-admission or start/resume mechanism. Notification-only messages do not start work; reuse documented admission semantics without redundant status polling. Admission is not completion.
+Start delegated follow-ups through the host's admission/resume mechanism. Notification-only messages may not start work; admission does not prove completion.
 
-Before dependent work, compare promised deliverables with downstream needs. Reuse an accepted shared specification and applicable validation rather than repeating domain checks or duplicating them. Resolve material mismatches with the responsible owner; ask for user-owned decisions rather than inventing them. Compatible inputs need no new document or approval.
+Before integration, check deliverables against downstream needs and reuse applicable validation. Resolve material mismatches with their owner; preserve user-owned decisions.
 
 ## Adapt to material changes
 
 When a material requirement, deadline, budget, capacity, or dependency changes, reassess whether the accepted outcome is still achievable and which commitments are affected. Respect user priorities and reorder only authorized work; avoid work made obsolete by the change. If requirements conflict, present a concrete tradeoff and its consequences for the necessary decision while continuing unaffected work. Do not silently drop scope, lower required quality, or exceed limits. Label uncertain estimates. Harmless changes need no ceremony.
 
-Send material scope/constraint changes to affected active delegates; do not assume shared updated context. Use supported revision/cancellation controls. Cancellation requests or acceptance acknowledgments alone do not establish cessation. Reuse trustworthy documented terminal evidence without redundant checks; reconcile workers, tools, children, and external effects it does not cover. Before conflicting replacement work or integration, reconcile actual state and late outputs against current scope. Continue unaffected work and safe read-only replacements; no routine broadcasts, polling, or new ledger.
+When changing or cancelling delegated work, follow [delegate reconciliation](references/delegated-work.md) before conflicting replacement or integration. Continue unaffected work.
 
 ## Keep work moving
 

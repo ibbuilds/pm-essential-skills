@@ -20,6 +20,7 @@ PURPOSES = {
     "pm-essential-skills-source-selection": "relevant evidence retrieval and reuse",
     "pm-essential-skills-execution-efficiency": "proportionate verification and evidence-driven recovery",
     "pm-essential-skills-workflow-improvement": "recurring friction, reusable lessons, and authorized workflow changes",
+    "pm-essential-skills-workspace-hygiene": "generated files, backups, temporary artifacts and unexpected project-storage growth",
     "pm-essential-skills-concise-communication": "clear, brief plain-language replies without losing required substance",
 }
 NAMES = tuple(PURPOSES)
@@ -27,6 +28,8 @@ NAMES = tuple(PURPOSES)
 # ordinary pasted source/documents while bounding malformed or extreme input.
 MAX_INPUT_BYTES = 16 * 1024 * 1024
 WORKFLOW_CONTRACT = (
+    "Before substantive work, select matching enabled skills from the actual task and risks; load their procedures. "
+    "Reconsider when scope, failures or generated-file growth change; reuse loaded guidance. "
     "Matching enabled skills define required workflows, not optional advice. "
     "Retain unmet obligations and scoped exceptions across handoffs; blocked is not complete. "
     "Preserve each skill's no-op paths and optional methods."

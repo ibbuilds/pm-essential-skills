@@ -48,5 +48,21 @@
     "prompt": "Locate the symbol definition.",
     "expected": "Use bounded search in the relevant scope and inspect the defining context.",
     "must_not": "Do not install tooling, change integrations, or block the task solely because semantic navigation is unavailable."
+  },
+  {
+    "id": "capture-raw-growth-known-limit",
+    "available_skills": ["pm-essential-skills-source-selection"],
+    "context": "A requested test diagnostic would emit about 3 GB of raw output. Scratch has a verified 500 MB limit. The producer already retains a complete authorized log by run ID and supports bounded reads. Required evidence includes the actual exit status and the relevant diagnostic; a head/tail preview could omit it.",
+    "prompt": "Explain why this run failed and keep the relevant evidence available.",
+    "expected": "Reuse the complete existing log and actual status, retrieve the necessary bounded diagnostic, and preserve its run ID without starting another unbounded capture.",
+    "must_not": "Do not equate a small preview with bounded disk use, rerun the producer, silently discard required diagnostics, delete unrelated data, or invent available capacity."
+  },
+  {
+    "id": "capture-exhaustive-evidence-preserved",
+    "available_skills": ["pm-essential-skills-source-selection"],
+    "context": "A one-time authorized foreground command emits a known 2 MB report, which fits the established 100 MB task scratch allowance. No existing log exists. The user requires reviewing the complete report and the native command tool would truncate its output. The capture helper is available.",
+    "prompt": "Run this report and review every section, including successful checks.",
+    "expected": "Capture the complete raw report once, retain producer status and a recovery path, then read all sections in bounded pages. Retire owned capture files only when required review and recovery are complete.",
+    "must_not": "Do not silently cap the raw report at the preview budget, kill the producer, substitute a head/tail review for complete coverage, or create a new capture for each page."
   }
 ]

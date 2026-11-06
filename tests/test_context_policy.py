@@ -209,7 +209,7 @@ class ExistingChatTests(unittest.TestCase):
         self.assertEqual(result["reason"], "long_chat_new_request")
         self.assertEqual(result["measurement"], "heuristic")
         self.assertIsNone(result["context_ratio"])
-        self.assertEqual(result["notice"], "none")
+        self.assertEqual(result["notice"], "review")
         self.assertEqual(result["prompt_level"], 1)
 
     def test_unsubstantiated_first_use_does_not_invent_pressure(self):
@@ -258,7 +258,7 @@ class ExistingChatTests(unittest.TestCase):
 
 
 class StandaloneTests(unittest.TestCase):
-    def test_distinct_outcome_without_pressure_continues_standalone(self):
+    def test_distinct_outcome_continues_standalone_without_forcing_organization(self):
         for safe in (False, True):
             for extra in ({}, {"context": context(10000)}, {"substantial_history": True}):
                 with self.subTest(safe=safe, extra=extra):
@@ -266,7 +266,7 @@ class StandaloneTests(unittest.TestCase):
                                            "safe_checkpoint": safe, **extra})
                     self.assertEqual(result["action"], "continue")
                     self.assertFalse(result["requires_transfer_checks"])
-                    self.assertEqual(result["notice"], "none")
+                    self.assertEqual(result["notice"], "review" if safe and extra.get("substantial_history") else "none")
 
     def test_explicit_new_thread_still_transfers_standalone(self):
         for safe, expected in ((True, "rollover"), (False, "defer")):
@@ -334,7 +334,7 @@ class StandaloneTests(unittest.TestCase):
                 self.assertEqual(result["action"], action)
                 self.assertEqual(result["reason"], "standalone_without_setup")
                 self.assertFalse(result["requires_transfer_checks"])
-                self.assertEqual(result["notice"], "none")
+                self.assertEqual(result["notice"], "rollover" if safe else "none")
 
     def test_no_offer_for_small_finished_or_user_overridden_chat(self):
         cases = [{"context": context(10000)}, {"completed": True, "context": context()},

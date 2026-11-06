@@ -1,6 +1,6 @@
 ---
 name: pm-essential-skills-context-management
-description: Preserve useful context and manage justified, authorized chat handoffs. Use at meaningful work boundaries or demonstrated context pressure; keep related work together.
+description: "Use when earlier decisions or task context must be recovered, a long chat needs a brief context notice, useful context is under pressure, or a justified authorized handoff is needed. Keep related work together."
 ---
 
 # PM Essential Skills / Context Management
@@ -25,6 +25,8 @@ Read [request choices](references/existing-chats.md) only for uncertain request 
 | Fresh occupancy >=85% or supported critical context failure | Prepare a safe authorized continuation; persistent opt-outs and readiness still govern. |
 | No current telemetry | Use concrete, labeled structural evidence; never invent a percentage. |
 | Standalone work | Continue with a useful checkpoint; project setup is optional. |
+
+At a safe point, briefly flag fresh significant pressure or substantial visible replaceable history once, without blocking the work or requiring a location choice. Keep the agreed location and preserve decisions/findings; a move costing more does not silence this notice. Use an existing update or justified location question rather than duplicate messages. Deduplicate by the last notice shown; persistent opt-outs, completed work and fresh low occupancy after compaction suppress it. Unknown percentages stay unknown.
 
 The numeric thresholds are compatibility backstops, not proven optima. Native compaction that restores useful context invalidates stale pressure observations. Read [policy](references/policy.md) only for measurement, heuristics, cost comparison or the optional `scripts/assess_context.py` contract. Its output is a candidate, never permission to mutate chats.
 
