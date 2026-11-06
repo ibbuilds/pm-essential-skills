@@ -1,102 +1,51 @@
-# Routing and measurement policy
+# Early context intervention policy
 
-Read when deciding whether to keep or transfer work. The existing 75%/85% ratios and 20-turn/6-output/2-compaction proxies are compatibility backstops, not proven cost-optimal limits. Review substantial replaceable history and requested phase boundaries immediately; do not wait for a numeric threshold.
+Default: `enforcement: required`, `mode: notify-and-transfer`, `review_ratio: 0.40`, `rollover_ratio: 0.50`. The review ratio now starts the required fresh-chat gate; the rollover ratio is the ceiling, not the first warning. Required mode rejects ceilings above 0.50. These are conservative workflow choices requested by the user, not empirically established universal model failure points.
 
-## Observation contract
+## Measurement
 
-The optional helper accepts a JSON object. Unavailable quantities are omitted or `null`.
+The preferred metric is fresh occupancy of the full active context divided by the host's effective window for the active model. Include carried instructions and tools. Use the smaller usable host limit when known, not an advertised marketing maximum. Exclude account quotas, cumulative session usage and output allowance. Do not assume the last request's input tokens equals occupancy unless the host defines that relationship. Never scan private databases or run a second app server to get a meter.
+
+Compaction changes active context; lifetime token totals do not reset with it. A fresh low reading and retained essential decisions clear pressure, even in an old chat. Stale readings cannot assert either pressure or recovery. Current segment counters reset only after a confirmed handoff or effective compaction; do not import predecessor counts. No telemetry means unknown, not zero and not an invented estimate.
+
+With unknown occupancy, 10 substantive user work turns or 3 observed tool outputs of at least 8,000 characters in the current segment trigger a precautionary handoff. Already-visible substantial superseded history, repeated lost constraints or repeated reconstruction also trigger it immediately. Counters are inexpensive preventive workflow budgets, not a proxy percentage or a quality benchmark. No history scan or helper call is required for every turn.
+
+## Optional helper
+
+`scripts/assess_context.py` takes JSON on stdin or `--input PATH`; it performs no host calls or writes. Example:
 
 ```json
 {
-  "completed": false,
-  "new_outcome": false,
   "safe_checkpoint": true,
-  "user_keep_thread": false,
   "project_mode": "project",
-  "project_offer_dismissed": false,
-  "project_setup_allowed": false,
-  "admission_check": false,
-  "last_notice_level": "none",
   "context": {
     "kind": "current_context",
-    "used_tokens": 85000,
+    "used_tokens": 40000,
     "window_tokens": 100000,
     "source": "host current-context meter",
     "fresh": true
-  },
-  "substantive_turns": null,
-  "large_outputs": null,
-  "compactions": null,
-  "obsolete_context_evidence": []
+  }
 }
 ```
 
-Optional `settings` contains `mode` (`notify-and-transfer`, `suggest-only`, or `stay`) and `review_ratio`/`rollover_ratio`. Defaults are notify-and-transfer, 0.75, and 0.85. Ratios must satisfy `0 < review_ratio < rollover_ratio <= 1`. Preserve explicit user preferences in existing project notes; do not change global settings or tune thresholds silently from a single task.
+At the required trigger, output has `domain_work_allowed: false`, `allowed_work: stabilize_checkpoint_and_handoff_only`, and `remind: each_user_turn_until_resolved`. `action` is `rollover` at a safe checkpoint, `defer` while stabilization is needed, or `blocked_transfer` if essential continuation context is unavailable. All require transfer readiness checks. `rollover` is a candidate, never permission or evidence of actual creation. Missing readiness means preserve state and resolve the blocker, not resume domain work.
 
-`suggest-only` returns `suggest_rollover` instead of dispatching a rollover at a safe checkpoint. It never authorizes creation; respect prior notices and declined suggestions. `stay` continues this thread without pressure notices or project offers; completed work still returns `complete`. Notify-and-transfer still needs independently verified user authorization, capabilities, and safe transfer gates. It is not a grant of automatic authority.
+`last_notice_level`, a pending location choice, `user_keep_thread`, standalone membership, estimated transfer cost and repeated-investigation cost cannot suppress required intervention. Repeat one concise reminder per subsequent user turn while pending. Do not repeatedly ask the same unanswered question. Completion without further requested work returns quietly; a completed outcome with a newly requested phase still needs assessment.
 
-`completed` describes the present outcome. `new_outcome` means the user has requested a distinct next outcome, not that the assistant has invented another task. `safe_checkpoint` is false while transfer would interrupt work that cannot safely pause. Omitted booleans default to false; supplied booleans must be true or false, not null. Missing safe-checkpoint evidence defaults to false in the helper.
+An unsafe operation gets only the minimum steps to reach safety; do not extend the task to find a convenient boundary. At >=50% restrict activity to stabilization and handoff. Reduce output size before known large reads; avoid loading full transcripts or all skill references into the next window.
 
-`new_phase` means a genuinely requested next stage, such as implementation after accepted planning. `substantial_history` describes already-visible prior work that a brief can replace; it is not measured pressure. A qualifying distinct logical request can receive a location choice, subject to all below-critical cost/reconstruction guards. Related corrections, verification and status questions retain the current request identity and location answer, even after a delivery message. Below critical pressure, `ask_thread_choice` waits before domain work; it never dispatches.
+## Preferences and compatibility
 
-Optional `boundary_choice` is `new-thread` or `current-thread`, from an actual human answer for this logical request. Use stable `request_id` and `choice_request_id` strings; mismatched IDs expire the answer. Related follow-ups reuse the logical request ID; a genuinely distinct outcome gets a new one. With no IDs, a supplied choice refers only to the current assessment. `user_keep_thread` likewise means a stay for this logical request. It does not suppress distinct future work or critical continuation. `new-thread` returns a transfer candidate with existing gates. Explicit `user_requested_new_thread` needs no location question. Persistent `settings.mode: stay`, `management_disabled: true`, and suggest-only remain binding; direct human prompting preferences override defaults.
+Explicit later human preferences remain authoritative: `management_disabled: true`, `settings.mode: stay`, or `settings.mode: suggest-only` opt out of forced intervention. Never infer one from an old task's location choice. Installation and helper output grant no authority to create, message, archive, move or delete chats. Automatic selection remains enabled even when transfer requires authorization.
 
-Supply `last_prompt_request_id` only for a location question actually shown. A matching pending request or `choice_pending: true` returns `await_thread_choice`, including after compaction; it does not ask twice or permit dependent domain work. Missing or mismatched IDs alone do not establish a pending question. `stay_count` remains accepted for compatibility but no longer strengthens recommendations; `prompt_level` is 1 when an optional question is recommended. Question strength must follow current evidence, not previous declines. Related corrections, location answers and clarifications retain the logical request ID. No new database or per-tool state writes are required. See [request choices](existing-chats.md).
+For an explicitly requested advisory workflow, `settings.enforcement: advisory` retains optional economic/location choices. Ratios are still 0.40/0.50 unless explicitly set; older 0.75/0.85 values are supported only with advisory enforcement. Historical test cases exercise that opt-in compatibility separately from default required-policy tests.
 
-At fresh occupancy >= rollover ratio, transfer automatically at a safe checkpoint rather than ask again. Without fresh telemetry, a proxy threshold plus two independent obsolete-context observations is critical. Alternatively `critical_history: true` plus two such observations declares a severe structural assessment: repeated lost constraints, repeated reconstruction, or extensive superseded work materially obstructing continuation. A bare “long chat” assertion is insufficient. This fallback is heuristic, not a measured percentage; fresh low telemetry overrides pressure-only heuristics. All transfer/readiness/authorization gates and persistent opt-outs still apply. Unknown membership must be resolved before creation; standalone work retains its checkpoint fallback.
+The existing optional fields remain validated: completed/new_outcome/new_phase, safe_checkpoint, user_keep_thread, management_disabled, project_mode (project/standalone/unknown), project_setup_allowed/project_offer_dismissed, admission_check, last_notice_level (none/review/rollover), counters, substantial_history/critical_history, obsolete_context_evidence (distinct strings), transfer_context_ready, reconstruction_repeats_work, user_requested_new_thread, boundary_choice, request_id/choice_request_id/last_prompt_request_id, choice_pending, stay_count, and settings. Unknown booleans are omitted, not null. Unknown counters/context may be null. See script validation for exact types.
 
-Use `context` only for genuinely current window occupancy, with its source and freshness. Never place lifetime input/output totals, account percentages, a quota budget, or the last request's token count here unless the host explicitly defines it as current occupancy. Stale observations are ignored. The helper checks declared types, not the truth of their source.
+In advisory mode, `boundary_choice` is new-thread/current-thread and belongs to the matching logical request; related follow-ups reuse that ID. Pending questions return await_thread_choice. Prior notices deduplicate ordinary advisory notices. Optional `transfer_cost` describes the same remaining requested work: basis (estimated/measured), source, unit (tokens/milliseconds/tool_calls), scope (remaining_requested_work), fresh boolean, nonnegative continue/handoff/startup/reconstruction, and optional destination_work. Without destination_work, transfer is an overhead lower bound. Supplied cost can suppress optional moves; it never establishes measured savings or overrides the required gate. Missing essential context, readiness and authorization always block dispatch.
 
-Counters cover the current thread since its accepted handoff. Count substantive user work turns, observed tool outputs at least 8,000 characters, and actual observed compactions. Do not infer them from elapsed time or import predecessor counters. Unknown is not zero. `obsolete_context_evidence` contains distinct, concrete observations (not general statements that a chat is long).
+## Evidence and limits
 
-At first use in an already-long chat, set `admission_check: true` and use already-visible pre-activation history when reliable. Missing historical counts remain unknown. Without fresh telemetry or a counter threshold, two concrete obsolete-context observations trigger `review`, not automatic rollover. See [existing chats](existing-chats.md) for immediate assessment and deduplicated user notices.
+Keep goal, decisions, active error, exact checks and next action. Do not replay entire logs or predecessor history. After transfer retain one owner; recovery uses bounded source references when necessary. Tests of declared observations prove policy decisions, not host telemetry access or universal model obedience. Current host capabilities and actual invocation must be checked separately.
 
-## Transfer cost and reconstruction
-
-Optional `transfer_context_ready: false` prevents transfer when essential destination context is unavailable. If the user explicitly chose a new chat, return `blocked_transfer`: preserve the source and explain the blocker, without starting implementation here. Otherwise continue in place. Optional `reconstruction_repeats_work: true` returns a concise `checkpoint` at a safe boundary or `continue` otherwise. These avoid automatic reconstruction of completed investigations; no extra tools are needed when the facts are known. Checkpoint means retain only useful changed findings, not introduce a logging routine.
-
-When comparable remaining-work costs are actually available, optional `transfer_cost` accepts:
-
-```json
-{
-  "basis": "estimated",
-  "source": "Labeled assessment of the same remaining requested work",
-  "unit": "tokens",
-  "scope": "remaining_requested_work",
-  "fresh": true,
-  "continue": 2000,
-  "handoff": 500,
-  "startup": 500,
-  "reconstruction": 1500,
-  "destination_work": 1000
-}
-```
-
-All costs are nonnegative integers in one unit: `tokens`, `milliseconds`, or `tool_calls`. Compare the same remaining work: `continue` covers finishing it here; a complete transfer total includes disjoint handoff, startup, reconstruction, and `destination_work` (actual remaining execution there). Optional `destination_work` must be an explicitly supplied nonnegative integer, including valid zero—not an unknown filled with zero. The returned `complete` flag is true only when supplied. Legacy objects without it remain accepted: their `transfer` is an overhead lower bound, not a full total. A lower bound at least as large as continuing can rule out benefit, but a smaller lower bound cannot establish benefit. `basis` is `measured` or `estimated` with a nonempty observation source; the helper validates declarations, not economic truth. Tokens are usage units, not billing amounts. Estimates are not savings measurements. Do not make an extra model call, inspect private logs, or invent telemetry to fill this object.
-
-A fresh total transfer cost at least as large as continuing suppresses optional below-critical location questions, including at requested phase or outcome boundaries. Known repeated-investigation reconstruction yields a concise checkpoint; unavailable essential context keeps work in place. Reuse supplied observations; do not estimate costs through extra calls, history scans or invented telemetry. These guards do not answer pending questions, override explicit location choices or veto critical continuation. Critical repeated-investigation/context-loss guards still apply: preserve needed findings before dispatch. Explicit new-chat choices bypass cost/repeated-work preferences, but not missing essential context, safe checkpoints, authorization or persistent stay constraints. Normalize conflicting preferences against the latest actual human instruction.
-
-Fresh complete comparable supplied costs with total transfer cost strictly less than continuing can also justify an early location recommendation in a verified project at a safe checkpoint, below numeric backstops. This uses the same remaining requested work, including handoff/startup/reconstruction/destination execution, not a vague goal label. Report the supplied basis (`estimated` or `measured`); an estimate is not measured savings. Before declaring a favorable estimate, account for uncertainty and warning/coordination overhead within the existing disjoint cost categories. A tiny nominal difference within estimation uncertainty is not a supported advantage: do not manufacture precision or populate favorable numbers to trigger a prompt. The helper validates declared observations, not their economic truth; no extra model call is warranted to fill gaps. The result is `ask_thread_choice` with reason `supplied_transfer_cost_beneficial`, not automatic transfer or a pressure notice. Occupancy remains independently measured/unknown. Missing essential destination context or known repeated investigation prevents this new question. Explicit requested boundaries, current human choices and pending answers retain precedence. Unknown, incomplete, stale or nonbeneficial costs do not establish early benefit.
-
-## Decision order
-
-1. Completed outcome with no requested next outcome/phase or explicit new-chat request: `complete`. No successor.
-2. Explicit disabled/persistent stay: `continue`. An explicit new-chat request needs no question and uses the existing transfer gates.
-3. Standalone work first honors a location choice belonging to the current request. Otherwise, a live unanswered location question remains pending; without one, standalone pressure preserves the existing concise-checkpoint fallback. Offer setup only when `project_setup_allowed: true` reflects useful permitted scope; a dismissed offer is not repeated. This grants no creation/move permission.
-4. Critical measured or concretely supported heuristic pressure: `rollover`/`defer` candidate, subject to context/readiness gates and suggest-only overrides. This takes precedence over a one-request stay or pending below-critical prompt; announce rather than ask. Missing essential context blocks dispatch.
-5. Below critical pressure, reuse an answer only if it belongs to the current request. A current stay continues this request; a new-chat choice prepares its handoff. Old request IDs expire their answers. After current answers and critical overrides, a still-pending location question waits regardless of changed pressure; only a known matching historical prompt ID or an explicit live pending flag establishes this.
-6. A qualifying long project chat with a new logical request: `ask_thread_choice` or `await_thread_choice` before dependent domain work; defer unsafe boundaries. Suppress any new optional below-critical question when essential destination context is unavailable (`continue`), supplied comparable fresh costs show no benefit (`continue`), or reconstruction repeats work (`checkpoint`), including new phases/outcomes. Earlier branches preserve pending choices, answers and critical policy. Recommendation strength does not escalate with stay count. Resolve unknown membership before offering a same-project destination.
-7. Otherwise a distinct requested outcome can prepare a transfer only for non-standalone work. Standalone outcomes continue quietly unless the user explicitly requested or chose a new thread. Fresh occupancy below review overrides pressure-only historical counters; it does not erase an independently justified structural/task boundary. Unresolved review-level pressure with unverified membership returns `review`, not permission to dispatch.
-8. Before otherwise continuing, a fresh complete supplied favorable comparison may recommend a location choice at a safe checkpoint for verified-project work without a new explicit phase/outcome; apply the context/reconstruction guards above. This is an economic recommendation, not a measured-pressure claim. Otherwise continue quietly. Complete outcomes do not produce idle prompts or invented successors.
-
-`project_mode` is `project`, `standalone`, or `unknown` (default). It describes verified membership, not a folder guess. `project_setup_allowed` defaults to false: standalone work needs no organization interview. When a project offer is useful and permitted, explicitly set it true; this permits an offer, not creation. `project_offer_dismissed` records the scoped decision and never implies prior consent. A completed task with no next work never generates an offer.
-
-For `review`, resolve the specific uncertain evidence or membership using available context and supported tools; then apply the per-request/critical policy. It is not authority to create a thread. Reuse facts instead of running the helper per tool call. Unchanged same-request assessments must not duplicate questions; a new qualifying request must not inherit a stale answer.
-
-At a safe checkpoint, `notice` requests a brief factual context explanation only when its level exceeds `last_notice_level`. It is independent of routing: a nonbeneficial move, a repeated-investigation checkpoint or a current-outcome stay can retain `continue`/`checkpoint` while a new notice remains useful. `notice_reason` identifies fresh occupancy or visible structural evidence separately from the routing reason. Without telemetry, substantial replaceable history supports a labeled qualitative notice, not a percentage. Fresh low occupancy overrides stale structural pressure after compaction. Record the level only after displaying; use an existing update or justified location question instead of a duplicate message. The notice never requires an answer, authorizes creation or starts monitoring. Task completion, persistent opt-outs, prior notices, unsafe checkpoints and standalone project offers produce no extra notice. `last_prompt_request_id` separately preserves a real pending location choice.
-
-Before rollover, verify management, capabilities, trusted scope, project association, accessible references, source recovery, and sufficient context. Critical pressure cannot excuse losing essential state or interrupting unsafe work; resolve that gap before dispatch. Estimated cost alone does not veto critical continuation. Preserve the source and supported fallback when gates fail. Thresholds never override explicit persistent opt-outs or host permissions.
-
-## Honest reporting
-
-Record why a transfer happened and whether the signal was measured or heuristic. The helper's ratio is current context occupancy, not percent of plan allowance and not percent of wasted tokens. Rollover can reduce carried context but can also increase total usage. Assess the total completed task, including handoff and startup work, before claiming a benefit.
+Research and comparison are recorded in the repository's context-management research document; the runtime skill has no dependency on that document.

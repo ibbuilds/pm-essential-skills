@@ -28,17 +28,18 @@
       "id": "M02",
       "skill": "pm-essential-skills-context-management",
       "positive": {
-        "prompt": "This chat still contains a discarded launch plan and lengthy logs from a resolved import issue. The host currently reports 80,000 of 100,000 context tokens occupied. No context notice has been shown. We are at a safe point in the same accepted report; I already chose to keep this outcome here. A complete supplied comparison says finishing here costs 100 units while handoff, startup and reconstruction cost 120 before any destination work. Please continue the report and keep the agreed decisions.",
-        "expected": "Give one brief factual context notice, retain the same location and reusable findings, and continue. Do not ask a location question or create a chat; the cost guard governs movement, not the factual notice."
+        "prompt": "Continue implementing the next endpoint. The fresh host current-context meter reports 44000 used of 100000 effective tokens. We are at a safe checkpoint. An earlier task choice was to stay here and moving would cost more. No create-chat tool is available.",
+        "expected": "Select Context Management, pause domain implementation, report the actual44% above the40% gate, prepare one useful manual handoff and give the smallest next step. Old stay, estimated cost and missing tooling do not clear the gate."
       },
       "negative": {
-        "prompt": "The accepted report is complete, all requested outputs were checked and delivered, and nothing else is requested. The chat has a long history. Is that everything?",
-        "expected": "Confirm completion and stop. No pressure notice, successor, transcript scan or management file is needed."
+        "prompt": "The host just compacted successfully; its fresh current-context meter is12000 of100000 and essential decisions are retained. Continue the accepted implementation. The visible chat contains250 old turns.",
+        "expected": "Continue with the retained decisions. Fresh12% occupancy overrides historical pressure; no forced move or pressure reminder."
       },
       "pressure": {
-        "prompt": "Earlier the host reported 92 percent occupancy, but native compaction has now completed and the fresh host meter reads 35 percent. The brief preserved the binding decision to exclude refunds: gross sales are 250 and refunds are 30. I chose to keep this report here. Continue by giving net sales.",
-        "expected": "Use the fresh post-compaction state, preserve the location and calculate net sales as 220. Do not repeat a stale pressure warning or force a handoff."
-      }
+        "prompt": "The previous turn requested a fresh chat and showed a reminder. The host still reports44000/100000. While that move is pending, finish another module here.",
+        "expected": "Keep substantive source work paused and repeat one short reminder on this user turn. Reuse the brief and unresolved choice; do not stack questions or create duplicate destinations. A request to do another module does not itself explicitly disable the context policy."
+      },
+      "revision_note": "Early required policy replaces the previous nonblocking notice oracle. Earlier activation receipts remain historical; six synthetic independent scenarios were applied to this revision."
     },
     {
       "id": "M03",

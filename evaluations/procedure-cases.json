@@ -13,7 +13,7 @@
       }
     },
     {
-      "case_id": "current_choice_reused",
+      "case_id": "current_choice_cannot_bypass_required_gate",
       "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
       "input_observations": {
         "project_mode": "project",
@@ -24,11 +24,13 @@
         "boundary_choice": "current-thread"
       },
       "expected_output_fields": {
-        "action": "continue"
+        "action": "rollover",
+        "domain_work_allowed": false,
+        "requires_transfer_checks": true
       }
     },
     {
-      "case_id": "expired_choice_new_request",
+      "case_id": "expired_choice_requires_fresh_context",
       "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
       "input_observations": {
         "project_mode": "project",
@@ -39,7 +41,9 @@
         "boundary_choice": "current-thread"
       },
       "expected_output_fields": {
-        "action": "ask_thread_choice"
+        "action": "rollover",
+        "domain_work_allowed": false,
+        "requires_transfer_checks": true
       }
     },
     {
@@ -69,7 +73,7 @@
         "safe_checkpoint": true,
         "context": {
           "kind": "current_context",
-          "used_tokens": 90,
+          "used_tokens": 40,
           "window_tokens": 100,
           "source": "synthetic audit meter",
           "fresh": true
@@ -77,7 +81,8 @@
         "boundary_choice": "current-thread"
       },
       "expected_output_fields": {
-        "action": "rollover"
+        "action": "rollover",
+        "domain_work_allowed": false
       }
     },
     {
@@ -121,7 +126,7 @@
       }
     },
     {
-      "case_id": "unknown_membership_not_dispatch",
+      "case_id": "unknown_membership_requires_transfer_checks",
       "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
       "input_observations": {
         "project_mode": "unknown",
@@ -129,25 +134,29 @@
         "substantial_history": true
       },
       "expected_output_fields": {
-        "action": "review"
+        "action": "rollover",
+        "domain_work_allowed": false,
+        "requires_transfer_checks": true
       }
     },
     {
-      "case_id": "standalone_pressure_no_setup",
+      "case_id": "standalone_pressure_requires_fresh_context",
       "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
       "input_observations": {
         "project_mode": "standalone",
         "safe_checkpoint": true,
         "context": {
           "kind": "current_context",
-          "used_tokens": 90,
+          "used_tokens": 44,
           "window_tokens": 100,
           "source": "synthetic audit meter",
           "fresh": true
         }
       },
       "expected_output_fields": {
-        "action": "checkpoint"
+        "action": "rollover",
+        "domain_work_allowed": false,
+        "requires_transfer_checks": true
       }
     },
     {
@@ -210,14 +219,14 @@
       }
     },
     {
-      "case_id": "costly_pressure_only_move_suppressed",
+      "case_id": "cost_cannot_suppress_required_pressure_gate",
       "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
       "input_observations": {
         "project_mode": "project",
         "safe_checkpoint": true,
         "context": {
           "kind": "current_context",
-          "used_tokens": 80,
+          "used_tokens": 44,
           "window_tokens": 100,
           "source": "synthetic audit meter",
           "fresh": true
@@ -236,7 +245,9 @@
         }
       },
       "expected_output_fields": {
-        "action": "continue"
+        "action": "rollover",
+        "domain_work_allowed": false,
+        "requires_transfer_checks": true
       }
     },
     {

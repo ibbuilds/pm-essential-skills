@@ -95,7 +95,7 @@ class IndependentResourceTests(unittest.TestCase):
         cases = {
             "pm-essential-skills-context-management": ("assess_context.py", {
                 "project_mode": "project", "safe_checkpoint": True,
-                "new_phase": True, "substantial_history": True}, "ask_thread_choice"),
+                "new_phase": True, "substantial_history": True}, "rollover"),
             "pm-essential-skills-source-selection": ("assess_source.py", {
                 "source_id": "fixture:requested-document", "content_available": False}, "fetch"),
         }

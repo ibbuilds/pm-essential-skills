@@ -15,7 +15,7 @@ import sys
 # These are routing hints, not copies of the skills' conditional procedures.
 PURPOSES = {
     "pm-essential-skills-task-coordination": "multi-step task intake, dependencies, and complete requested outcomes",
-    "pm-essential-skills-context-management": "conversation continuity and task boundaries",
+    "pm-essential-skills-context-management": "proactive context checks during ongoing work, early fresh-chat gates and continuity",
     "pm-essential-skills-resource-selection": "initial tool, skill, and supported model/agent choices",
     "pm-essential-skills-source-selection": "relevant evidence retrieval and reuse",
     "pm-essential-skills-execution-efficiency": "proportionate verification and evidence-driven recovery",
@@ -50,6 +50,9 @@ def render(home, skills, installation=False, brief=False):
             else:
                 lines.append(f"Use `{(home / 'skills' / name / 'SKILL.md').as_posix()}` for {PURPOSES[name]}.")
     lines.append(WORKFLOW_CONTRACT)
+    if "pm-essential-skills-context-management" in skills:
+        lines.append("During ongoing work, check current context before substantive steps; load context-management "
+                     "for its required early continuation gate and unresolved reminders. Never invent occupancy.")
     if brief:
         lines.append("Select only relevant skills/references, not the whole suite. Reuse loaded guidance; "
                      "honor disabled, suggest-only, stay, and user/project preferences.")

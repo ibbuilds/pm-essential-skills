@@ -15,7 +15,11 @@ Preserve current constraints, preferences, acceptance criteria, and decisions th
 
 ## Current artifacts and evidence
 
-List relevant paths or accessible document IDs and what is authoritative. Include verified results, incomplete changes, and any running operation that must be resolved before transfer. Avoid logs, credentials, and unrelated material. If an essential attachment cannot be accessed by the new thread, resolve that before automated transfer.
+List relevant paths or accessible document IDs and what is authoritative. Preserve current revision, uncommitted changes, active error, exact verification commands/results and evidence limits. Include verified results, incomplete changes, and any running operation that must be resolved before transfer. Avoid logs, credentials, and unrelated material. If an essential attachment cannot be accessed by the new thread, resolve that before automated transfer.
+
+## Suggested skills
+
+Name only enabled skills relevant to the next action, and why to load each through the host skill mechanism. Do not load the whole suite.
 
 ## Remaining work
 
