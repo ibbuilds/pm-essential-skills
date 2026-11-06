@@ -218,7 +218,7 @@ class PluginPackageTests(unittest.TestCase):
     def test_catalog_identity_is_consistent_and_has_no_alias_folders(self):
         expected = {"pm-essential-skills-" + suffix for suffix in (
             "task-coordination", "context-management", "resource-selection", "source-selection",
-            "execution-efficiency", "workflow-improvement", "concise-communication")}
+            "execution-efficiency", "workflow-improvement", "concise-communication", "workspace-hygiene")}
         self.assertEqual(set(NAMES), expected)
         self.assertEqual({p.name for p in (ROOT / "skills").iterdir() if p.is_dir()}, expected)
         for name in expected:

@@ -1,0 +1,6 @@
+interface:
+  display_name: "pm-essential-skills-workspace-hygiene"
+  short_description: "Bound generated files, backups and project storage"
+  default_prompt: "Use $pm-essential-skills-workspace-hygiene to inspect project growth and retire known temporary artifacts safely."
+policy:
+  allow_implicit_invocation: true

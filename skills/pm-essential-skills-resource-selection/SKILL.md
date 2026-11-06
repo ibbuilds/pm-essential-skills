@@ -1,6 +1,6 @@
 ---
 name: pm-essential-skills-resource-selection
-description: For complex or costly execution choices; skip routine work when current capabilities suffice. Choose tools, supported model or reasoning capabilities, and agents only when choices materially affect quality or cost.
+description: "Use when choosing tools, models or delegates materially changes task quality or cost, or the current approach lacks capability. Routine work needs no resource-selection ceremony."
 ---
 
 # PM Essential Skills / Resource Selection
@@ -8,6 +8,8 @@ description: For complex or costly execution choices; skip routine work when cur
 Choose the least costly reliable approach to the accepted task. Preserve explicit user choices, quality requirements, authorization, and higher-priority instructions. Routine answers and straightforward edits need no resource-selection ceremony.
 
 ## Choose an approach
+
+Select applicable installed skills by the actual task and observed risks, using their descriptions. Load the procedure before acting; use the host's native skill mechanism or read `SKILL.md` when file-based. Reuse loaded guidance and reconsider only when the work changes. No user invocation or full-suite load is required.
 
 Use existing deterministic tools for mechanical transformations, calculations, bulk processing, and reproducible outputs when they reduce error or effort; prefer suitable local paths over repeated model generation for costly bulk outputs. Do not transfer secrets to new services. Use direct model work when sufficient; do not wrap a simple answer in tools, agents, or planning.
 
@@ -18,8 +20,6 @@ Compare total expected accepted-task cost: setup, context duplication, coordinat
 Use exposed, supported capabilities to match ambiguity, consequence of error, and required quality. Retain stronger capability for difficult or high-risk judgment when reducing it could increase errors or rework. Do not automatically select maximum reasoning. Escalate on evidence of a capability gap, unresolved uncertainty affecting acceptance, or failed reasoning—not repeated unmodified attempts.
 
 Distinguish a recommendation from an executable switch. Change a model or effort only through an available, authorized mechanism; never silently downgrade, override an explicit choice, or invent a supported option. New credentials, paid services, or permission/configuration changes require their own explicit scope and applicable approvals; optimization alone grants none. If switching is unavailable, proceed with current capabilities when adequate; otherwise report the actual blocker and needed action without claiming a switch occurred.
-
-For necessary decisions with concrete alternatives, use the host's permitted selectable-input tool when available, with concise options and a justified recommendation. Use free text for open-ended facts or when no suitable tool is available. Accept clear written answers; defaults and timeouts are not consent. Permission escalations use their dedicated mechanism.
 
 ## Delegate only useful independence
 

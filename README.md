@@ -1,8 +1,8 @@
 # PM Essential Skills
 
-Seven independent skills for AI assistants: coordinate outcomes, preserve context,
+Eight independent skills for AI assistants: coordinate outcomes, preserve context,
 choose resources and evidence, execute efficiently, improve recurring workflows,
-and communicate clearly. Install any one or any subset as regular skills.
+communicate clearly, and keep generated files and backups bounded. Install any one or any subset as regular skills.
 
 See [workflow coverage](docs/workflow-coverage.md) for the source-to-owner map,
 including deliberate plan challenges ("grill me"), stakeholder questionnaires
@@ -36,7 +36,7 @@ prompt is required. Avoid duplicate copies of a skill in different discovery
 locations. Let the host reload its skills; an existing session may need restarting.
 
 The CLI and source ZIP install the current published `main`. The optional bundle
-manifest uses version **0.4.0**; no versioned release tag is implied. Installed
+manifest uses version **0.5.0**; no versioned release tag is implied. Installed
 copies need synchronization when the source changes. See the current
 [outcome contract and readiness](docs/v1-readiness.md) for implemented behavior
 and the evidence that supports it.
@@ -52,7 +52,7 @@ Already installed under a bare name or `ibbuilds-pm-*`? Follow the
 [migration guide](docs/skill-naming-migration.md) to preserve custom edits and
 disabled settings without duplicate copies.
 
-## The seven skills
+## The eight skills
 
 | Skill | Purpose |
 | --- | --- |
@@ -62,9 +62,10 @@ disabled settings without duplicate copies.
 | [Source Selection](skills/pm-essential-skills-source-selection/SKILL.md) | Gather sufficient evidence, check freshness, and reuse known sources. |
 | [Execution Efficiency](skills/pm-essential-skills-execution-efficiency/SKILL.md) | Match verification and recovery to the work and its risks. |
 | [Workflow Improvement](skills/pm-essential-skills-workflow-improvement/SKILL.md) | Address recurring friction with proportionate, authorized improvements. |
+| [Workspace Hygiene](skills/pm-essential-skills-workspace-hygiene/SKILL.md) | Prevent backup/artifact accumulation and inspect unexpected project growth during active work. |
 | [Concise Communication](skills/pm-essential-skills-concise-communication/SKILL.md) | Give clear, brief replies without losing required detail or uncertainty. |
 
-Each skill works independently; none requires the other six. Its behavior lives
+Each skill works independently; none requires the others. Its behavior lives
 inside its own folder, with conditional detail in references.
 
 ## Use normally
@@ -95,6 +96,8 @@ No skill is an idle background monitor. Local checks do not establish live
 integration success or measured savings. See [first-version readiness](docs/v1-readiness.md),
 [scope coverage](docs/pm-scope-coverage.md), [suite principles](docs/suite-principles.md),
 and [behavioral cases](tests/behavioral-cases.md) for deeper scope and evidence.
+
+See [contextual selection and workspace hygiene](docs/contextual-activation-and-hygiene.md) for the current changes, expert mechanisms and bounded forward exercises.
 
 ## Validation status
 
@@ -144,7 +147,7 @@ the notice; external projects cited in research keep their own licenses.
 
 ## Development and distribution
 
-The seven-skill tree is distributed from published `main`; the optional bundle manifest is **0.4.0**, without a versioned release tag. The [source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip) tracks published `main`. Generated individual archives below are local build outputs, not published downloads.
+The eight-skill tree is distributed from published `main`; the optional bundle manifest is **0.5.0**, without a versioned release tag. The [source ZIP](https://github.com/ibbuilds/pm-essential-skills/archive/refs/heads/main.zip) tracks published `main`. Generated individual archives below are local build outputs, not published downloads.
 
 Build the full-suite and individual downloads:
 

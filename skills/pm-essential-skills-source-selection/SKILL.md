@@ -1,6 +1,6 @@
 ---
 name: pm-essential-skills-source-selection
-description: Find sufficient evidence for retrieval-heavy tasks; skip retrieval when context already suffices. Reuse sources and bound reads without narrowing requested coverage.
+description: "Use when missing or stale facts require retrieval, searches span many sources, or tool output is large or truncated. Reuse sufficient evidence and complete requested coverage."
 ---
 
 # PM Essential Skills / Source Selection

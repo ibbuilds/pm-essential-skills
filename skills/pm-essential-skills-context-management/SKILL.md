@@ -1,6 +1,6 @@
 ---
 name: pm-essential-skills-context-management
-description: Preserve useful context and manage justified, authorized chat handoffs. Use at meaningful work boundaries or demonstrated context pressure; keep related work together.
+description: "Use when earlier decisions or task context must be recovered, useful context is under pressure, or a justified authorized chat handoff is needed. Keep related work together."
 ---
 
 # PM Essential Skills / Context Management

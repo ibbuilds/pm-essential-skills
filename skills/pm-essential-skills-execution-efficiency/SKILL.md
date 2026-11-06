@@ -1,13 +1,11 @@
 ---
 name: pm-essential-skills-execution-efficiency
-description: For implementation or repair, not simple answers or retrieval-only work. Calibrate verification and retries, especially repeated failed attempts or checks that no longer add evidence.
+description: "Use during implementation or repair to choose verification, recover from failed attempts, or stop repeated checks that add no evidence. Preserve required gates."
 ---
 
 # PM Essential Skills / Execution Efficiency
 
 Complete the requested change with sufficient evidence. This standalone skill requires no setup, helper calls, or tracking files. Repairs include documents and spreadsheets. Domain workflows own implementation and required checks; this skill calibrates repetition, not priorities or chat routing.
-
-For necessary decisions with concrete alternatives, use the host's permitted selectable-input tool when available, with concise options and a justified recommendation. Use free text for open-ended facts or when no suitable tool is available. Accept clear written answers; defaults and timeouts are not consent. Permission escalations use their dedicated mechanism.
 
 ## Choose the next action
 
