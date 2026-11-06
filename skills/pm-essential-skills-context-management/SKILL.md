@@ -1,6 +1,6 @@
 ---
 name: pm-essential-skills-context-management
-description: "Use proactively during ongoing multi-step work and at each substantive turn to keep context fresh: require a fresh-chat handoff at 40% current context, never wait beyond 50%; also use for long chats, lost decisions, context recovery and continuation with relevant images, videos or attachments."
+description: "Use proactively during ongoing multi-step work and at each substantive turn to keep context fresh: warn and prepare a handoff from 40% current context, require it at the 60% ceiling; also use for long chats, lost decisions, context recovery and continuation with relevant images, videos or attachments."
 ---
 
 # PM Essential Skills / Context Management
@@ -14,19 +14,19 @@ Before substantive work each turn, after a large tool-output batch, and before a
 | Current evidence | Required behavior |
 | --- | --- |
 | Fresh occupancy below 40% | Continue related work; reuse decisions and evidence. |
-| Fresh occupancy 40% to <50% | Require a fresh chat now. Pause substantive work at the next safe checkpoint; prepare the handoff. |
-| Fresh occupancy >=50% | Ceiling reached. Only stabilize an already-running unsafe operation, preserve state and complete the handoff. Never finish another feature here first. |
+| Fresh occupancy 40% to <60% | Warn and prepare a fresh-chat continuation. Current work may continue; do not treat this warning alone as a stop. |
+| Fresh occupancy >=60% | Ceiling reached. Only stabilize an already-running unsafe operation, preserve state and complete the handoff. Never finish another feature here first. |
 | No fresh telemetry | Label occupancy unknown. Use visible structural evidence or a conservative budget of 10 substantive user turns or 3 tool outputs >=8,000 characters in the current context segment to require a precautionary handoff. These are workflow limits, not equivalent percentages. |
 
 Assess an already-long chat immediately from visible evidence; do not wait for ten more turns. Repeated lost constraints, repeated reconstruction or substantial superseded history also justify intervention without a meter. A small answer needs no helper, scan or state file.
 
 ## Keep the change pending until resolved
 
-At the trigger, state the observed value and next action plainly: “Current context is 44%, above the 40% intervention limit. I am pausing implementation and preparing a fresh-chat continuation.” With unknown occupancy, say what was actually observed instead.
+At 40%, state the observed value and prepare early: “Current context is 44%. I am preparing a fresh-chat continuation before the 60% ceiling.” At 60%, announce the required pause. With unknown occupancy, state the actual evidence.
 
-While unresolved, repeat one short reminder on each subsequent user turn and keep substantive work paused. Reuse the pending choice and brief; do not stack questions, reminders within a turn, background polls or duplicate destinations. A previous notice, one-request stay, transfer cost or missing creation tool does not clear the gate. Explain transfer blockers and offer the smallest manual step. Do not silently resume implementation here.
+From 40%, remind once per subsequent user turn and prepare the brief without forcing a location choice. At 60% or a supported critical heuristic, pause substantive work. Honor actual pending choices and explicit handoffs. Avoid stacked questions, repeated in-turn reminders, polling or duplicate destinations. Prior notices, request-scoped stays, cost or missing tools cannot suppress warnings or clear the hard gate. Explain blockers and the manual fallback.
 
-Clear the gate only after a verified fresh destination, fresh post-compaction occupancy below 40% with essential decisions retained, or a later explicit human override (including persistent stay, disabled or suggest-only). Age of chat alone cannot veto successful compaction. Unknown telemetry cannot prove a reset.
+A verified fresh destination or effective compaction retaining essential decisions resets pressure. Fresh occupancy below 60% clears the hard gate; 40% to <60% keeps warnings; below 40% clears them. Honor later explicit stay, disabled or suggest-only preferences. Unknown telemetry cannot prove a reset.
 
 ## Preserve a useful continuation
 

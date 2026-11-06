@@ -73,7 +73,7 @@
         "safe_checkpoint": true,
         "context": {
           "kind": "current_context",
-          "used_tokens": 40,
+          "used_tokens": 60,
           "window_tokens": 100,
           "source": "synthetic audit meter",
           "fresh": true
@@ -147,7 +147,7 @@
         "safe_checkpoint": true,
         "context": {
           "kind": "current_context",
-          "used_tokens": 44,
+          "used_tokens": 60,
           "window_tokens": 100,
           "source": "synthetic audit meter",
           "fresh": true
@@ -219,7 +219,7 @@
       }
     },
     {
-      "case_id": "cost_cannot_suppress_required_pressure_gate",
+      "case_id": "cost_cannot_suppress_nonblocking_pressure_warning",
       "helper_path": "pm-essential-skills-context-management/scripts/assess_context.py",
       "input_observations": {
         "project_mode": "project",
@@ -245,9 +245,10 @@
         }
       },
       "expected_output_fields": {
-        "action": "rollover",
-        "domain_work_allowed": false,
-        "requires_transfer_checks": true
+        "action": "review",
+        "domain_work_allowed": true,
+        "requires_transfer_checks": false,
+        "notice": "review"
       }
     },
     {

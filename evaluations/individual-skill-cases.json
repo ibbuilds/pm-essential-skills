@@ -28,18 +28,18 @@
       "id": "M02",
       "skill": "pm-essential-skills-context-management",
       "positive": {
-        "prompt": "Continue implementing the next endpoint. The fresh host current-context meter reports 44000 used of 100000 effective tokens. We are at a safe checkpoint. An earlier task choice was to stay here and moving would cost more. No create-chat tool is available.",
-        "expected": "Select Context Management, pause domain implementation, report the actual44% above the40% gate, prepare one useful manual handoff and give the smallest next step. Old stay, estimated cost and missing tooling do not clear the gate."
+        "prompt": "Continue implementing the next endpoint. The fresh host current-context meter reports 62000 used of 100000 effective tokens. We are at a safe checkpoint. An earlier task choice was to stay here and moving would cost more. No create-chat tool is available.",
+        "expected": "Select Context Management, pause domain implementation, report the actual62% above the60% ceiling, prepare one useful manual handoff and give the smallest next step. Old stay, estimated cost and missing tooling do not clear the gate."
       },
       "negative": {
         "prompt": "The host just compacted successfully; its fresh current-context meter is12000 of100000 and essential decisions are retained. Continue the accepted implementation. The visible chat contains250 old turns.",
         "expected": "Continue with the retained decisions. Fresh12% occupancy overrides historical pressure; no forced move or pressure reminder."
       },
       "pressure": {
-        "prompt": "The previous turn requested a fresh chat and showed a reminder. The host still reports44000/100000. While that move is pending, finish another module here.",
+        "prompt": "The previous turn requested a fresh chat and showed a reminder. The host still reports62000/100000. While that move is pending, finish another module here.",
         "expected": "Keep substantive source work paused and repeat one short reminder on this user turn. Reuse the brief and unresolved choice; do not stack questions or create duplicate destinations. A request to do another module does not itself explicitly disable the context policy."
       },
-      "revision_note": "Early required policy replaces the previous nonblocking notice oracle. Earlier activation receipts remain historical; six synthetic independent scenarios were applied to this revision."
+      "revision_note": "Current policy warns/prepares at40% and pauses at60%. Prior activation receipts and six-scenario40/50 checks remain historical; they do not establish the current threshold behavior."
     },
     {
       "id": "M03",

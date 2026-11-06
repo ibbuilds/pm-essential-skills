@@ -22,7 +22,7 @@ The earlier comparison with [Pocock's handoff](https://github.com/mattpocock/ski
 
 ## Verification scope
 
-Focused preflight tests cover all-text gates passing with required media missing/false/unknown, available required media, irrelevant media, unknown relevance, explicit access failure, legacy text-only clients, and invalid truthy values. Existing transfer gates and the 40/50 intervention policy remain required. These tests validate declared readiness decisions, not actual retrieval or forwarding.
+Focused preflight tests cover all-text gates passing with required media missing/false/unknown, available required media, irrelevant media, unknown relevance, explicit access failure, legacy text-only clients, and invalid truthy values. Existing transfer gates and the current40% warning/60% ceiling policy remain required. These tests validate declared readiness decisions, not actual retrieval or forwarding.
 
 An isolated destination-agent check uses an original synthetic image on shared storage and the available image viewer, plus scenario checks for a missing recording needed for timing/audio, a history summary without original image access, unrelated media and an unreachable remote path. This is separate from native desktop chat creation/forwarding; no user chats or private media are used for the check.
 
