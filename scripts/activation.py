@@ -20,7 +20,7 @@ PURPOSES = {
     "pm-essential-skills-source-selection": "source expertise, evidence applicability, retrieval and valid reuse",
     "pm-essential-skills-execution-efficiency": "user-approved planning before execution, proportionate verification and evidence-driven recovery",
     "pm-essential-skills-workflow-improvement": "diagnosing recurring friction, scoped workflow changes and validation",
-    "pm-essential-skills-workspace-hygiene": "generated files, backups, temporary artifacts and unexpected project-storage growth",
+    "pm-essential-skills-workspace-hygiene": "artifact lifecycle, justified recovery copies, cleanup and project-storage growth",
     "pm-essential-skills-concise-communication": "clear, brief plain-language replies without losing required substance",
 }
 NAMES = tuple(PURPOSES)

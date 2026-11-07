@@ -1,6 +1,6 @@
 interface:
   display_name: "pm-essential-skills-workspace-hygiene"
-  short_description: "Bound generated files, backups and project storage"
-  default_prompt: "Use $pm-essential-skills-workspace-hygiene to inspect project growth and retire known temporary artifacts safely."
+  short_description: "Prevent backup growth and retire unneeded artifacts"
+  default_prompt: "Use $pm-essential-skills-workspace-hygiene to prevent unnecessary copies, verify recovery needs and retire dispensable task artifacts while preserving useful work."
 policy:
   allow_implicit_invocation: true

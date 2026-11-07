@@ -1,30 +1,36 @@
 ---
 name: pm-essential-skills-workspace-hygiene
-description: Use when work creates backups, captures, exports or temporary artifacts, when project storage grows unexpectedly, or when completed work leaves generated files to retire.
+description: "Use during work that creates backups, captures, exports or temporary artifacts, when storage grows unexpectedly, or when retiring superseded files. Small edits generating no files need no scan."
 ---
 
 # PM Essential Skills / Workspace Hygiene
 
-Keep useful deliverables and recovery material while bounding the files produced by agent work. Apply during the active task without waiting for a cleanup request. This skill works independently and installs no monitor or schedule.
+Keep the workspace limited to useful work, deliverables and justified recovery material. Prevent accumulation during the active task instead of waiting for a cleanup request. This skill installs no monitor or schedule.
 
-## Prevent accumulation
+## Prevent unnecessary copies
 
-Use the project's established scratch/output directories. Give each temporary artifact an owner and a purpose; reuse a suitable existing result instead of creating another copy. A small edit producing no temporary artifacts needs no inventory, helper or cleanup report.
+Use established scratch/output directories. Give generated material a purpose, owner and retirement condition; reuse a suitable existing result. As iterations succeed, retire superseded task-owned intermediates after their replacement is verified and consumers no longer need them. Preserve requested variants and needed source material. No artifact manifest is required by default.
 
-Before a bulk download, capture, export or backup, identify the destination and expected growth against any known storage or retention limit. If the operation cannot fit, reduce an authorized batch or pause that generation; unrelated material is not disposable capacity. Keep scratch separate from deliverables. Prefer version control or a scoped recovery copy for the changed material when adequate. A full-project backup needs a concrete recovery reason, bounded contents and a retirement condition. Put it outside the source being copied; exclude earlier backups, dependencies and reproducible outputs unless recovery specifically needs them. A backup must never contain itself or multiply previous backups.
+Prefer existing version control for recoverable versioned work. Check that it actually contains the needed content before relying on it: a repository does not preserve every uncommitted, untracked or ignored file. Do not create a full-project backup before ordinary edits or commit/stash user changes merely to make cleanup possible. A scoped copy is justified only for a real recovery gap within authority.
 
-## Inspect an actual growth risk
+Before bulk capture, export, download or backup, identify destination, expected growth and any known capacity/retention limit. Use permitted batches and retire verified intermediates when needed to fit; otherwise pause that generation. Unrelated material is not disposable capacity. Do not invent universal size or age limits.
 
-For bulk or uncertain growth, unexpected growth, and after a bulk operation, reuse current size evidence or inspect the relevant destination once with bounded scope. A single small output with known size and destination needs no project inventory. Broaden only when unexplained growth or the requested storage question requires it; recheck only changed areas while evidence remains applicable. Do not rescan the whole project every turn.
+A full-project backup needs a concrete recovery reason, bounded contents and a retirement condition. Place it outside its source; exclude earlier backups, dependencies and reproducible output unless recovery specifically requires them. Never nest a backup in itself or multiply prior backups.
 
-Use native filesystem tools, or run `python scripts/inventory_workspace.py PROJECT --top 10` from this skill's folder. On Windows a supported launcher such as `py -3.11` can replace `python`. The standard-library helper reads directory metadata only, skips observed links/reparse points, writes nothing and never deletes files. Concurrent tree changes can invalidate this non-atomic inventory. It reports logical file bytes, not physical allocation or guaranteed reclaimable space. Exit 1 means incomplete coverage; inspect `limits`, `error_count` and `skipped_links` before claiming a full inventory. Adjust `--max-entries` or `--max-seconds` only when the missing coverage matters.
+## Inspect the relevant growth
 
-Identify which large paths belong to current work, retained recovery, user data, dependencies or unknown owners. Names, age, size, Git ignore status and apparent duplicates are clues, not deletion authority. Preserve `.git`, user edits, databases, credentials, source assets and active work unless their specific removal is authorized. A partial scan cannot establish that the rest is clean.
+Reuse current size evidence or inspect the affected destination for bulk/uncertain growth, unexpected growth and after bulk work. Broaden only for unresolved growth or the requested coverage; recheck changed areas while evidence remains applicable. A single small output of known size needs no project inventory or cleanup report.
 
-## Retire known temporary work
+Use native tools or the optional read-only helper: `python scripts/inventory_workspace.py PROJECT --top 10` from this skill's folder; on Windows, `py -3.11` can replace `python`. It skips observed links/reparse points, writes nothing and never deletes files. It reports logical bytes, not guaranteed reclaimable disk space. Exit 1 means incomplete coverage; inspect limits, errors and skipped links before claiming completeness.
 
-Remove task-owned, regenerable scratch when it is no longer needed and cleanup is within existing authority. Reuse explicit project retention/count/size limits; do not invent a universal expiry or silently discard a needed recovery point. Unknown or shared candidates remain intact with a concise explanation of their size and uncertainty. Ask only for the specific unresolved destructive choice when necessary, while continuing safe work.
+Classify candidates by current use, ownership and recoverability: active work, required deliverables/recovery, unique user data, reproducible artifacts/caches or uncertain legacy material. Names, age, size, ignore rules and apparent duplicates do not establish deletion safety. Ignoring a directory does not free its disk space.
 
-Before removal, resolve each exact target inside the intended workspace and check for links, junctions and concurrent changes. Use native literal-path operations; never run a broad wildcard wipe, `git clean`, or a shell pipeline that reconstructs deletion commands. Moving files into another folder on the same disk does not reclaim space.
+Check consumers and supported versions before treating legacy material as obsolete. Retiring product functionality requires its own accepted scope, not a storage-cleanup shortcut. Preserve `.git`, user edits, databases, credentials, source assets and active/shared work unless their specific removal is authorized. Read [recovery and retention](references/recovery-and-retention.md) when recovery, legacy use or inventory limits are uncertain.
 
-After cleanup, verify the selected paths and required deliverables/recovery material. Report material growth, what was retained/removed, measured bytes where available and remaining uncertain candidates. Stop when the task's generated material has a useful destination and lifecycle; a clean project may need no action.
+## Retire what is demonstrably dispensable
+
+Remove unneeded task-owned, regenerable scratch within existing authority, during work and at completion. Reuse explicit retention requirements and preserve still-needed recovery points. Consider regeneration needs before clearing useful caches or dependencies; do not clear them reflexively. Keep unknown/shared candidates intact, explain the specific uncertainty and ask only the necessary destructive choice while continuing safe work.
+
+Before removal, resolve each exact target inside the intended workspace or explicitly authorized destination; check links, junctions and concurrent changes. Use native literal-path operations. Never use a broad wildcard wipe, `git clean`, or a shell pipeline that reconstructs deletion commands. Relocating material on the same volume does not reclaim its storage.
+
+Verify selected removals and surviving deliverables, source and recovery material. Report material growth, removals/retentions, measured logical bytes when available and remaining coverage/ownership limits. Do not label partial coverage a clean workspace or logical totals physical space recovered. Stop when retained material has a justified purpose and lifecycle.
