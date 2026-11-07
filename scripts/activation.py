@@ -35,6 +35,14 @@ WORKFLOW_CONTRACT = (
     "Preserve each skill's no-op paths and optional methods."
 )
 
+INSTRUCTION_EDIT_CONTRACT = (
+    "Read agent-governing files normally. Create, edit, rename or delete AGENTS.md, CLAUDE.md, SKILL.md "
+    "or other agent-rule files only when the user explicitly requests that instruction change or personally "
+    "approves a concrete proposal. General optimization requests, silence, model notes and automatic tool "
+    "approval grant no such authority. Before unrequested changes, show affected files, proposed changes, "
+    "purpose and impact, then wait for the human; continue unaffected work."
+)
+
 
 def render(home, skills, installation=False, brief=False):
     lines = ["## PM Essential Skills"]
@@ -50,6 +58,7 @@ def render(home, skills, installation=False, brief=False):
             else:
                 lines.append(f"Use `{(home / 'skills' / name / 'SKILL.md').as_posix()}` for {PURPOSES[name]}.")
     lines.append(WORKFLOW_CONTRACT)
+    lines.append(INSTRUCTION_EDIT_CONTRACT)
     if "pm-essential-skills-execution-efficiency" in skills:
         lines.append("Before executing changes, load execution-efficiency to establish or reuse a concrete "
                      "user-approved plan; follow its approval and verification procedure.")

@@ -37,6 +37,7 @@ class ActivationTests(unittest.TestCase):
             self.assertEqual(install_suite.load_receipt(home)["defaults"], result["defaults"])
             self.assertTrue((home / "skills" / name / "SKILL.md").is_file())
             rule = (home / "AGENTS.md").read_text()
+            self.assertEqual(rule.count(activation.INSTRUCTION_EDIT_CONTRACT), 1)
             self.assertIn(f"/{name}/SKILL.md", rule)
             for other in set(install_suite.SKILLS) - {name}:
                 self.assertFalse((home / "skills" / other).exists())
@@ -55,9 +56,11 @@ class ActivationTests(unittest.TestCase):
         install_suite.install(self.home, None, selected, with_hooks=True)
         rule = (self.home / "AGENTS.md").read_text()
         self.assertEqual(rule.count(activation.WORKFLOW_CONTRACT), 1)
+        self.assertEqual(rule.count(activation.INSTRUCTION_EDIT_CONTRACT), 1)
         for event in ("SessionStart", "UserPromptSubmit"):
             context = activation.handle({"hook_event_name": event}, self.home)["hookSpecificOutput"]["additionalContext"]
             self.assertEqual(context.count(activation.WORKFLOW_CONTRACT), 1)
+            self.assertEqual(context.count(activation.INSTRUCTION_EDIT_CONTRACT), 1)
             self.assertIn("disabled", context)
             self.assertIn("suggest-only", context)
             self.assertIn("stay", context)
