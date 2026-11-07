@@ -14,7 +14,7 @@ import sys
 # The shared selection catalog lives in the already-bundled standalone helper.
 # These are routing hints, not copies of the skills' conditional procedures.
 PURPOSES = {
-    "pm-essential-skills-task-coordination": "multi-step task intake, dependencies, and complete requested outcomes",
+    "pm-essential-skills-task-coordination": "dependency ordering, shared work, integration and complete requested outcomes",
     "pm-essential-skills-context-management": "proactive context checks during ongoing work, early fresh-chat gates and continuity",
     "pm-essential-skills-resource-selection": "tool, skill, and supported model/agent choices and capability gaps",
     "pm-essential-skills-source-selection": "source expertise, evidence applicability, retrieval and valid reuse",

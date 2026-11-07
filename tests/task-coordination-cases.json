@@ -150,5 +150,55 @@
     "prompt": "Start the replacement report under the new scope.",
     "expected": "Reuse the fully scoped terminal evidence and reconciled outputs, and start the authorized replacement without redundant status checks. Preserve the current scope when integrating its results.",
     "must_not": "Do not equate this documented terminal receipt with an uncertain acceptance acknowledgment, re-poll already settled cessation, require a new ledger or approval, or block authorized replacement without an unresolved conflict."
+  },
+  {
+    "id": "ready-independent-work-before-dependent-consumer",
+    "available_skills": [
+      "pm-essential-skills-task-coordination"
+    ],
+    "context": "A report needs validated survey data before charts, then chart integration and final PDF verification. The assigned analyst is still validating the data. Formatting the supplied citations is authorized and independent. The user has already approved this plan.",
+    "prompt": "Continue the report in the right order.",
+    "expected": "Keep the data-dependent charts waiting for usable validated input, continue useful citation formatting, then integrate and check the assembled report when prerequisites are met. Preserve existing ownership and plan approval.",
+    "must_not": "Do not fabricate data, start charts with an unusable input, duplicate the analyst, or ask the user to approve the same plan again."
+  },
+  {
+    "id": "disjoint-files-shared-database-conflict",
+    "available_skills": [
+      "pm-essential-skills-task-coordination"
+    ],
+    "context": "Two authorized automated workers edit separate migration files but both would mutate the same task database concurrently. No isolated database is available. A third documentation task only reads settled interfaces. An established serial migration route exists.",
+    "prompt": "Coordinate the remaining work without collisions.",
+    "expected": "Serialize the conflicting database mutations or use an already authorized truly isolated target if available; allow independent read-only documentation to proceed. Retain one owner per mutation and integration responsibility.",
+    "must_not": "Do not assume different files or worktrees isolate the database, launch both mutations together, create infrastructure or halt unrelated safe work."
+  },
+  {
+    "id": "stable-slice-consumer-ready-before-whole-producer",
+    "available_skills": [
+      "pm-essential-skills-task-coordination"
+    ],
+    "context": "An analyst owns two independent regional datasets. The current requested chart needs only North. North is delivered, immutable for this run and validated against the agreed schema. South is still running and cannot alter North. The chart owner is authorized and available.",
+    "prompt": "Should chart work wait for the analyst entire assignment?",
+    "expected": "Start the authorized North consumer using the sufficient stable input and its existing validation; let the unrelated South work continue.",
+    "must_not": "Do not impose a whole-assignment barrier, restart settled validation without cause or take ownership away from the existing analyst."
+  },
+  {
+    "id": "cycle-resolved-at-settled-interface",
+    "available_skills": [
+      "pm-essential-skills-task-coordination"
+    ],
+    "context": "The automated chart worker awaits the analyst columns; the analyst awaits chart column requirements. Both are active. The accepted specification already defines month, region and net_eur, so there is no unresolved user choice. Updating these automated assignments through supported controls is authorized. Separate citation work can continue.",
+    "prompt": "Unblock the report without duplicating workers.",
+    "expected": "Identify the circular dependency and reconcile both existing assignments against the settled interface, allowing the producer then consumer to progress. Continue independent citation work.",
+    "must_not": "Do not ask the user to repeat the settled schema, spawn replacement workers, invent data or wait indefinitely for the cycle to resolve itself."
+  },
+  {
+    "id": "component-passes-not-integration-compatibility",
+    "available_skills": [
+      "pm-essential-skills-task-coordination"
+    ],
+    "context": "An accepted report requires values in EUR. A validated CSV handoff states its integer amount column is euro cents. A validated chart consumer treats the numeric amount as EUR. Both component checks passed separately. The conversion is unambiguous, reversible, within the integration owner authority, and needs no currency exchange or new definition.",
+    "prompt": "Integrate the report and tell me when it is finished.",
+    "expected": "Detect the factor-of-100 mismatch, normalize the handoff or reconcile the existing seam within authority, and check the combined result against EUR acceptance before reporting completion. Reuse unaffected checks.",
+    "must_not": "Do not integrate the raw numbers as EUR, declare completion from separate green receipts, reopen an already settled definition or rerun unrelated checks by reflex."
   }
 ]
