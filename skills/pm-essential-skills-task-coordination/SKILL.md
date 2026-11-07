@@ -1,46 +1,50 @@
 ---
 name: pm-essential-skills-task-coordination
-description: "Use for multi-step outcomes, dependencies, delegated work or pending operations; also for requested plan challenges and stakeholder questionnaires. Act directly on trivial clear tasks."
+description: "Use for multi-step outcomes, dependency ordering, concurrent work, integration or pending operations; also for requested plan challenges and stakeholder questionnaires. Act directly on trivial clear tasks."
 ---
 
 # PM Essential Skills / Task Coordination
 
-## Select relevant procedures
-
-Match available skill descriptions to the task and observed risks. Load applicable procedures through the host mechanism or read `SKILL.md`; reuse loaded guidance. Reconsider when scope, failures or generated-file growth change. Select relevant owners without asking for skill names or creating a checklist.
+Carry the accepted task through usable results and real completion. Straightforward work needs no tracker, delegation or setup.
 
 ## Establish the outcome
 
-Reuse settled goals, decisions, constraints and context. Define completion against all accepted scope, including outstanding original requirements and applicable skill obligations. Keep agreed scope changes explicit. Optional methods remain optional; do not load every skill.
+Reuse settled goals, scope, constraints, decisions, completion requirements and outstanding obligations. Select applicable installed procedures from their descriptions; load them before acting and reuse loaded guidance. Do not load the whole suite.
 
-Infer reversible details. Ask only material unresolved decisions affecting outcome, authority or rework. For concrete alternatives, use permitted selectable input when available, with a recommendation; otherwise ask plainly. Accept clear written answers. Continue independent work; do not gate authorized work. Permission escalations use dedicated mechanisms.
+Infer reversible details. Ask only consequential unresolved choices about outcome, authority or rework. Use permitted selectable input for concrete alternatives with a supported recommendation; accept clear written answers. Continue independent authorized work. Permission escalations use dedicated mechanisms.
 
-For a requested plan challenge, decision interview or stakeholder questionnaire, use [decision interviews](references/decision-interviews.md). An accepted plan can still be deliberately challenged; ordinary clear execution needs no interview.
+Honor required plan validation before execution; reuse an applicable approved plan or concrete user-provided steps without asking for each action. Read-only answers need no implementation plan.
 
-## Coordinate only what helps
+Use [decision interviews](references/decision-interviews.md) for requested challenges, interviews or questionnaires, including challenges to an accepted plan; ordinary execution needs no interview.
 
-For trivial clear tasks, reuse concrete user-provided steps or an applicable approved plan without trackers or setup. Honor required plan validation before execution; reuse valid approval instead of asking for each step. Read-only answers need no implementation plan. Otherwise identify useful next steps, dependencies, owners, and completion evidence in current context or existing trackers; no default project-management files.
+## Order work by real dependencies
 
-Delegate separable outcomes only when useful. Check assignments before spawning; preserve one active writer per outcome without duplicate workers or overlapping edits. Specify to each owner goals, boundaries, inputs, deliverables, and dependencies. Handoffs identify completed/remaining work and next owners; retain integration responsibility. Carry outstanding skill obligations and owner/status, pending decisions, and exception scope in existing context/handoffs. Reuse applicable satisfied evidence; no separate ledger.
+For a multi-step outcome, identify the useful steps, required inputs, deliverables, owners and completion evidence in current context or an existing tracker. Keep the breakdown proportional; do not manufacture tasks or project-management files.
 
-Start delegated follow-ups through the host's admission/resume mechanism. Notification-only messages may not start work; admission does not prove completion.
+Start a step only when its necessary inputs are available and usable, its authorization is established and its shared resources are safe to use. A predecessor marked complete is insufficient if its result cannot support the consumer. Prioritize work that unblocks the accepted outcome within user priorities and constraints; avoid busywork while a critical dependency remains unresolved.
 
-Before integration, check deliverables against downstream needs and reuse applicable validation. Resolve material mismatches with their owner; preserve user-owned decisions.
+Parallelize only genuinely independent ready work. Different files, agents or worktrees do not prove isolation from shared data, environments, live documents or external effects. Use existing isolation or serialize conflicting writes. If no step is ready, inspect the actual missing prerequisite, ownership conflict or dependency cycle rather than spawning more workers. Read [dependencies and integration](references/dependencies-and-integration.md) when readiness, shared state or handoffs need closer judgment.
 
-## Adapt to material changes
+## Preserve ownership and integrate
 
-When a material requirement, deadline, budget, capacity, or dependency changes, reassess whether the accepted outcome is still achievable and which commitments are affected. Respect user priorities and reorder only authorized work; avoid work made obsolete by the change. If requirements conflict, present a concrete tradeoff and its consequences for the necessary decision while continuing unaffected work. Do not silently drop scope, lower required quality, or exceed limits. Label uncertain estimates. Harmless changes need no ceremony.
+Check existing assignments before delegating. Delegate only useful separable outcomes within authority, with one accountable owner per outcome and no overlapping writers. Supply goals, inputs, boundaries, deliverables, dependencies and acceptance criteria; retain integration responsibility.
 
-When changing or cancelling delegated work, follow [delegate reconciliation](references/delegated-work.md) before conflicting replacement or integration. Continue unaffected work.
+Start delegated follow-ups through the host's admission/resume mechanism; notification-only messages may not start work, and admission is not completion. Handoffs carry current scope, remaining obligations, owner/status, decisions, exception scope and applicable evidence without a separate ledger.
 
-## Keep work moving
+Check returned artifacts against downstream needs and current scope before integration. Resolve mismatches with the existing owner; preserve user-owned decisions. Check the assembled result at its relevant boundary, reusing applicable verification rather than treating separate completion receipts as proof of compatibility.
 
-Distinguish real blockers from uncertainty that can be resolved safely. For a blocker, state the exact action and target, reason, completed work, and current status; request the specific missing input or authority. Respect denials rather than routing around them. Continue independent authorized work.
+## Adapt without losing commitments
 
-Own active operations through their terminal result or the user's stopping condition. Pending or unchanged status and arbitrary polling limits are not completion. Pause dependent work requiring user input or authorization. Keep obligations active until satisfied or explicitly changed within user authority. A genuine blocker pauses dependent work but leaves the obligation outstanding, not passed. Preserve explicit persistent opt-outs. A one-request exception expires with that request, not its clarifications. Do not repeat a pending question within the request; silence or repeated prompts never grant permission or override refusal.
+When requirements, deadlines, capacity, budget or dependencies materially change, reassess affected commitments and readiness. Reorder only authorized work, notify affected owners and avoid obsolete work. Surface concrete tradeoffs when the accepted outcome no longer fits; do not silently drop scope, lower quality or exceed limits. Label uncertain estimates. Harmless changes need no ceremony.
 
-## Close the actual loop
+For changed or cancelled assignments, follow [delegate reconciliation](references/delegated-work.md) before conflicting replacement or integration. Continue unaffected work.
 
-Compare delivered results with every accepted requirement and applicable skill obligation. Report the artifact or outcome, relevant evidence, material risks, and remaining gaps. A passing test, draft, or opened PR is insufficient when the accepted goal includes more. Once the goal is met, stop rather than inventing endless optional work.
+## Keep work moving and finish
 
-Context-management owns chat transfer; execution-efficiency owns verification/recovery. Neither is an automatic dependency. This skill prescribes no apps, services, Git policy or models.
+For a real blocker, state the exact action/target, cause, current status and specific missing input or authority. Respect denials; continue independent authorized work.
+
+Own active operations through their terminal result or the user's stopping condition. Pending status or arbitrary polling limits are not completion. A blocker leaves dependent obligations outstanding. Preserve persistent opt-outs; a one-request exception expires with that request, not its clarifications. Do not repeat pending questions; silence grants no permission.
+
+Compare the delivered result with every accepted requirement and applicable obligation. Report the outcome, useful evidence and material gaps. A draft, passing test or opened PR is insufficient when more was requested. Stop when the accepted outcome and required gates are met.
+
+Context-management owns chat routing; execution-efficiency owns verification/recovery. Neither is an automatic dependency. This skill prescribes no apps, services, Git policy or models.
