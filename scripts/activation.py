@@ -17,7 +17,7 @@ PURPOSES = {
     "pm-essential-skills-task-coordination": "multi-step task intake, dependencies, and complete requested outcomes",
     "pm-essential-skills-context-management": "proactive context checks during ongoing work, early fresh-chat gates and continuity",
     "pm-essential-skills-resource-selection": "tool, skill, and supported model/agent choices and capability gaps",
-    "pm-essential-skills-source-selection": "relevant evidence retrieval and reuse",
+    "pm-essential-skills-source-selection": "source expertise, evidence applicability, retrieval and valid reuse",
     "pm-essential-skills-execution-efficiency": "user-approved planning before execution, proportionate verification and evidence-driven recovery",
     "pm-essential-skills-workflow-improvement": "recurring friction, reusable lessons, and authorized workflow changes",
     "pm-essential-skills-workspace-hygiene": "generated files, backups, temporary artifacts and unexpected project-storage growth",
