@@ -78,8 +78,8 @@
       "id": "M05",
       "skill": "pm-essential-skills-source-selection",
       "positive": {
-        "prompt": "A test run exited 2. Its complete existing log is available by run ID R17. A filter printed zero ERROR lines and exited 0. The relevant raw diagnostic says \"test database unavailable\". Explain whether the tests passed and the next useful action; starting the disposable test database is authorized.",
-        "expected": "The producer failed, so tests did not pass. Use the raw prerequisite diagnostic, start the authorized disposable database and rerun the required affected check; preserve R17 rather than trusting filter status."
+        "prompt": "This project installs library v2. Its supplied official v2 specification and matching implementation show three total attempts. A famous engineer's v3 tutorial says five; an anonymous high-ranking search result says ten. Which evidence establishes this project's behavior, and what is the answer?",
+        "expected": "Answer three total attempts from the applicable supplied v2 specification and implementation. Explain the version mismatch where useful; do not use popularity, search rank or recency as proof, or fetch evidence already sufficiently supplied."
       },
       "negative": {
         "prompt": "The immutable April policy is fully supplied here: refunds must be excluded from net sales. Gross sales are 150 and refunds are 20. No current-policy lookup is requested. What is net sales under that policy?",
