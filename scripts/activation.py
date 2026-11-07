@@ -19,7 +19,7 @@ PURPOSES = {
     "pm-essential-skills-resource-selection": "tool, skill, and supported model/agent choices and capability gaps",
     "pm-essential-skills-source-selection": "source expertise, evidence applicability, retrieval and valid reuse",
     "pm-essential-skills-execution-efficiency": "user-approved planning before execution, proportionate verification and evidence-driven recovery",
-    "pm-essential-skills-workflow-improvement": "recurring friction, reusable lessons, and authorized workflow changes",
+    "pm-essential-skills-workflow-improvement": "diagnosing recurring friction, scoped workflow changes and validation",
     "pm-essential-skills-workspace-hygiene": "generated files, backups, temporary artifacts and unexpected project-storage growth",
     "pm-essential-skills-concise-communication": "clear, brief plain-language replies without losing required substance",
 }
