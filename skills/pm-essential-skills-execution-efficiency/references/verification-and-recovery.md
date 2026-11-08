@@ -1,5 +1,31 @@
 # Verification and recovery examples
 
+## Instruction fidelity
+
+Recover the user's actual instruction, target, accepted constraints and requested
+delta before changing the result. An agent's inferred preference is not an extra
+requirement. Scope follows the requested effect, not a license to touch everything
+nearby. Necessary implementation mechanics can proceed inside accepted behavior;
+they do not authorize adjacent improvements or a different product/design outcome.
+
+If the target or meaning has plausible interpretations that change the result,
+ask a focused question before dependent edits: “Do you mean moving X to Y while
+keeping Z unchanged?” Offer concrete choices when useful and let the user state
+a different interpretation. Research accessible facts first. A clear answer
+settles that uncertainty; do not require confirmation of every mechanical step.
+Clear instructions need execution, not a ritual interpretation question.
+
+If a requested move naturally reflows another element, perform the requested
+move without redesigning the neighboring element to restore the agent's preferred
+appearance. Report a material resulting effect; do not silently compensate for it.
+If an observed consequence prevents the requested result or conflicts with an
+existing binding obligation, explain that specific conflict and ask only for the
+missing decision. Do not invent a fix or treat ordinary reflow as permission to
+broaden the task. Explicitly authorized broader redesign remains valid scope.
+
+Before claiming completion, compare the actual result and diff with the user's
+requested delta. Remove unsolicited changes and verify the relevant effect.
+
 ## Validate the path before action
 
 | Situation | Action |

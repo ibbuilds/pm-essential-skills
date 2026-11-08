@@ -140,7 +140,7 @@ def assess(observation: Any) -> dict:
     finished = (obs.get("completed", False) and not any(obs.get(k, False) for k in
                 ("new_outcome", "new_phase", "user_requested_new_thread")))
     disabled = obs.get("management_disabled", False) or settings["mode"] in ("stay", "suggest-only")
-    # These are conservative workflow budgets, NOT estimates of occupancy.
+    # These trigger cheap reassessment, never a forced handoff by count alone.
     # Counters must describe the current context segment, reset after compaction.
     early_proxy = any(obs.get(k) is not None and obs[k] >= limit for k, limit in
                       (("substantive_turns", 10), ("large_outputs", 3)))
@@ -148,8 +148,10 @@ def assess(observation: Any) -> dict:
                   or (obs.get("admission_check", False) and evidence_count >= 2))
     pressure = (ratio >= settings["review_ratio"] if ratio is not None
                 else early_proxy or structural)
-    if (settings["enforcement"] == "required" and ratio is not None
-            and settings["review_ratio"] <= ratio < settings["rollover_ratio"]
+    supported_unknown = ratio is None and obs.get("critical_history", False) and evidence_count >= 2
+    warning = (settings["review_ratio"] <= ratio < settings["rollover_ratio"] if ratio is not None
+               else pressure and not supported_unknown)
+    if (settings["enforcement"] == "required" and warning
             and not finished and not disabled):
         # Warn and prepare early; the context gate alone does not stop work yet.
         # Preserve an actual pending choice or explicit destination instruction.
@@ -159,23 +161,25 @@ def assess(observation: Any) -> dict:
         pending = (obs.get("choice_pending", False) or
                    obs.get("request_id") is not None and
                    obs.get("last_prompt_request_id") == obs["request_id"])
+        reason = "context_warning_prepare_handoff" if ratio is not None else "unmeasured_context_reassessment"
         result = _assess_advisory(obs) if explicit_new or pending else {
-            "action": "review", "reason": "context_warning_prepare_handoff",
+            "action": "review", "reason": reason,
             "requires_transfer_checks": False}
         allowed = result["action"] not in {"rollover", "defer", "blocked_transfer",
                                           "await_thread_choice", "ask_thread_choice"}
-        result.update(measurement="measured", context_ratio=ratio,
+        needs_notice = ratio is not None or evidence_count >= 2
+        result.update(measurement="measured" if ratio is not None else "unknown", context_ratio=ratio,
                       obsolete_evidence_count=evidence_count, domain_work_allowed=allowed,
-                      allowed_work="continue_and_prepare_handoff" if allowed else "resolve_existing_choice_or_handoff",
-                      notice="review" if obs.get("safe_checkpoint", False) else "none",
-                      notice_reason="context_warning_prepare_handoff",
-                      remind="each_user_turn_until_resolved", ceiling_ratio=settings["rollover_ratio"])
+                      allowed_work=("continue_and_prepare_handoff" if needs_notice else "continue_and_reassess_context") if allowed else "resolve_existing_choice_or_handoff",
+                      notice="review" if needs_notice and obs.get("safe_checkpoint", False) else "none",
+                      notice_reason=reason,
+                      remind="each_user_turn_until_resolved" if needs_notice else "reassess_on_next_user_turn", ceiling_ratio=settings["rollover_ratio"])
         return result
     if settings["enforcement"] == "required" and pressure and not finished and not disabled:
         safe = obs.get("safe_checkpoint", False)
         ready = obs.get("transfer_context_ready") is not False
         reason = ("context_ceiling_reached" if ratio is not None and ratio >= settings["rollover_ratio"]
-                  else "context_change_required" if ratio is not None else "precautionary_context_budget")
+                  else "context_change_required" if ratio is not None else "supported_continuity_failure")
         return {"action": "defer" if not safe else "rollover" if ready else "blocked_transfer",
                 "reason": reason, "measurement": "measured" if ratio is not None else "heuristic",
                 "context_ratio": ratio, "obsolete_evidence_count": evidence_count,

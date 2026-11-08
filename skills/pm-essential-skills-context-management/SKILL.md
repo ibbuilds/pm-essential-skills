@@ -16,9 +16,9 @@ Before substantive work each user turn, after large output and before consequent
 | Fresh occupancy below 40% | Continue related work; reuse decisions and evidence. |
 | Fresh occupancy 40% to <60% | Warn and prepare a fresh-chat continuation. Current work may continue; do not treat this warning alone as a stop. |
 | Fresh occupancy >=60% | Ceiling reached. Only stabilize an already-running unsafe operation, preserve state and complete the handoff. Never finish another feature here first. |
-| No fresh telemetry | Label occupancy unknown. Use visible structural evidence or a conservative budget of 10 substantive user turns or 3 tool outputs >=8,000 characters in the current context segment to require a precautionary handoff. These are workflow limits, not equivalent percentages. |
+| No fresh telemetry | Label occupancy unknown. Message/output counts invite reassessment, never establish saturation or require a handoff alone. Use concrete continuity evidence; repeated lost constraints or reconstruction that drops active obligations can justify a safe continuation. |
 
-Assess an already-long chat immediately from visible evidence; do not wait for ten more turns. Repeated lost constraints, repeated reconstruction or substantial superseded history also justify intervention without a meter. A small answer needs no helper, scan or state file.
+Assess long chats from relevant visible evidence. Superseded history can justify warning/preparation; a forced pause without telemetry needs supported continuity failure. A small answer needs no helper, scan or state file.
 
 ## Keep the change pending until resolved
 

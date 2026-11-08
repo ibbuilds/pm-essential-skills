@@ -137,24 +137,31 @@ class RequiredContextTests(unittest.TestCase):
             self.assertIsNone(r["context_ratio"])
             self.assertNotEqual(r.get("domain_work_allowed"), False)
             r = self.assess(context=context(used, fresh=False), large_outputs=3)
-            self.assertFalse(r["domain_work_allowed"])
+            self.assertTrue(r["domain_work_allowed"])
+            self.assertEqual(r["notice"], "none")
             self.assertIsNone(r["context_ratio"])
 
-    def test_unknown_occupancy_budget_is_not_a_percentage(self):
+    def test_unknown_occupancy_counts_trigger_review_not_saturation(self):
         for field, limit in (("substantive_turns", 10), ("large_outputs", 3)):
             r = self.assess(context=None, **{field: limit-1})
             self.assertNotEqual(r.get("domain_work_allowed"), False)
             for mode in ("project", "standalone", "unknown"):
                 r = self.assess(context=None, project_mode=mode, **{field: limit})
-                self.assertFalse(r["domain_work_allowed"])
-                self.assertEqual(r["measurement"], "heuristic")
+                self.assertTrue(r["domain_work_allowed"])
+                self.assertEqual(r["measurement"], "unknown")
+                self.assertFalse(r["requires_transfer_checks"])
+                self.assertEqual(r["notice"], "none")
                 self.assertIsNone(r["context_ratio"])
 
-    def test_already_long_chat_intervenes_without_waiting_more_turns(self):
+    def test_history_is_assessed_without_forcing_transfer_from_a_label(self):
         for signal in ({"substantial_history": True}, {"critical_history": True},
                        {"admission_check": True, "obsolete_context_evidence": ["old scope superseded", "lost active constraint"]}):
             r = self.assess(context=None, **signal)
-            self.assertFalse(r["domain_work_allowed"])
+            self.assertTrue(r["domain_work_allowed"])
+        r = self.assess(context=None, critical_history=True,
+                        obsolete_context_evidence=["repeated lost active constraint",
+                                                   "reconstruction omits pending work"])
+        self.assertFalse(r["domain_work_allowed"])
 
     def test_required_policy_rejects_late_or_malformed_ceilings(self):
         for settings in ({"rollover_ratio": .61}, {"review_ratio": .75, "rollover_ratio": .85},

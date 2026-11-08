@@ -18,7 +18,7 @@ Complete the requested outcome through a concrete plan validated by the user. Ap
 
 Follow the agreed scope and order without asking again for covered commands, checks or steps. “Replace this exact text with that text” already supplies a small plan and its validation. Ordinary explanations and read-only answers need no implementation approval ceremony.
 
-Choose reversible details inside the accepted plan. If evidence materially changes the outcome, targets, cost, dependencies, risk or authority, explain the consequence and obtain validation of the revised path before affected execution. Continue unaffected approved work. Do not turn small choices into repeated planning or silently add a redesign, destructive action, new service or broader scope.
+Execute the explicit target and requested behavior; choose only mechanics within that scope. Do not add adjacent fixes or compensate for incidental effects without instruction. If meaning or target is ambiguous, show the interpretation and ask before dependent execution; clear instructions need no reconfirmation. A material change to outcome, cost, risk or authority needs revised validation. Continue unaffected work. See [scope cases](references/verification-and-recovery.md#instruction-fidelity) for the boundary.
 
 ## Spend effort where it advances the outcome
 
