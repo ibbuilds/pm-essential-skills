@@ -65,7 +65,10 @@ class ContextContinuityTests(unittest.TestCase):
     def test_missing_telemetry_does_not_turn_old_stay_into_a_reset(self):
         state = {'safe_checkpoint': True, 'boundary_choice': 'current-thread',
                  'choice_request_id': 'old', 'request_id': 'new',
-                 'substantive_turns': 10, 'last_notice_level': 'rollover'}
+                 'substantive_turns': 10, 'last_notice_level': 'rollover',
+                 'critical_history': True,
+                 'obsolete_context_evidence': ['Lost the accepted active constraint twice',
+                                               'Repeated reconstruction omitted the pending decision']}
         for turn in range(3):
             result = POLICY.assess(state | {'substantive_turns': 10 + turn})
             self.assertIsNone(result['context_ratio'])

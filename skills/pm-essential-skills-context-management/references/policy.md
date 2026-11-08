@@ -8,7 +8,19 @@ The preferred metric is fresh occupancy of the full active context divided by th
 
 Compaction changes active context; lifetime token totals do not reset with it. After effective compaction with essential decisions retained, a fresh reading below 0.60 clears the hard gate, 0.40 to <0.60 retains warnings, and below 0.40 clears them, even in an old chat. Stale readings cannot assert either pressure or recovery. Current segment counters reset only after a confirmed handoff or effective compaction; do not import predecessor counts. No telemetry means unknown, not zero and not an invented estimate.
 
-With unknown occupancy, 10 substantive user work turns or 3 observed tool outputs of at least 8,000 characters in the current segment trigger a precautionary handoff. Already-visible substantial superseded history, repeated lost constraints or repeated reconstruction also trigger it immediately. Counters are inexpensive preventive workflow budgets, not a proxy percentage or a quality benchmark. No history scan or helper call is required for every turn.
+With unknown occupancy, message/output counts can invite a cheap reassessment;
+they do not establish saturation, require a warning or stop domain work by
+themselves. The helper retains 10-turn/3-large-output review triggers for callers
+already supplying counters, but returns nonblocking reassessment. Do not maintain
+a counter file or scan history just to manufacture an intervention.
+
+Substantial superseded history supports warning/preparation when grounded in
+visible facts. Repeated lost constraints or repeated reconstruction that drops
+active obligations can support a precautionary pause: declare critical history
+and at least two distinct concrete continuity problems. A bare “long chat” flag,
+an old percentage or output volume alone is insufficient. Explain the actual
+evidence, preserve state and verify a usable destination before declaring transfer
+complete. A note alone is not a working continuation.
 
 ## Optional helper
 
@@ -30,7 +42,16 @@ With unknown occupancy, 10 substantive user work turns or 3 observed tool output
 
 At fresh occupancy from 0.40 to <0.60, output is `review` with `domain_work_allowed: true`, `allowed_work: continue_and_prepare_handoff`, and a repeated review notice at safe checkpoints. No mandatory location question is manufactured. Existing actual pending choices or explicit new-chat instructions retain their own routing and can still pause dependent work. Other task/media/authorization requirements remain binding.
 
-At the 0.60 ceiling (or the unchanged critical heuristic fallback), output has `domain_work_allowed: false`, `allowed_work: stabilize_checkpoint_and_handoff_only`, and `remind: each_user_turn_until_resolved`. `action` is `rollover` at a safe checkpoint, `defer` while stabilization is needed, or `blocked_transfer` if essential continuation context is unavailable. All require transfer readiness checks. `rollover` is a candidate, never permission or evidence of actual creation. Missing readiness means preserve state and resolve the blocker, not resume domain work.
+At the 0.60 ceiling, or supported critical history with two concrete continuity
+problems, output has `domain_work_allowed: false` and requires safe continuation
+checks. `rollover` is a candidate at a safe checkpoint, `defer` permits only
+stabilization, and `blocked_transfer` retains missing essentials. A candidate is
+never permission or proof of creation; resolve readiness before dispatch.
+
+Counter-only or unsupported history input returns `review`, unknown occupancy,
+no forced handoff and no pressure warning. Supported noncritical history can
+produce a repeated warning with work continuing. Explicit owner choices and
+genuinely pending location questions retain their own authority/readiness rules.
 
 `last_notice_level`, `user_keep_thread`, standalone membership, estimated transfer cost and repeated-investigation cost cannot suppress the early warning or the ceiling intervention. Existing pending choices remain distinct from a nonblocking pressure warning. Repeat one concise reminder per subsequent user turn while pending. Do not repeatedly ask the same unanswered question. Completion without further requested work returns quietly; a completed outcome with a newly requested phase still needs assessment.
 

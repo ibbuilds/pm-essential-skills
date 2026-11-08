@@ -21,7 +21,14 @@
         "substantial_history": true,
         "request_id": "r1",
         "choice_request_id": "r1",
-        "boundary_choice": "current-thread"
+        "boundary_choice": "current-thread",
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 65000,
+          "window_tokens": 100000,
+          "source": "synthetic fresh ceiling observation",
+          "fresh": true
+        }
       },
       "expected_output_fields": {
         "action": "rollover",
@@ -38,7 +45,14 @@
         "substantial_history": true,
         "request_id": "r2",
         "choice_request_id": "r1",
-        "boundary_choice": "current-thread"
+        "boundary_choice": "current-thread",
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 65000,
+          "window_tokens": 100000,
+          "source": "synthetic fresh ceiling observation",
+          "fresh": true
+        }
       },
       "expected_output_fields": {
         "action": "rollover",
@@ -131,7 +145,14 @@
       "input_observations": {
         "project_mode": "unknown",
         "safe_checkpoint": true,
-        "substantial_history": true
+        "substantial_history": true,
+        "context": {
+          "kind": "current_context",
+          "used_tokens": 65000,
+          "window_tokens": 100000,
+          "source": "synthetic fresh ceiling observation",
+          "fresh": true
+        }
       },
       "expected_output_fields": {
         "action": "rollover",
