@@ -23,6 +23,9 @@ ready question, or a small group of independent ones. Honor a requested pace,
 including one question at a time. Do not send the whole future questionnaire to
 the user just because it can be imagined. Research can proceed alongside
 independent questions; delegation is optional and subject to host authority.
+An ongoing, failed or inconclusive lookup remains an unresolved prerequisite;
+assigning research is not receiving usable evidence. Hold dependent questions
+unless an explicit safe deferral makes them independent.
 
 For concrete alternatives use permitted native selectable input. Include the
 consequence and a recommendation where evidence supports one. Keep open facts
@@ -31,9 +34,17 @@ or invent a confidence percentage. Wait for answers before dependent questions
 or actions, carrying partial and settled answers forward. Explicit bounded
 delegation lets the agent decide within those bounds; silence does not.
 
-After an answer, revise only the affected choices and dependencies. Finish when
-the consequential in-scope branches are answered, investigated, explicitly
-delegated or deferred with a reason and latest safe decision point. If the user
+After an answer, test its implications against the constraints and evidence,
+then revise only affected choices and dependencies. Resolve material ambiguity
+or contradiction with a concrete example; a bare “yes” to several alternatives
+does not select one. Carry unanswered parts forward without repeating settled
+questions. When the user delegates a decision, make and explain that decision
+within the stated bounds; delegation alone is not a resolved choice.
+
+Finish when consequential in-scope branches have supported answers or explicit
+deferrals with a reason, accountable owner and latest safe decision point.
+Check the resulting plan against the original outcome and a decisive failure
+case; a list of answers alone does not establish a workable plan. If the user
 ends the interview, preserve unresolved consequences without continuing to
 interrogate them. Summarize settled decisions, remaining uncertainty and the
 next authorized action in the existing artifact/context. No exhaustive tree,
