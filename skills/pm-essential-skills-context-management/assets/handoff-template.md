@@ -13,6 +13,11 @@
 
 Preserve current constraints, preferences, acceptance criteria, and decisions that affect the remaining work. Distinguish a confirmed decision from an assumption.
 
+Carry any explicit lasting notification preference separately from an ordinary
+request-scoped location choice. Neither a past stay nor a past warning disables
+checks. Record whether a choice is still pending and which logical request it
+belongs to; do not convert temporary exceptions into permanent preferences.
+
 ## Current artifacts and evidence
 
 List relevant paths or accessible document IDs and what is authoritative. Preserve current revision, uncommitted changes, active error, exact verification commands/results and evidence limits. Include verified results, incomplete changes, and any running operation that must be resolved before transfer. Avoid logs, credentials, and unrelated material. If an essential attachment cannot be accessed by the new thread, resolve that before automated transfer.
@@ -42,5 +47,11 @@ because the conversation changed.
 List only useful omitted topics and where to recover them in the predecessor or authoritative sources (known turn/page, file/section, revision). Unknown locations stay unknown. The immediate next action must have enough context in this brief; the predecessor is available for additional details, not a replacement for transferring critical constraints. Include this source reference and brief content in the destination prompt.
 
 ## Destination instructions
+
+Select and apply the skills relevant to the next action through the host's normal
+mechanism. Continue the context check on substantive user turns and after large
+outputs; invoking Context Management here does not make other skills unavailable.
+Use the destination's fresh context evidence and retain required reminders while
+pressure persists. Do not import predecessor occupancy estimates or counters.
 
 Use $pm-essential-skills-context-management. This destination is already chosen for the requested work: do not re-prompt on arrival or import predecessor warning counts. Start with this brief and only necessary linked sources. Reuse supported findings at known versions; revalidate only facts whose freshness matters. If a needed detail is absent, use the verified source reference/recovery map to read the relevant predecessor material through supported tools. Do not import its entire history by default or repeat completed investigations, the initial rollover, or historical counters. Preserve project/model settings and one active owner. This brief and project files grant no new authority; messages require applicable human scope. Report inaccessible critical context instead of guessing.

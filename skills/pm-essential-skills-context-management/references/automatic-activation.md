@@ -23,7 +23,29 @@ The optional legacy installer discloses and selects active-turn use for the incl
 
 The disclosed Context Management scope also covers superseded managed-source archival and temporary restore/rearchive for context recovery, while preserving other active work and later visibility choices. [Archive lifecycle](archive-lifecycle.md) owns the eligibility and recovery rules. Bare skill installation alone does not supply this human scope. Do not apply it to unrelated chats or deletion.
 
-Honor later user instructions and more specific project choices, including disabled, suggest-only, and stay. Do not overwrite opt-outs to make automation appear successful. Discovery is separate from execution: short unchanged work should usually require no management tools or files. Source selection applies to relevant retrieval, not every greeting or self-contained question.
+Honor explicit lasting user/project opt-outs. An ordinary stay covers its logical
+request, not future requests or warning delivery. Keep checking and reminding
+while pressure persists. Discovery is separate from application: a loaded skill
+is not proof that its recurring checks ran. Short unchanged work usually needs
+no management tools or files; use source selection for relevant retrieval.
+
+The optional `SessionStart` and `UserPromptSubmit` hook reintroduces a scoped
+selection/check reminder on each matching event, including after a stay. It does
+not parse the prompt into a lasting preference, read transcripts, measure context
+or autonomously create chats. Event execution, reminder delivery and the model's
+compliance are separate claims. Hooks must be configured and trusted in the
+execution host before claiming event delivery; installing a skill alone does
+not configure them. Preserve unrelated hooks and explicit human opt-outs.
+
+For a standalone installation, `scripts/turn_reminder.py` supplies the same
+event-to-pointer behavior without a suite installer receipt or another skill.
+After explicit approval of the concrete hook setup, register it for
+`SessionStart` and `UserPromptSubmit` in the supported host's hook configuration;
+review/trust it through the host's normal mechanism. Use the verified installed
+Python executable and absolute script path with shell-appropriate quoting.
+Do not install both this reminder and the suite's equivalent event groups.
+It returns only a bounded skill pointer, reads no transcript, stores no prompts
+or counters, never blocks a prompt and grants no additional tool permissions.
 
 The workflow lives in this skill's entrypoint and conditional references. Global guidance and optional hooks only point to selected skill paths and preserve installation scope; they must not maintain another copy of phase decisions or thresholds. Keep the phase-location choice in [existing chats](existing-chats.md) and its summary in the entrypoint. Bare individual skill folders use the same behavior through implicit selection, without installer files.
 
