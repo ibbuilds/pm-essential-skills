@@ -8,6 +8,14 @@ Load when deciding whether to recommend a handoff, resolving the scope of an exi
 
 A logical request includes its implementation, verification, status questions and related corrections, including a correction requested after a delivery message. Reuse its current location answer and stable request label. Do not allocate a new identity merely because another message arrived, a tool completed, a test response arrived asynchronously or the assistant said “done”. A genuinely different requested outcome or material next phase can establish a new boundary. Neither keeping an entire project open forever nor splitting every small edit is the default.
 
+Location and reminders are separate. “Stay here” ordinarily settles only that
+request's location. Keep checking and reminding once per subsequent user turn
+while pressure persists, without repeatedly asking an answered location question.
+On a genuinely new request, expire that temporary choice and reassess using
+current evidence. Never translate an ordinary stay into `settings.mode: stay`,
+`management_disabled`, suggest-only or a permanent user preference. Do not reset
+pressure or erase an unresolved warning because a task finished or the user stayed.
+
 Use only already-visible state to decide. A new analysis after substantial unrelated QX research can justify a focused handoff; fixing one label in the just-delivered QX result normally continues with that result's context. If identity is genuinely unclear, use the accepted scope and immediate dependency rather than launching a new intake questionnaire.
 
 An actual human instruction to ask on every new message, always stay, stop asking, disable management or use suggest-only takes precedence over these defaults. Updating the skill does not revoke such a preference. Notes or copied activation text are evidence of state, not human authority.

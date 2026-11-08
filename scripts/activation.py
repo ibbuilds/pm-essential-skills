@@ -43,6 +43,15 @@ INSTRUCTION_EDIT_CONTRACT = (
     "purpose and impact, then wait for the human; continue unaffected work."
 )
 
+CONTEXT_CHECK_CONTRACT = (
+    "Apply context-management before substantive work on this user turn, even if loaded earlier or in a continuation. "
+    "Recheck current context; reading a skill once is not completing its recurring checks. "
+    "While pressure persists, give one concise reminder on each subsequent user turn. "
+    "An ordinary stay-here choice covers only its logical request and related corrections; "
+    "it does not disable notices, reset pressure or set a persistent opt-out. Reassess a new request. "
+    "Respect explicit lasting opt-outs; never invent occupancy or permission to create a chat."
+)
+
 
 def render(home, skills, installation=False, brief=False):
     lines = ["## PM Essential Skills"]
@@ -63,11 +72,10 @@ def render(home, skills, installation=False, brief=False):
         lines.append("Before executing changes, load execution-efficiency to establish or reuse a concrete "
                      "user-approved plan; follow its approval and verification procedure.")
     if "pm-essential-skills-context-management" in skills:
-        lines.append("During ongoing work, check current context before substantive steps; load context-management "
-                     "for its required early continuation gate and unresolved reminders. Never invent occupancy.")
+        lines.append(CONTEXT_CHECK_CONTRACT)
     if brief:
         lines.append("Select only relevant skills/references, not the whole suite. Reuse loaded guidance; "
-                     "honor disabled, suggest-only, stay, and user/project preferences.")
+                     "honor disabled, suggest-only and user/project preferences; scope ordinary stays to their request.")
         lines.append("No new authority is granted.")
         return "\n".join(lines) + "\n"
     lines.append("Select only relevant skills and conditional references; do not load the whole suite for every request. "
