@@ -7,3 +7,4 @@
 - Added `scripts/lint_skills.py`, its tests, a CI workflow and the first eval case.
 - Added `grilling` with `/grill-me`, `handoff`, `research`, `write-skill`, `breakdown` and `retro`, each with trigger and behavior eval cases.
 - Dropped the planned `verify-done` skill: without any skill, Claude already refused unverified completion claims in 9 of 9 eval runs, so the skill had nothing to add.
+- Added a `UserPromptSubmit` hook that suggests `/handoff` when context passes a configurable size, a Concise output style, and an optional work-habits snippet for `CLAUDE.md`.

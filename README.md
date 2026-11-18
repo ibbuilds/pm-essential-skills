@@ -1,8 +1,8 @@
 # PM Essential Skills
 
-General work skills for Claude Code. They help with any kind of work, not just software: stress-testing a plan, handing work to a fresh session, researching current facts, verifying before claiming something is done, breaking work down and writing new skills.
+General work skills for Claude Code. They help with any kind of work, not just software: stress-testing a plan, handing work to a fresh session, researching current facts, breaking work down, learning from a session and writing new skills.
 
-> **Rebuild in progress.** The previous eight-skill suite is preserved at the [`legacy-v0`](https://github.com/ibbuilds/pm-essential-skills/tree/legacy-v0) tag. A skill is added here only after an eval shows Claude does worse without it.
+Every skill here was added only after an eval showed Claude does worse without it. The previous eight-skill suite is preserved at the [`legacy-v0`](https://github.com/ibbuilds/pm-essential-skills/tree/legacy-v0) tag.
 
 ## Install
 
@@ -23,6 +23,12 @@ In Claude Code:
 | `breakdown` | You ask to plan or break down a project | Ordered milestones, each with a "done when" and its dependencies | Ready |
 | `write-skill` | You create or edit a skill or `CLAUDE.md` | A lean skill with eval cases written first | Ready |
 | `/retro` | You say "retro" or run `/retro` | Each friction point routed to an exact fix, applied on approval | Ready |
+
+## Also included
+
+- **Context warning.** A hook that tells Claude to suggest `/handoff` once the conversation passes about 100k tokens of context, then again every 50k. It needs Node.js. Change the thresholds with the `PM_CONTEXT_WARN_TOKENS` and `PM_CONTEXT_WARN_STEP` environment variables.
+- **Concise output style.** Answer first, in plain words. Turn it on with `/output-style`.
+- **Work habits.** Optional lines for your own `CLAUDE.md` in [snippets/work-habits.md](snippets/work-habits.md).
 
 ## Development
 
