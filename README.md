@@ -18,7 +18,7 @@ In Claude Code:
 | Skill | How it starts | What you get | Status |
 | --- | --- | --- | --- |
 | `grilling`, `/grill-me` | You say "grill me", or run `/grill-me` | One question at a time, each with a recommended answer, until every decision is settled | Ready |
-| `handoff` | You run `/handoff`, or say the session should continue elsewhere | A `HANDOFF.md` and a prompt to paste into the next session | Planned |
+| `handoff` | You run `/handoff`, or say the session should continue elsewhere | A `HANDOFF.md` and a prompt to paste into the next session | Ready |
 | `research` | You ask for current facts, versions or prices | A dated note with primary sources | Planned |
 | `verify-done` | Claude is about to say something is done or fixed | Proof from a check run in that turn | Planned |
 | `breakdown` | You ask to plan or break down a project | Ordered milestones, each with a "done when" | Planned |
