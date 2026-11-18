@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.0 (2026-11-18)
 
 - Rebuilt as a Claude Code plugin with a marketplace manifest.
 - Removed the legacy suite: eight skills, design and audit documents, Python helpers, the installer, Codex adapters and the old tests. It remains available at commit `6fd518f`.
