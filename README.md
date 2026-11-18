@@ -22,7 +22,7 @@ In Claude Code:
 | `research` | You ask for current facts, versions or prices | Sources with check dates, and a `research/` note when you ask for a write-up | Ready |
 | `breakdown` | You ask to plan or break down a project | Ordered milestones, each with a "done when" and its dependencies | Ready |
 | `write-skill` | You create or edit a skill or `CLAUDE.md` | A lean skill with eval cases written first | Ready |
-| `/retro` | You run it at the end of a session | Lessons routed to the right place | Planned |
+| `/retro` | You say "retro" or run `/retro` | Each friction point routed to an exact fix, applied on approval | Ready |
 
 ## Development
 
