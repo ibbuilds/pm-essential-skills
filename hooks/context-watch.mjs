@@ -1,18 +1,19 @@
 #!/usr/bin/env node
-// UserPromptSubmit hook: once the conversation fills a set share of the context window,
-// tell Claude to suggest a handoff so the next session starts with only what matters.
-// Never blocks the prompt.
+// UserPromptSubmit hook. Once the conversation passes a share of its quality budget,
+// tell Claude to finish the current step and hand off, so the next session starts
+// with only what matters. Never blocks the prompt.
 //
-// PM_CONTEXT_WARN_PERCENT  first warning, percent of the window (default 50)
+// The budget is not the model's context limit. Answers degrade with absolute context
+// length, so a 1M-token window does not move the point where quality drops.
+//
+// PM_CONTEXT_BUDGET        tokens treated as 100% (default 200000)
+// PM_CONTEXT_WARN_PERCENT  first warning, percent of the budget (default 50)
 // PM_CONTEXT_WARN_STEP     warn again every this many more percent (default 10)
-// PM_CONTEXT_WINDOW        window size in tokens; otherwise 1,000,000 once usage has
-//                          passed 200,000 tokens in this session, else 200,000
-import { readFileSync, writeFileSync } from "node:fs";
+import { closeSync, fstatSync, openSync, readFileSync, readSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const SMALL_WINDOW = 200_000;
-const LARGE_WINDOW = 1_000_000;
+const TAIL_BYTES = 2_000_000;
 
 function readStdin() {
   try {
@@ -22,14 +23,23 @@ function readStdin() {
   }
 }
 
-function usageTokens(usage) {
-  return (usage.input_tokens || 0) + (usage.cache_creation_input_tokens || 0) + (usage.cache_read_input_tokens || 0);
+// Usage entries sit at the end of the transcript, so read only its tail.
+function readTail(path) {
+  const fd = openSync(path, "r");
+  try {
+    const size = fstatSync(fd).size;
+    const length = Math.min(size, TAIL_BYTES);
+    const buffer = Buffer.alloc(length);
+    readSync(fd, buffer, 0, length, size - length);
+    return buffer.toString("utf8");
+  } finally {
+    closeSync(fd);
+  }
 }
 
-// Returns the context size of the last model call and the largest seen in the transcript.
+// Returns the prompt size of the last main-conversation model call.
 export function contextTokens(transcriptText) {
   let last = 0;
-  let peak = 0;
   for (const line of transcriptText.split("\n")) {
     if (!line.includes('"usage"')) continue;
     let entry;
@@ -39,31 +49,36 @@ export function contextTokens(transcriptText) {
       continue;
     }
     const usage = entry?.message?.usage;
-    if (!usage) continue;
-    last = usageTokens(usage);
-    peak = Math.max(peak, last);
+    if (!usage || entry.isSidechain) continue;
+    last = (usage.input_tokens || 0) + (usage.cache_creation_input_tokens || 0) + (usage.cache_read_input_tokens || 0);
   }
-  return { last, peak };
+  return last;
+}
+
+function positive(value, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : fallback;
 }
 
 function main() {
   const input = readStdin();
-  if (!input.transcript_path) return;
+  if (!input.transcript_path || input.agent_id) return;
   let tokens;
   try {
-    tokens = contextTokens(readFileSync(input.transcript_path, "utf8"));
+    tokens = contextTokens(readTail(input.transcript_path));
   } catch {
     return;
   }
-  const window = Number(process.env.PM_CONTEXT_WINDOW) || (tokens.peak > SMALL_WINDOW ? LARGE_WINDOW : SMALL_WINDOW);
-  const warnAt = Number(process.env.PM_CONTEXT_WARN_PERCENT) || 50;
-  const step = Number(process.env.PM_CONTEXT_WARN_STEP) || 10;
-  const percent = Math.round((tokens.last / window) * 100);
+  const budget = positive(process.env.PM_CONTEXT_BUDGET, 200_000);
+  const warnAt = positive(process.env.PM_CONTEXT_WARN_PERCENT, 50);
+  const step = positive(process.env.PM_CONTEXT_WARN_STEP, 10);
+  const percent = Math.round((tokens / budget) * 100);
   if (percent < warnAt) return;
 
   // Warn at the threshold, then once per further step, not on every prompt.
   const level = Math.floor((percent - warnAt) / step);
-  const stateFile = join(tmpdir(), `pm-context-watch-${String(input.session_id || "session").replace(/[^\w-]/g, "")}.json`);
+  const id = String(input.session_id || "session").replace(/[^\w-]/g, "");
+  const stateFile = join(tmpdir(), `pm-context-watch-${id}.json`);
   let warnedLevel = -1;
   try {
     warnedLevel = JSON.parse(readFileSync(stateFile, "utf8")).level;
@@ -77,11 +92,15 @@ function main() {
     // the warning still goes out; it may repeat on the next prompt
   }
 
+  const size = `${Math.round(tokens / 1000)}k tokens`;
   process.stdout.write(
     JSON.stringify({
       hookSpecificOutput: {
         hookEventName: "UserPromptSubmit",
-        additionalContext: `The conversation has used about ${percent}% of the context window (${Math.round(tokens.last / 1000)}k tokens). Answers get less reliable as old detail piles up. Finish the current step, then tell the user in one line and offer /handoff so a fresh session continues with only the essential context.`,
+        additionalContext:
+          `Context check: this conversation is at ${size}, ${percent}% of its ${Math.round(budget / 1000)}k quality budget. ` +
+          "Answers get less reliable from here. Handle the user's message, finishing only the step in progress. " +
+          "Then, unless the whole task is done, call the Skill tool with `handoff` so the work continues in a fresh session.",
       },
     }),
   );

@@ -9,7 +9,7 @@
     {
       "name": "pm-essential-skills",
       "source": "./",
-      "description": "General work skills for Claude Code: stress-test plans, hand work to a fresh session, research current facts, verify before claiming done, break work down and write skills."
+      "description": "General work skills for Claude Code: stress-test plans, keep sessions short with automatic handoffs, write without AI tells, break work down, learn from each session and write skills."
     }
   ]
 }

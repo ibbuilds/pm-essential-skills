@@ -1,7 +1,7 @@
 {
   "name": "pm-essential-skills",
-  "version": "1.0.0",
-  "description": "General work skills for Claude Code: stress-test plans, hand work to a fresh session, research current facts, verify before claiming done, break work down and write skills.",
+  "version": "2.0.0",
+  "description": "General work skills for Claude Code: stress-test plans, keep sessions short with automatic handoffs, write without AI tells, break work down, learn from each session and write skills.",
   "author": {
     "name": "ibbuilds",
     "url": "https://github.com/ibbuilds"
@@ -9,5 +9,5 @@
   "homepage": "https://github.com/ibbuilds/pm-essential-skills",
   "repository": "https://github.com/ibbuilds/pm-essential-skills",
   "license": "MIT",
-  "keywords": ["skills", "planning", "handoff", "research", "verification"]
+  "keywords": ["skills", "planning", "handoff", "context", "writing"]
 }

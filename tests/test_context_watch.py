@@ -29,9 +29,9 @@ class ContextWatchTests(unittest.TestCase):
         if state.exists():
             state.unlink()
 
-    def run_hook(self, lines, **env):
+    def run_hook(self, lines, payload_extra=None, **env):
         self.transcript.write_text("\n".join(lines) + "\n", encoding="utf-8")
-        payload = json.dumps({"transcript_path": str(self.transcript), "session_id": self.session})
+        payload = json.dumps({"transcript_path": str(self.transcript), "session_id": self.session, **(payload_extra or {})})
         result = subprocess.run([NODE, str(HOOK)], input=payload, capture_output=True, text=True, env={**os.environ, **env}, timeout=20)
         self.assertEqual(result.returncode, 0, result.stderr)
         return result.stdout
@@ -39,25 +39,35 @@ class ContextWatchTests(unittest.TestCase):
     def test_silent_below_half_of_a_small_window(self):
         self.assertEqual(self.run_hook([assistant_line(5, 90_000)]), "")
 
-    def test_warns_at_half_of_a_small_window_using_the_last_call(self):
+    def test_warns_at_half_of_the_budget_using_the_last_call(self):
         output = self.run_hook([assistant_line(5, 150_000), json.dumps({"type": "user"}), assistant_line(10, 118_000, 2_000)])
         context = json.loads(output)["hookSpecificOutput"]
         self.assertEqual(context["hookEventName"], "UserPromptSubmit")
         self.assertIn("60%", context["additionalContext"])
-        self.assertIn("/handoff", context["additionalContext"])
+        self.assertIn("`handoff`", context["additionalContext"])
 
-    def test_large_window_is_inferred_from_usage_past_200k(self):
-        self.assertEqual(self.run_hook([assistant_line(0, 250_000), assistant_line(0, 300_000)]), "")
-        self.assertIn("52%", self.run_hook([assistant_line(0, 250_000), assistant_line(0, 520_000)]))
+    def test_budget_does_not_grow_with_a_large_window(self):
+        self.assertIn("150%", self.run_hook([assistant_line(0, 250_000), assistant_line(0, 300_000)]))
+
+    def test_subagent_usage_is_ignored(self):
+        sidechain = json.loads(assistant_line(0, 180_000))
+        sidechain["isSidechain"] = True
+        self.assertEqual(self.run_hook([assistant_line(0, 40_000), json.dumps(sidechain)]), "")
+
+    def test_silent_inside_a_subagent(self):
+        self.assertEqual(self.run_hook([assistant_line(0, 150_000)], payload_extra={"agent_id": "a1"}), "")
 
     def test_warns_once_per_step(self):
         self.assertNotEqual(self.run_hook([assistant_line(0, 102_000)]), "")
         self.assertEqual(self.run_hook([assistant_line(0, 110_000)]), "")
         self.assertNotEqual(self.run_hook([assistant_line(0, 122_000)]), "")
 
-    def test_percent_and_window_are_configurable(self):
+    def test_percent_and_budget_are_configurable(self):
         self.assertEqual(self.run_hook([assistant_line(0, 110_000)], PM_CONTEXT_WARN_PERCENT="60"), "")
-        self.assertNotEqual(self.run_hook([assistant_line(0, 60_000)], PM_CONTEXT_WINDOW="100000"), "")
+        self.assertNotEqual(self.run_hook([assistant_line(0, 60_000)], PM_CONTEXT_BUDGET="100000"), "")
+
+    def test_invalid_settings_fall_back_to_defaults(self):
+        self.assertEqual(self.run_hook([assistant_line(0, 90_000)], PM_CONTEXT_BUDGET="abc", PM_CONTEXT_WARN_PERCENT="-5"), "")
 
     def test_bad_input_is_ignored(self):
         result = subprocess.run([NODE, str(HOOK)], input="not json", capture_output=True, text=True, timeout=20)

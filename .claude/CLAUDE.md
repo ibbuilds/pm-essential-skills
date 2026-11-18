@@ -18,7 +18,9 @@ This repository is a Claude Code plugin. Skills live in `skills/<name>/SKILL.md`
 python scripts/lint_skills.py
 python -m unittest discover -s tests
 claude plugin validate . --strict
-claude plugin eval . --case <case> --runs 1 --ablation none --no-publish --max-cost-usd 1
+claude plugin eval . --case <case> --runs 3 --ablation with-without --scaffold --allow-tools Write --judge-model sonnet --no-publish --max-cost-usd 2
 ```
+
+Write, Bash, WebSearch and WebFetch only run in an eval when `--allow-tools` grants them, even if the case lists them. Granting Bash fails on machines where the sandbox cannot inspect every PATH directory; grant only what the case needs. The default Haiku judge is noisy on writing-quality graders; use Sonnet for behavior cases.
 
 On Windows use `py -3` for `python`. Model-backed evals spend real usage: always pass `--max-cost-usd` and run only the cases you changed.
