@@ -1,4 +1,4 @@
-name: Validate skills
+name: Validate
 
 on:
   push:
@@ -11,43 +11,18 @@ permissions:
 
 jobs:
   validate:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - name: Install validation dependencies
+      - name: Install lint dependencies
         run: python -m pip install -r requirements-dev.txt
-      - name: Run policy and runtime tests
+      - name: Test the lint script
         run: python -m unittest discover -s tests -v
-      - name: Replay functional procedure decisions
-        run: python -B evaluations/replay_procedure_cases.py
-      - name: Validate skill structure and references
-        run: python scripts/validate_repository.py
-      - name: Build verified installer downloads
-        run: python scripts/package_installers.py
-      - name: Retain verified downloads
-        uses: actions/upload-artifact@v7.0.2
-        with:
-          name: pm-essential-skills-${{ runner.os }}-${{ github.sha }}-${{ github.run_attempt }}
-          path: |
-            work/downloads/pm-essential-skills.zip
-            work/downloads/pm-essential-skills-task-coordination.zip
-            work/downloads/pm-essential-skills-context-management.zip
-            work/downloads/pm-essential-skills-resource-selection.zip
-            work/downloads/pm-essential-skills-source-selection.zip
-            work/downloads/pm-essential-skills-execution-efficiency.zip
-            work/downloads/pm-essential-skills-workflow-improvement.zip
-            work/downloads/pm-essential-skills-concise-communication.zip
-            work/downloads/pm-essential-skills-workspace-hygiene.zip
-            work/downloads/SHA256SUMS
-            work/downloads/distribution.json
-          if-no-files-found: error
-          retention-days: 14
-          compression-level: 0
+      - name: Lint skills and eval cases
+        run: python scripts/lint_skills.py
+      - name: Validate plugin and marketplace manifests
+        run: npx --yes @anthropic-ai/claude-code@2.1.325 plugin validate . --strict

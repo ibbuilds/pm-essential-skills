@@ -1,6 +1,0 @@
-interface:
-  display_name: "pm-essential-skills-execution-efficiency"
-  short_description: "Execute a user-approved plan without wasted work"
-  default_prompt: "Use $pm-essential-skills-execution-efficiency to establish or reuse a concrete user-approved plan before execution, follow it and verify the result without unnecessary work."
-policy:
-  allow_implicit_invocation: true
