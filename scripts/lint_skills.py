@@ -8,6 +8,7 @@ Model-backed behavior is not checked here; that is what `claude plugin eval` is 
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -20,7 +21,6 @@ DEFAULT_WORD_BUDGET = 500
 WORD_BUDGETS = {"discipline": 1500}
 SKILL_TYPES = {"technique", "discipline", "collaborative", "reference"}
 GRADER_TYPES = {"regex", "tool_used", "tool_order", "file_exists", "llm", "baseline"}
-REPO_PREFIXES = ("pm-essential-skills", "swe-essential-skills")
 NESTED_MARKDOWN_DIRS = {"assets"}
 EVAL_SKIP_DIRS = {"results", "mocks"}
 
@@ -72,7 +72,18 @@ def description_is_one_line(raw_frontmatter: str) -> bool:
     return True
 
 
-def lint_skill(skill_dir: Path, eval_case_names: set[str]) -> list[str]:
+def read_plugin_name(root: Path) -> str | None:
+    manifest = root / ".claude-plugin" / "plugin.json"
+    if not manifest.is_file():
+        return None
+    try:
+        name = json.loads(read_text(manifest)).get("name")
+    except (json.JSONDecodeError, AttributeError):
+        return None
+    return name if isinstance(name, str) and name else None
+
+
+def lint_skill(skill_dir: Path, eval_case_names: set[str], plugin_name: str | None = None) -> list[str]:
     problems: list[str] = []
     name = skill_dir.name
     skill_file = skill_dir / "SKILL.md"
@@ -82,8 +93,8 @@ def lint_skill(skill_dir: Path, eval_case_names: set[str]) -> list[str]:
 
     if not NAME_PATTERN.match(name):
         report("folder name must be lowercase kebab-case with at most three words")
-    if name.startswith(REPO_PREFIXES):
-        report("folder name must not repeat the repository prefix; plugin namespacing handles collisions")
+    if plugin_name and (name == plugin_name or name.startswith(f"{plugin_name}-")):
+        report("folder name must not repeat the plugin name; plugin namespacing handles collisions")
     if not skill_file.is_file():
         report("missing SKILL.md")
         return problems
@@ -201,8 +212,9 @@ def lint_repo(root: Path) -> tuple[list[str], int, int]:
     if skills_dir.is_dir():
         skill_dirs = [path for path in sorted(skills_dir.iterdir()) if path.is_dir()]
     case_names = {case.name for case in case_dirs}
+    plugin_name = read_plugin_name(root)
     for skill_dir in skill_dirs:
-        problems.extend(lint_skill(skill_dir, case_names))
+        problems.extend(lint_skill(skill_dir, case_names, plugin_name))
     return problems, len(skill_dirs), len(case_dirs)
 
 

@@ -94,9 +94,14 @@ class SkillTests(LintTestCase):
         self.eval_case("grilling-trigger-direct-1")
         self.assertOneProblem("must match the folder name")
 
-    def test_repository_prefix_is_rejected(self):
-        self.skill("pm-essential-skills", "description: x\ndisable-model-invocation: true")
-        self.assertOneProblem("repository prefix")
+    def test_plugin_name_prefix_is_rejected(self):
+        self.write(".claude-plugin/plugin.json", '{"name": "demo-pack"}')
+        self.skill("demo-pack-grill", "description: x\ndisable-model-invocation: true")
+        self.assertOneProblem("repeat the plugin name")
+
+    def test_prefix_check_needs_a_plugin_manifest(self):
+        self.skill("demo-pack-grill", "description: x\ndisable-model-invocation: true")
+        self.assertEqual(self.problems(), [])
 
     def test_names_longer_than_three_words_are_rejected(self):
         self.skill("one-two-three-four", "description: x\ndisable-model-invocation: true")
