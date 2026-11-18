@@ -1,5 +1,5 @@
 ---
-description: "Behavior: the handoff captures verified repo state and the exact last test result."
+description: "Behavior: the handoff captures verified repo state, the exact last test result and how to continue."
 tags: [behavior, handoff]
 max_turns: 10
 allowed_tools: [Read, Glob, Grep, Skill, Write]
