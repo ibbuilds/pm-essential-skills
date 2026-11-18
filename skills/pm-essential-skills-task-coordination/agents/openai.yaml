@@ -1,6 +1,0 @@
-interface:
-  display_name: "pm-essential-skills-task-coordination"
-  short_description: "Coordinate dependencies, ownership and completion"
-  default_prompt: "Use $pm-essential-skills-task-coordination to order ready work, prevent conflicting ownership and integrate results through the agreed outcome."
-policy:
-  allow_implicit_invocation: true

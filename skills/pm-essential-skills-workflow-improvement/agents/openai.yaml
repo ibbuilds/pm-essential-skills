@@ -1,6 +1,0 @@
-interface:
-  display_name: "pm-essential-skills-workflow-improvement"
-  short_description: "Improve reusable workflows from observed causes"
-  default_prompt: "Use $pm-essential-skills-workflow-improvement to locate the cause of recurring friction, apply the smallest justified correction at its owner and verify it without adding unnecessary process."
-policy:
-  allow_implicit_invocation: true
