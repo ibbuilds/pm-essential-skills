@@ -1,5 +1,5 @@
 ---
-description: Direct trigger phrase for the planned grilling skill. Fails until the skill exists, which is the baseline.
+description: "Direct trigger phrase for the planned grilling skill. Fails until the skill exists, which is the baseline."
 tags: [trigger, grilling]
 max_turns: 4
 allowed_tools: [Read, Glob, Grep, Skill]
