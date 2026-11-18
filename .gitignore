@@ -1,5 +1,4 @@
 __pycache__/
 *.py[cod]
 .venv/
-.pm-context/
-work/
+evals/results/
