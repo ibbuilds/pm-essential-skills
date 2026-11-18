@@ -1,0 +1,81 @@
+import json
+import os
+import shutil
+import subprocess
+import tempfile
+import time
+import unittest
+from pathlib import Path
+
+HOOK = Path(__file__).resolve().parent.parent / "hooks" / "session-start.mjs"
+NODE = shutil.which("node")
+
+
+@unittest.skipIf(NODE is None, "node is not installed")
+class SessionStartTests(unittest.TestCase):
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.cwd = Path(self._tmp.name)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def run_hook(self, payload, **env):
+        result = subprocess.run([NODE, str(HOOK)], input=json.dumps(payload), capture_output=True, text=True, env={**os.environ, **env}, timeout=20)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return json.loads(result.stdout) if result.stdout else None
+
+    def write_handoff(self, text="# Handoff: csv export\n**Next action:** fix encoding", hours_old=0):
+        path = self.cwd / "HANDOFF.md"
+        path.write_text(text, encoding="utf-8")
+        stamp = time.time() - hours_old * 3600
+        os.utime(path, (stamp, stamp))
+
+    def test_clear_loads_a_fresh_handoff(self):
+        self.write_handoff()
+        output = self.run_hook({"source": "clear", "cwd": str(self.cwd)})
+        context = output["hookSpecificOutput"]["additionalContext"]
+        self.assertEqual(output["hookSpecificOutput"]["hookEventName"], "SessionStart")
+        self.assertIn("fix encoding", context)
+        self.assertIn("Delete HANDOFF.md", context)
+        self.assertIn("continue", output["systemMessage"])
+
+    def test_startup_loads_a_fresh_handoff(self):
+        self.write_handoff()
+        self.assertIsNotNone(self.run_hook({"source": "startup", "cwd": str(self.cwd)}))
+
+    def test_old_handoff_is_ignored(self):
+        self.write_handoff(hours_old=100)
+        self.assertIsNone(self.run_hook({"source": "clear", "cwd": str(self.cwd)}))
+        self.assertIsNotNone(self.run_hook({"source": "clear", "cwd": str(self.cwd)}, PM_HANDOFF_MAX_AGE_HOURS="200"))
+
+    def test_no_handoff_no_output(self):
+        self.assertIsNone(self.run_hook({"source": "clear", "cwd": str(self.cwd)}))
+
+    def test_compact_does_not_reload_the_handoff(self):
+        self.write_handoff()
+        self.assertIsNone(self.run_hook({"source": "compact", "cwd": str(self.cwd)}))
+
+    def test_long_handoff_is_truncated(self):
+        self.write_handoff("x" * 20_000)
+        context = self.run_hook({"source": "clear", "cwd": str(self.cwd)})["hookSpecificOutput"]["additionalContext"]
+        self.assertLess(len(context), 10_000)
+        self.assertIn("truncated", context)
+
+    def test_cold_resume_of_a_large_session_warns_the_user(self):
+        output = self.run_hook({"source": "resume", "context_tokens": 182_340, "prompt_cache_likely_expired": True, "estimated_cache_write_usd": 1.1396})
+        self.assertIn("182k", output["systemMessage"])
+        self.assertIn("$1.14", output["systemMessage"])
+        self.assertNotIn("hookSpecificOutput", output)
+
+    def test_warm_or_small_resume_is_silent(self):
+        self.assertIsNone(self.run_hook({"source": "resume", "context_tokens": 182_340, "prompt_cache_likely_expired": False}))
+        self.assertIsNone(self.run_hook({"source": "resume", "context_tokens": 20_000, "prompt_cache_likely_expired": True}))
+
+    def test_bad_input_is_ignored(self):
+        result = subprocess.run([NODE, str(HOOK)], input="not json", capture_output=True, text=True, timeout=20)
+        self.assertEqual((result.returncode, result.stdout), (0, ""))
+
+
+if __name__ == "__main__":
+    unittest.main()
