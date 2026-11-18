@@ -21,7 +21,7 @@ In Claude Code:
 | `handoff` | You run `/handoff`, or say the session should continue elsewhere | A `HANDOFF.md` and a prompt to paste into the next session | Ready |
 | `research` | You ask for current facts, versions or prices | Sources with check dates, and a `research/` note when you ask for a write-up | Ready |
 | `breakdown` | You ask to plan or break down a project | Ordered milestones, each with a "done when" | Planned |
-| `write-skill` | You create or edit a skill or `CLAUDE.md` | A tested skill with eval cases | Planned |
+| `write-skill` | You create or edit a skill or `CLAUDE.md` | A lean skill with eval cases written first | Ready |
 | `/retro` | You run it at the end of a session | Lessons routed to the right place | Planned |
 
 ## Development
