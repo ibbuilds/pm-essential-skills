@@ -50,8 +50,8 @@ Fixtures: `case.yaml` holds `schema_version: "1.1"`, `name` and `context: { scaf
 Run, always with a cost ceiling:
 
 ```
-claude plugin eval . --case '<skill>-behavior-*' --runs 3 --ablation none --scaffold --max-cost-usd 2 --no-publish
-claude plugin eval . --case '<skill>-*' --runs 3 --ablation with-without --scaffold --max-cost-usd 5 --no-publish
+claude plugin eval . --case '<skill>-behavior-*' --runs 3 --ablation none --scaffold --allow-tools Write --max-cost-usd 2 --no-publish
+claude plugin eval . --case '<skill>-*' --runs 3 --ablation with-without --scaffold --allow-tools Write --max-cost-usd 5 --no-publish
 ```
 
-The first command is the baseline before the skill exists. The second compares with and without the plugin once it does.
+Tools such as Write, Bash and WebFetch run only when `--allow-tools` grants them. The first command is the baseline before the skill exists. The second compares with and without the plugin once it does.

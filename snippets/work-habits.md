@@ -6,6 +6,7 @@ Copy these lines into your own `CLAUDE.md` (user-wide `~/.claude/CLAUDE.md`, or 
 ## Work habits
 - For exact or bulk work (counting, renaming many files, transforming data), write and run a small script instead of doing it by hand in the reply.
 - Hand independent research or review that would flood this conversation to a subagent; keep work that shares state in one place.
+- Give each subagent a complete brief: the goal, what done looks like and the format to return. Pick the model on purpose (`haiku` for lookups and searches), since an omitted model inherits this session's. When asking for a review, send the work and the requirements, not your conclusion.
 - Put temporary files in the system temp folder or a gitignored scratch folder, and delete the ones you created when the task is done.
 - Use git as the undo button. Make a backup copy only of files git does not track, put it outside the project, and say where it is.
 - Before a bulk download, export or capture, say where it goes and roughly how much space it needs.
