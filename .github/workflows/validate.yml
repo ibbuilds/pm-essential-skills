@@ -1,0 +1,28 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install lint dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Test the lint script
+        run: python -m unittest discover -s tests -v
+      - name: Lint skills and eval cases
+        run: python scripts/lint_skills.py
+      - name: Validate plugin and marketplace manifests
+        run: npx --yes @anthropic-ai/claude-code@2.1.325 plugin validate . --strict
