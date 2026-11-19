@@ -4,6 +4,8 @@ A Claude Code plugin that makes Claude better at the work around the work: stres
 
 Every skill earned its place in an eval: Claude does measurably worse without it. Ideas that Claude already handles on its own were tested and dropped (see [What was cut](#what-was-cut)).
 
+**Status: pre-release (0.9.0).** Nothing has been released yet. The first release, 1.0.0, comes after the pack has been tested in real use. Until then, installing tracks the `main` branch.
+
 ## Install
 
 In Claude Code:
@@ -26,16 +28,16 @@ Skills load on their own when your request matches them. You can also call any o
 | `retro` | "Let's do a retro", "how do we stop this happening again?" | Each friction point paired with the cheapest fix that will hold: a CLAUDE.md line, a hook, a skill change or nothing. Applied only after you approve. |
 | `write-skill` | "Create a skill that…", "make this stick" | The right tool for the job (hook, CLAUDE.md, output style or skill). For a skill: eval cases first, then a lean SKILL.md. |
 
-Measured with `claude plugin eval`, pass rate with the plugin vs without:
+Measured with `claude plugin eval` (3 runs per arm, Sonnet as judge), pass rate with the plugin vs without. Trigger cases count prompts that fire the skill plus near misses that correctly do not:
 
 | Skill | Behavior cases | Trigger cases |
 | --- | --- | --- |
 | `grill-me` | 100% vs 0–50% | 6/6 |
-| `handoff` | 100% vs 56–58% | 10/10 |
+| `handoff` | 100% vs 56–58% | 8/8 |
 | `humanize` | drafting: 100% vs 0%; rewriting: about even | 6/6 |
 | `breakdown` | 100% vs 0% | 6/6 |
 | `retro` | 100% vs 0% on routing fixes; even on spotting an ignored rule | 6/6 |
-| `write-skill` | 89% vs 33% on writing a skill to the standard | 6/6 |
+| `write-skill` | 67–89% vs 33% on writing a skill to the standard; even on choosing a hook over a skill | 6/6 |
 
 ## Sessions that stay sharp
 
