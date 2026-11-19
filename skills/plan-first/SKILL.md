@@ -1,6 +1,6 @@
 ---
 name: plan-first
-description: 'Plan before work. Use when a goal is open-ended, vague or large with open decisions ("research the best EHR", "a website for my bakery", "organize a fundraiser", "add dark mode"), or the user asks for a plan or says "grill me", "poke holes", "stress-test", "break this down" or "where do I start", even when you could start right away. Skip when the request names the change and what done looks like.'
+description: 'Plan before work. Use when the user asks for anything that takes more than one step (build, change, improve, research, write, organize, move, launch) without a plan and a clear finish line, or says "grill me", "poke holes in this", "what am I missing", "stress-test my plan", "break this down", "where do I start", "what are the steps" or "what''s the order of things", even when the request looks clear enough to start right away.'
 metadata:
   type: technique
 ---
