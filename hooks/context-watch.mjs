@@ -6,11 +6,16 @@
 // The budget is not the model's context limit. Answers degrade with absolute context
 // length, so a 1M-token window does not move the point where quality drops.
 //
+// It steps aside when the user already runs their own context policy: an auto-compact
+// window set through CLAUDE_CODE_AUTO_COMPACT_WINDOW or `autoCompactWindow` in a
+// settings file. Setting PM_CONTEXT_BUDGET turns it back on.
+//
+// PM_CONTEXT_WATCH         set to 0 or off to turn the check off
 // PM_CONTEXT_BUDGET        tokens treated as 100% (default 200000)
 // PM_CONTEXT_WARN_PERCENT  first warning, percent of the budget (default 50)
-// PM_CONTEXT_WARN_STEP     warn again every this many more percent (default 10)
+// PM_CONTEXT_WARN_STEP     warn again every this many more percent (default 25)
 import { closeSync, fstatSync, openSync, readFileSync, readSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 
 const TAIL_BYTES = 2_000_000;
@@ -60,9 +65,34 @@ function positive(value, fallback) {
   return Number.isFinite(number) && number > 0 ? number : fallback;
 }
 
+function setsCompactWindow(path) {
+  let settings;
+  try {
+    settings = JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    return false;
+  }
+  if (!settings || typeof settings !== "object") return false;
+  if (settings.autoCompactWindow != null) return true;
+  const perModel = settings.modelSettings;
+  return Boolean(perModel && typeof perModel === "object" && Object.values(perModel).some((model) => model?.autoCompactWindow != null));
+}
+
+// True when the user manages context themselves, so this check would compete with their policy.
+export function hasOwnContextPolicy(env, cwd) {
+  if (env.CLAUDE_CODE_AUTO_COMPACT_WINDOW) return true;
+  const userDir = env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude");
+  const files = [join(userDir, "settings.json")];
+  if (cwd) files.push(join(cwd, ".claude", "settings.json"), join(cwd, ".claude", "settings.local.json"));
+  return files.some(setsCompactWindow);
+}
+
 function main() {
   const input = readStdin();
   if (!input.transcript_path || input.agent_id) return;
+  const env = process.env;
+  if (/^(0|off|false|no)$/i.test(env.PM_CONTEXT_WATCH || "")) return;
+  if (!env.PM_CONTEXT_BUDGET && hasOwnContextPolicy(env, input.cwd)) return;
   let tokens;
   try {
     tokens = contextTokens(readTail(input.transcript_path));
@@ -71,7 +101,7 @@ function main() {
   }
   const budget = positive(process.env.PM_CONTEXT_BUDGET, 200_000);
   const warnAt = positive(process.env.PM_CONTEXT_WARN_PERCENT, 50);
-  const step = positive(process.env.PM_CONTEXT_WARN_STEP, 10);
+  const step = positive(process.env.PM_CONTEXT_WARN_STEP, 25);
   const percent = Math.round((tokens / budget) * 100);
   if (percent < warnAt) return;
 

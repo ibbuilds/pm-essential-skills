@@ -22,6 +22,11 @@ class ContextWatchTests(unittest.TestCase):
         self._tmp = tempfile.TemporaryDirectory()
         self.transcript = Path(self._tmp.name) / "session.jsonl"
         self.session = f"test-{uuid.uuid4().hex}"
+        # An empty user config dir, so the machine's own settings never leak into a test.
+        self.config = Path(self._tmp.name) / "config"
+        self.config.mkdir()
+        self.project = Path(self._tmp.name) / "project"
+        (self.project / ".claude").mkdir(parents=True)
 
     def tearDown(self):
         self._tmp.cleanup()
@@ -31,8 +36,10 @@ class ContextWatchTests(unittest.TestCase):
 
     def run_hook(self, lines, payload_extra=None, **env):
         self.transcript.write_text("\n".join(lines) + "\n", encoding="utf-8")
-        payload = json.dumps({"transcript_path": str(self.transcript), "session_id": self.session, **(payload_extra or {})})
-        result = subprocess.run([NODE, str(HOOK)], input=payload, capture_output=True, text=True, env={**os.environ, **env}, timeout=20)
+        payload = json.dumps({"transcript_path": str(self.transcript), "session_id": self.session, "cwd": str(self.project), **(payload_extra or {})})
+        base = {k: v for k, v in os.environ.items() if not k.startswith("PM_") and k != "CLAUDE_CODE_AUTO_COMPACT_WINDOW"}
+        base["CLAUDE_CONFIG_DIR"] = str(self.config)
+        result = subprocess.run([NODE, str(HOOK)], input=payload, capture_output=True, text=True, env={**base, **env}, timeout=20)
         self.assertEqual(result.returncode, 0, result.stderr)
         return result.stdout
 
@@ -59,8 +66,8 @@ class ContextWatchTests(unittest.TestCase):
 
     def test_warns_once_per_step(self):
         self.assertNotEqual(self.run_hook([assistant_line(0, 102_000)]), "")
-        self.assertEqual(self.run_hook([assistant_line(0, 110_000)]), "")
-        self.assertNotEqual(self.run_hook([assistant_line(0, 122_000)]), "")
+        self.assertEqual(self.run_hook([assistant_line(0, 140_000)]), "")
+        self.assertNotEqual(self.run_hook([assistant_line(0, 152_000)]), "")
 
     def test_percent_and_budget_are_configurable(self):
         self.assertEqual(self.run_hook([assistant_line(0, 110_000)], PM_CONTEXT_WARN_PERCENT="60"), "")
@@ -68,6 +75,30 @@ class ContextWatchTests(unittest.TestCase):
 
     def test_invalid_settings_fall_back_to_defaults(self):
         self.assertEqual(self.run_hook([assistant_line(0, 90_000)], PM_CONTEXT_BUDGET="abc", PM_CONTEXT_WARN_PERCENT="-5"), "")
+
+    def test_can_be_turned_off(self):
+        self.assertEqual(self.run_hook([assistant_line(0, 150_000)], PM_CONTEXT_WATCH="off"), "")
+
+    def test_steps_aside_for_a_compact_window_in_the_environment(self):
+        self.assertEqual(self.run_hook([assistant_line(0, 150_000)], CLAUDE_CODE_AUTO_COMPACT_WINDOW="300000"), "")
+
+    def test_steps_aside_for_a_compact_window_in_user_settings(self):
+        settings = {"modelSettings": {"claude-opus-5-5": {"autoCompactWindow": 300000}}}
+        (self.config / "settings.json").write_text(json.dumps(settings), encoding="utf-8")
+        self.assertEqual(self.run_hook([assistant_line(0, 150_000)]), "")
+
+    def test_steps_aside_for_a_compact_window_in_project_settings(self):
+        (self.project / ".claude" / "settings.local.json").write_text('{"autoCompactWindow": 400000}', encoding="utf-8")
+        self.assertEqual(self.run_hook([assistant_line(0, 150_000)]), "")
+
+    def test_explicit_budget_overrides_a_compact_window(self):
+        output = self.run_hook([assistant_line(0, 150_000)], CLAUDE_CODE_AUTO_COMPACT_WINDOW="300000", PM_CONTEXT_BUDGET="200000")
+        self.assertIn("75%", output)
+
+    def test_unrelated_or_broken_settings_do_not_silence_it(self):
+        (self.config / "settings.json").write_text('{"model": "opus", "modelSettings": {"x": {"effortLevel": "high"}}}', encoding="utf-8")
+        (self.project / ".claude" / "settings.json").write_text("{not json", encoding="utf-8")
+        self.assertNotEqual(self.run_hook([assistant_line(0, 150_000)]), "")
 
     def test_bad_input_is_ignored(self):
         result = subprocess.run([NODE, str(HOOK)], input="not json", capture_output=True, text=True, timeout=20)
