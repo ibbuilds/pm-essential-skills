@@ -79,6 +79,11 @@ class SessionStartTests(unittest.TestCase):
         self.assertIn("1 parked item.", output["systemMessage"])
         self.assertIn("fix encoding", output["hookSpecificOutput"]["additionalContext"])
 
+    def test_plain_bullets_count_as_open_items(self):
+        self.write_backlog("# Backlog\n\nSome notes.\n\n- Redesign site/index.html (parked 2026-11-18)\n* [X] old\n1. leave rota\n")
+        message = self.run_hook({"source": "startup", "cwd": str(self.cwd)})["systemMessage"]
+        self.assertIn("2 parked items. First: Redesign site/index.html", message)
+
     def test_finished_backlog_is_silent(self):
         self.write_backlog("- [x] 2026-11-01 done thing\n")
         self.assertIsNone(self.run_hook({"source": "startup", "cwd": str(self.cwd)}))

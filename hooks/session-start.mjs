@@ -68,9 +68,10 @@ export function backlogMessage(cwd) {
   } catch {
     return null;
   }
-  const open = text.split(/\r?\n/).filter((line) => /^\s*[-*] \[ \]/.test(line));
+  // Any list item counts, except ones ticked off with [x].
+  const open = text.split(/\r?\n/).filter((line) => /^\s*(?:[-*+]|\d+\.)\s+\S/.test(line) && !/^\s*(?:[-*+]|\d+\.)\s+\[[xX]\]/.test(line));
   if (open.length === 0) return null;
-  const first = open[0].replace(/^\s*[-*] \[ \]\s*/, "").slice(0, 120);
+  const first = open[0].replace(/^\s*(?:[-*+]|\d+\.)\s+(?:\[ \]\s*)?/, "").slice(0, 120);
   const items = open.length === 1 ? "1 parked item" : `${open.length} parked items`;
   return `BACKLOG.md has ${items}. First: ${first}`;
 }
