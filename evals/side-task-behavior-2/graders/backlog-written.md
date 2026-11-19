@@ -1,5 +1,5 @@
 ---
 type: regex
 target: { source: file, path: BACKLOG.md }
-pattern: '(?im)^\s*[-*].*(landing|index\.html|redesign)'
+pattern: '[-*][^\n]*([Ll]anding|index\.html|[Rr]edesign)'
 ---
