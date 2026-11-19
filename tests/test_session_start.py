@@ -90,15 +90,9 @@ class SessionStartTests(unittest.TestCase):
         self.write_backlog("- [ ] 2026-11-18 leave rota\n")
         self.assertIsNone(self.run_hook({"source": "resume", "cwd": str(self.cwd)}))
 
-    def test_cold_resume_of_a_large_session_warns_the_user(self):
-        output = self.run_hook({"source": "resume", "context_tokens": 182_340, "prompt_cache_likely_expired": True, "estimated_cache_write_usd": 1.1396})
-        self.assertIn("182k", output["systemMessage"])
-        self.assertIn("$1.14", output["systemMessage"])
-        self.assertNotIn("hookSpecificOutput", output)
-
-    def test_warm_or_small_resume_is_silent(self):
-        self.assertIsNone(self.run_hook({"source": "resume", "context_tokens": 182_340, "prompt_cache_likely_expired": False}))
-        self.assertIsNone(self.run_hook({"source": "resume", "context_tokens": 20_000, "prompt_cache_likely_expired": True}))
+    def test_resume_is_silent(self):
+        self.write_handoff()
+        self.assertIsNone(self.run_hook({"source": "resume", "cwd": str(self.cwd), "context_tokens": 182_340, "prompt_cache_likely_expired": True}))
 
     def test_bad_input_is_ignored(self):
         result = subprocess.run([NODE, str(HOOK)], input="not json", capture_output=True, text=True, timeout=20)

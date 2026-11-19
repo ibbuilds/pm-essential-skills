@@ -4,12 +4,9 @@
 //   load it so the fresh session continues the work without being asked.
 // - At startup or after /clear: if BACKLOG.md has open items, show the user how many,
 //   so parked work and "remind me to..." items come back.
-// - On resume: if the prompt cache has expired and the conversation is large, tell the
-//   user what resuming will cost before the first request is sent.
 // Never blocks the session.
 //
 // PM_HANDOFF_MAX_AGE_HOURS  ignore handoffs older than this (default 72)
-// PM_RESUME_WARN_TOKENS     warn on cold resumes at or above this size (default 50000)
 import { readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
@@ -84,25 +81,12 @@ export function startOutput(cwd, now = Date.now()) {
   return { ...handoff, systemMessage: `${handoff.systemMessage} ${backlog}` };
 }
 
-export function resumeOutput(input) {
-  const tokens = Number(input.context_tokens) || 0;
-  if (!input.prompt_cache_likely_expired || tokens < positive(process.env.PM_RESUME_WARN_TOKENS, 50_000)) return null;
-  const cost = Number(input.estimated_cache_write_usd);
-  const price = Number.isFinite(cost) && cost > 0 ? ` (about $${cost.toFixed(2)} at API rates)` : "";
-  return {
-    systemMessage:
-      `This conversation's prompt cache has expired. Your next message re-sends all ${Math.round(tokens / 1000)}k tokens${price}. ` +
-      "If you don't need its full detail, start a new session instead and continue from a handoff.",
-  };
-}
-
 function main() {
   const input = readStdin();
   if (input.agent_id) return;
   let output = null;
   try {
-    if (input.source === "resume") output = resumeOutput(input);
-    else if ((input.source === "clear" || input.source === "startup") && input.cwd) output = startOutput(input.cwd);
+    if ((input.source === "clear" || input.source === "startup") && input.cwd) output = startOutput(input.cwd);
   } catch {
     return;
   }
