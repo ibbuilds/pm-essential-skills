@@ -23,4 +23,4 @@ claude plugin eval . --case <case> --runs 3 --ablation with-without --scaffold -
 
 Write, Bash, WebSearch and WebFetch only run in an eval when `--allow-tools` grants them, even if the case lists them. Granting Bash fails on machines where the sandbox cannot inspect every PATH directory; grant only what the case needs. The default Haiku judge is noisy on writing-quality graders; use Sonnet for behavior cases.
 
-On Windows use `py -3` for `python`. Model-backed evals spend real usage: always pass `--max-cost-usd` and run only the cases you changed.
+On Windows use `py -3` for `python`, and run evals from PowerShell after `$env:Path = 'C:\Program Files\Git\bin;' + $env:Path`, or every `setup.sh` scaffold fails with "bash not in PATH". `--case` takes one glob; repeat the command per skill. Model-backed evals spend real usage: always pass `--max-cost-usd` and run only the cases you changed.

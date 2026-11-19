@@ -44,7 +44,7 @@ class ContextWatchTests(unittest.TestCase):
         context = json.loads(output)["hookSpecificOutput"]
         self.assertEqual(context["hookEventName"], "UserPromptSubmit")
         self.assertIn("60%", context["additionalContext"])
-        self.assertIn("`handoff`", context["additionalContext"])
+        self.assertIn("`pause`", context["additionalContext"])
 
     def test_budget_does_not_grow_with_a_large_window(self):
         self.assertIn("150%", self.run_hook([assistant_line(0, 250_000), assistant_line(0, 300_000)]))

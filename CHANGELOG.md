@@ -2,7 +2,18 @@
 
 ## Unreleased (0.9.0)
 
-Not released yet. The first release will be 1.0.0, cut only after the pack has been tested in real use.
+Not released yet. The first release will be 1.0.0, cut after the pack has been tested in real use.
+
+### Skill catalog rework
+
+- `plan-first` replaces `grill-me` and `breakdown`. It fires on any multi-step request that comes without a plan, asks one question at a time, and ends with a checkable plan and a "Go ahead?". It also grills an existing plan.
+- New `side-task`: a request unrelated to the current work gets three options (park it in `BACKLOG.md`, its own session or worktree, or do it now) instead of a silent switch.
+- New `unstuck`: after two failed fixes, Claude lists what each attempt ruled out and tests the cause before trying again.
+- `handoff` is now `pause`, and `retro` is now `never-again`. `pause` no longer claims repeated failures or side requests, and `never-again` owns "make that stick" and "from now on". `humanize` and `write-skill` keep their names.
+- New PreCompact hook: compaction summaries keep the goal, decisions, dead ends, last check and next action. Your own `/compact` instructions come first.
+- Eval-run transcripts are no longer committed next to `history_file` cases.
+
+### Earlier in 0.9.0
 
 What the pack contains today, compared with the legacy suite (kept at commit `6fd518f`):
 

@@ -1,6 +1,6 @@
 ---
 name: write-skill
-description: 'Skill authoring. Use when the user asks to create, write, edit or fix a skill or SKILL.md, wants a repeated correction to "stick", or edits CLAUDE.md or AGENTS.md, even when the change looks like one quick paragraph.'
+description: 'Skill authoring. Use when the user asks to create, write, edit, fix or test a skill or SKILL.md, or to turn a procedure they keep repeating into a skill, even when the change looks like one quick paragraph.'
 metadata:
   type: technique
 ---

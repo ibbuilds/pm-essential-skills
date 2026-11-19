@@ -1,6 +1,6 @@
 ---
 name: humanize
-description: 'Human-sounding writing. Use when writing or rewriting prose that a person will send or publish as their own (an email, post, message, bio, cover letter, announcement, review, speech), or the user says "sounds like AI", "sounds like ChatGPT", "humanize", "make it sound like me" or "less robotic", even when the draft already reads smoothly.'
+description: 'Human-sounding writing. Use when writing or rewriting prose that a person will send or publish as their own (an email, post, message, bio, cover letter, announcement, review, speech), or the user says "sounds like AI", "sounds like ChatGPT", "sound human", "humanize", "make it sound like me" or "less robotic", even when the draft already reads smoothly.'
 metadata:
   type: technique
 ---
