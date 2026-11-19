@@ -161,6 +161,15 @@ class EvalCaseTests(LintTestCase):
         self.write("evals/empty-case/graders/criteria.md", "---\ntype: llm\n---\nPASS\n")
         self.assertOneProblem("prompt.md or case.yaml")
 
+    def test_case_yaml_name_must_match_folder(self):
+        self.eval_case("pause-behavior-1")
+        self.write("evals/pause-behavior-1/case.yaml", 'schema_version: "1.1"\nname: handoff-behavior-1\n')
+        self.assertOneProblem("must match the folder name")
+
+    def test_inline_regex_flags_are_rejected(self):
+        self.eval_case("pause-behavior-1", grader="---\ntype: regex\npattern: '(?i)backlog'\n---\n")
+        self.assertOneProblem("inline flags")
+
     def test_results_folder_is_ignored(self):
         self.write("evals/results/2026/report.html", "<html></html>")
         self.assertEqual(self.problems(), [])
