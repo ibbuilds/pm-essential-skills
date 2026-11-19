@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: plan-first-trigger-near-miss-4
+context:
+  scaffold_script: setup.sh
