@@ -1,11 +1,11 @@
 # Maintaining this plugin
 
-This repository is a Claude Code plugin. Skills live in `skills/<name>/SKILL.md`. Eval cases for `claude plugin eval` live in `evals/<case>/`.
+This repository is a Claude Code plugin. Skills live in `skills/<name>/SKILL.md`. Eval cases for `claude plugin eval` live in `evals/<case>/`; the case format is in `evals/README.md`.
 
 ## Every skill
 
 - Write the eval case first and run it without the skill. Add the skill only when that baseline fails, and keep a line only when removing it makes an eval worse.
-- Model-invoked description: one line, at most 500 characters. Start with the leading word, then "Use when" with the phrases users type, any tokens only this skill owns, and an "even when..." clause naming the shortcut Claude would take instead. Never summarize the workflow.
+- Model-invoked description: one line, at most 500 characters, shorter when possible (all skill descriptions share a listing budget of about 1% of the context window). Start with the leading word, then "Use when" with the phrases users type, any tokens only this skill owns, and an "even when..." clause naming the shortcut Claude would take instead. Never summarize the workflow.
 - User-invoked skill (`disable-model-invocation: true`): a one-line summary for humans.
 - Body: only what Claude would not do by default. Use positive instructions, steps that end in "Done when...", and output templates in XML-style tags. Prohibitions belong only in discipline skills, backed by excuses seen in baseline runs.
 - Budgets: 500 body words, or 1,500 for `metadata.type: discipline`; 20 KB per `SKILL.md`. Put content that must survive compaction first.

@@ -1,4 +1,4 @@
-# Eval cases for `claude plugin eval`
+# Eval cases
 
 One folder per case under `evals/`, named `<skill>-trigger-<direct|reworded|near-miss>-<n>` or `<skill>-behavior-<n>`.
 
