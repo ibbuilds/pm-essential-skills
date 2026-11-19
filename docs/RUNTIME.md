@@ -35,4 +35,6 @@ It steps aside when the user already has a context policy: `CLAUDE_CODE_AUTO_COM
 | A code bug that needs a reproduction | `swe-essential-skills:diagnose` | `unstuck` calls it for its check step when it is installed |
 | Handoffs and writing that sounds human | `pause`, `humanize` | SWE removed its own copies |
 
-Two changes are still needed in SWE Essential Skills (out of scope here): the `spec` description still says "use grill-me if installed", which should now be `pm-essential-skills:plan-first`, and its SessionStart hook prints routing text on every start, including `/clear` and `compact`.
+Both packs run alone or together. Every hand-off to the other pack is conditional ("when the Skill tool lists ..."), and both packs load side by side with no skill-name or hook collision. SWE Essential Skills' `spec` now points plan stress-tests to `pm-essential-skills:plan-first`, and its SessionStart reminder no longer repeats on `resume`, where the transcript already holds it.
+
+The requirements above are merged, with SWE Essential Skills' list and the author's global setup, into one Phase 3 runtime specification kept outside both plugins. This file stays the record of what this plugin needs from a runtime.
