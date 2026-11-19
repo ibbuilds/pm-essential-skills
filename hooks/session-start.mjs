@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 // SessionStart hook.
 // - After /clear or at startup: if a recent HANDOFF.md sits in the working directory,
-//   load it so the fresh session continues the work without being asked.
+//   load it so the fresh session continues the work without being asked. In a git repository,
+//   commits made after the handoff are listed: its State section may no longer hold.
 // - At startup or after /clear: if BACKLOG.md has open items, show the user how many,
 //   so parked work and "remind me to..." items come back.
 // Never blocks the session.
 //
 // PM_HANDOFF_MAX_AGE_HOURS  ignore handoffs older than this (default 72)
+import { execFileSync } from "node:child_process";
 import { readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
@@ -32,6 +34,16 @@ function age(ms) {
   return hours < 48 ? `${hours} h` : `${Math.round(hours / 24)} days`;
 }
 
+// Commits after the handoff was written, newest first; [] outside a repository or on any error.
+export function commitsSince(cwd, ms) {
+  try {
+    const out = execFileSync("git", ["log", `--since=@${Math.floor(ms / 1000)}`, "--format=%h %s", "-n", "6"], { cwd, encoding: "utf8", timeout: 3000, stdio: ["ignore", "pipe", "ignore"] });
+    return out.split(/\r?\n/).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
 export function handoffOutput(cwd, now = Date.now()) {
   const path = join(cwd, "HANDOFF.md");
   let stats;
@@ -45,15 +57,20 @@ export function handoffOutput(cwd, now = Date.now()) {
   if (elapsed > maxAge) return null;
   let text = readFileSync(path, "utf8");
   if (text.length > MAX_CHARS) text = `${text.slice(0, MAX_CHARS)}\n[truncated: read HANDOFF.md for the rest]`;
+  const later = commitsSince(cwd, stats.mtimeMs);
+  const n = later.length > 5 ? "5+ commits" : later.length === 1 ? "1 commit" : `${later.length} commits`;
+  const stale = later.length ? ` ${n} since the handoff: its State may be out of date.` : "";
+  const staleContext = later.length ? `\n\n${n} since the handoff was written (newest first), so check its State against git before relying on it:\n${later.slice(0, 5).join("\n")}` : "";
   return {
-    systemMessage: `HANDOFF.md from ${age(elapsed)} ago is loaded. Say "continue" to pick it up.`,
+    systemMessage: `HANDOFF.md from ${age(elapsed)} ago is loaded.${stale} Say "continue" to pick it up.`,
     hookSpecificOutput: {
       hookEventName: "SessionStart",
       additionalContext:
         `An earlier session left this handoff in HANDOFF.md, written ${age(elapsed)} ago. ` +
         'If the user\'s first message continues that work, or is just "continue" or "go", re-check the state it describes, then start from its Next action. ' +
         "If the user asks for something unrelated, ignore the handoff. Delete HANDOFF.md once its work is finished.\n\n" +
-        text,
+        text +
+        staleContext,
     },
   };
 }

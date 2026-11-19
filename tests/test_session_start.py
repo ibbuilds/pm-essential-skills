@@ -49,6 +49,34 @@ class SessionStartTests(unittest.TestCase):
         self.assertIsNone(self.run_hook({"source": "clear", "cwd": str(self.cwd)}))
         self.assertIsNotNone(self.run_hook({"source": "clear", "cwd": str(self.cwd)}, PM_HANDOFF_MAX_AGE_HOURS="200"))
 
+    def git(self, *args, hours_ago=0):
+        stamp = f"@{int(time.time() - hours_ago * 3600)} +0000"
+        env = {**os.environ, "GIT_AUTHOR_DATE": stamp, "GIT_COMMITTER_DATE": stamp}
+        subprocess.run(["git", "-c", "user.email=t@example.invalid", "-c", "user.name=t", *args], cwd=self.cwd, env=env, check=True, capture_output=True)
+
+    @unittest.skipIf(shutil.which("git") is None, "git is not installed")  # runtime-allow: environment guard, same as the node check above
+    def test_commits_after_the_handoff_are_flagged(self):
+        self.git("init", "-q")
+        (self.cwd / "a.txt").write_text("a")
+        self.git("add", "-A")
+        self.git("commit", "-qm", "before", hours_ago=3)
+        self.write_handoff(hours_old=2)
+        output = self.run_hook({"source": "clear", "cwd": str(self.cwd)})
+        self.assertNotIn("since the handoff", output["hookSpecificOutput"]["additionalContext"])
+        (self.cwd / "b.txt").write_text("b")
+        self.git("add", "-A")
+        self.git("commit", "-qm", "after the handoff")
+        output = self.run_hook({"source": "clear", "cwd": str(self.cwd)})
+        context = output["hookSpecificOutput"]["additionalContext"]
+        self.assertIn("1 commit since the handoff", context)
+        self.assertIn("after the handoff", context)
+        self.assertIn("1 commit since", output["systemMessage"])
+
+    def test_no_git_no_staleness_note(self):
+        self.write_handoff(hours_old=2)
+        output = self.run_hook({"source": "clear", "cwd": str(self.cwd)})
+        self.assertNotIn("since the handoff", output["hookSpecificOutput"]["additionalContext"])
+
     def test_no_handoff_no_output(self):
         self.assertIsNone(self.run_hook({"source": "clear", "cwd": str(self.cwd)}))
 
