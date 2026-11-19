@@ -1,19 +1,47 @@
 ---
 name: never-again
-description: 'Lessons that stick. Use when the user says "never again", "so this doesn''t happen again", "make that stick", "from now on, always", "remember this", "what went wrong", "retro" or "retrospective" about how Claude worked, even when one more line in CLAUDE.md looks like enough.'
+description: 'Fixes that stick. Use when the user corrects the same thing a second time ("I already told you", "again? we use pnpm", "how many times", "like I said", "you did X again"), or asks for a "retro", "what went wrong", "make that stick", "from now on, always", "never again", even when apologizing and complying looks like enough.'
 metadata:
   type: technique
 ---
 
-# Retro
+# Never again
 
-A **retro** turns the friction in a working session into changes that stop it from coming back.
+A repeated correction or a retro becomes one durable change, applied only after the user approves it.
 
-## Process
+## Repeated correction
 
-1. List each friction point as it happened: what Claude did, what the user wanted instead. Done when every point is one concrete line.
-2. Give each point one destination, the cheapest one that will actually hold: no change, a fix to code or docs, a line in CLAUDE.md, a reply preference, a skill edit, or a hook when it must hold every time. Done when every point has a destination.
-3. Present the changes for approval:
+A first correction ("use pnpm, not npm") needs no skill: comply. Use this section when the user corrects the same thing again, in any wording.
+
+1. Do the corrected task first, as the user now asks. Done when the reply carries the corrected result.
+2. Pick the destination from the table. Done when exactly one destination is chosen.
+3. Check the existing file first. If a line already covers it, replace or merge that line, or move up to a hook; never append a duplicate. Done when the change is a merge or a new line that nothing covers.
+4. Add one short offer at the end of the reply, with the exact line or snippet, ending "Add it?". Done when the offer fits in a few lines.
+5. Apply only after a yes.
+
+## Destinations
+
+| Situation | Destination |
+| --- | --- |
+| Personal preference of this one user | Auto memory (code.claude.com/docs/en/memory#auto-memory) |
+| Rule the project or team needs every session | A line in the project `CLAUDE.md`, kept under 200 lines |
+| Must happen every single time | A hook in `.claude/settings.json` |
+| Repeated multi-step procedure | A skill: Anthropic's skill-creator, or a minimal `SKILL.md` |
+| One-off or already handled | No change |
+
+Hook example for "never run npm":
+
+```json
+{ "hooks": { "PreToolUse": [ { "matcher": "Bash", "hooks": [ { "type": "command", "command": "jq -e '.tool_input.command | test(\"\\\\bnpm\\\\b\") | not' >/dev/null || { echo 'Use pnpm, not npm' >&2; exit 2; }" } ] } ] } }
+```
+
+## Retro
+
+When the user asks for a retro, a look back or to make something stick:
+
+1. List each friction point: what Claude did, what the user wanted instead. Done when every point is one concrete line.
+2. Give each point one destination from the table, the cheapest that will hold. Done when every point has one.
+3. Present the changes:
 
    <retro-template>
    | # | What happened | Destination | Exact change |
@@ -24,4 +52,4 @@ A **retro** turns the friction in a working session into changes that stop it fr
    </retro-template>
 
    Done when each row holds text the user could apply as is.
-4. Apply only the rows the user approves. For a skill edit, call the Skill tool with `write-skill`.
+4. Apply only the rows the user approves.
