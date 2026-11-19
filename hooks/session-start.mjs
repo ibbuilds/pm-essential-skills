@@ -2,6 +2,8 @@
 // SessionStart hook.
 // - After /clear or at startup: if a recent HANDOFF.md sits in the working directory,
 //   load it so the fresh session continues the work without being asked.
+// - At startup or after /clear: if BACKLOG.md has open items, show the user how many,
+//   so parked work and "remind me to..." items come back.
 // - On resume: if the prompt cache has expired and the conversation is large, tell the
 //   user what resuming will cost before the first request is sent.
 // Never blocks the session.
@@ -59,6 +61,28 @@ export function handoffOutput(cwd, now = Date.now()) {
   };
 }
 
+export function backlogMessage(cwd) {
+  let text;
+  try {
+    text = readFileSync(join(cwd, "BACKLOG.md"), "utf8");
+  } catch {
+    return null;
+  }
+  const open = text.split(/\r?\n/).filter((line) => /^\s*[-*] \[ \]/.test(line));
+  if (open.length === 0) return null;
+  const first = open[0].replace(/^\s*[-*] \[ \]\s*/, "").slice(0, 120);
+  const items = open.length === 1 ? "1 parked item" : `${open.length} parked items`;
+  return `BACKLOG.md has ${items}. First: ${first}`;
+}
+
+export function startOutput(cwd, now = Date.now()) {
+  const handoff = handoffOutput(cwd, now);
+  const backlog = backlogMessage(cwd);
+  if (!backlog) return handoff;
+  if (!handoff) return { systemMessage: backlog };
+  return { ...handoff, systemMessage: `${handoff.systemMessage} ${backlog}` };
+}
+
 export function resumeOutput(input) {
   const tokens = Number(input.context_tokens) || 0;
   if (!input.prompt_cache_likely_expired || tokens < positive(process.env.PM_RESUME_WARN_TOKENS, 50_000)) return null;
@@ -77,7 +101,7 @@ function main() {
   let output = null;
   try {
     if (input.source === "resume") output = resumeOutput(input);
-    else if ((input.source === "clear" || input.source === "startup") && input.cwd) output = handoffOutput(input.cwd);
+    else if ((input.source === "clear" || input.source === "startup") && input.cwd) output = startOutput(input.cwd);
   } catch {
     return;
   }

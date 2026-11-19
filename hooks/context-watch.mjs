@@ -99,7 +99,7 @@ function main() {
         hookEventName: "UserPromptSubmit",
         additionalContext:
           `Context check: this conversation is at ${size}, ${percent}% of its ${Math.round(budget / 1000)}k quality budget. ` +
-          "Answers get less reliable from here. Handle the user's message, finishing only the step in progress. " +
+          "Every turn re-sends all of it, and long conversations give less focused answers. Handle the user's message, finishing only the step in progress. " +
           "Then, unless the whole task is done, call the Skill tool with `pause` so the work continues in a fresh session.",
       },
     }),

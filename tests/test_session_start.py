@@ -62,6 +62,29 @@ class SessionStartTests(unittest.TestCase):
         self.assertLess(len(context), 10_000)
         self.assertIn("truncated", context)
 
+    def write_backlog(self, text):
+        (self.cwd / "BACKLOG.md").write_text(text, encoding="utf-8")
+
+    def test_open_backlog_items_are_shown_to_the_user_only(self):
+        self.write_backlog("- [x] 2026-11-01 done thing\n- [ ] 2026-11-18 book flights to Lisbon. Context: lit review\n- [ ] 2026-11-18 leave rota\n")
+        output = self.run_hook({"source": "startup", "cwd": str(self.cwd)})
+        self.assertIn("2 parked items", output["systemMessage"])
+        self.assertIn("book flights to Lisbon", output["systemMessage"])
+        self.assertNotIn("hookSpecificOutput", output)
+
+    def test_backlog_and_handoff_are_both_reported(self):
+        self.write_handoff()
+        self.write_backlog("- [ ] 2026-11-18 leave rota\n")
+        output = self.run_hook({"source": "clear", "cwd": str(self.cwd)})
+        self.assertIn("1 parked item.", output["systemMessage"])
+        self.assertIn("fix encoding", output["hookSpecificOutput"]["additionalContext"])
+
+    def test_finished_backlog_is_silent(self):
+        self.write_backlog("- [x] 2026-11-01 done thing\n")
+        self.assertIsNone(self.run_hook({"source": "startup", "cwd": str(self.cwd)}))
+        self.write_backlog("- [ ] 2026-11-18 leave rota\n")
+        self.assertIsNone(self.run_hook({"source": "resume", "cwd": str(self.cwd)}))
+
     def test_cold_resume_of_a_large_session_warns_the_user(self):
         output = self.run_hook({"source": "resume", "context_tokens": 182_340, "prompt_cache_likely_expired": True, "estimated_cache_write_usd": 1.1396})
         self.assertIn("182k", output["systemMessage"])
