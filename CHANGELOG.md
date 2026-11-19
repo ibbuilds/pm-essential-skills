@@ -4,6 +4,23 @@
 
 Not released yet. The first release will be 1.0.0, cut after the pack has been tested in real use.
 
+### Responsibilities pass
+
+- The context check steps aside when you already set an auto-compact window (`autoCompactWindow` or `CLAUDE_CODE_AUTO_COMPACT_WINDOW`), so it no longer competes with your own context policy. It repeats every 25% instead of every 10%, and `PM_CONTEXT_WATCH=off` turns it off.
+- Removed the PreCompact brief and the cold-resume cost warning. Compaction and cost policy belong to Claude Code and your global setup. [docs/RUNTIME.md](docs/RUNTIME.md) records what moved and what a runtime should own.
+- Removed the Concise output style (Claude Code has a built-in one with the same name) and the work-habits snippet (orchestration rules that belong in your global setup).
+- `plan-first` hands software specs and ticket splitting to SWE Essential Skills' `spec` and `tickets` when they're installed, and `unstuck` uses its `diagnose` to reproduce a code bug.
+- `humanize`'s last scan also checks for lists of three.
+
+### First-version audit
+
+- `never-again` now fires on its own when you correct the same thing a second time ("I already told you, we use pnpm"): Claude does the task, then offers one exact durable fix and applies it only after a yes. It routes personal preferences to Claude Code's auto memory, merges into existing `CLAUDE.md` lines instead of appending, and no longer claims "remember this", which auto memory handles.
+- `side-task` fires only while the current work is unfinished. Its own-session option no longer suggests `/fork`, which copies the whole conversation. A finished task followed by the next one is no longer claimed by `side-task` or `pause`.
+- Parked `BACKLOG.md` items now come back: at startup and after `/clear`, a one-line message lists how many are open and the first one.
+- `plan-first` adds a stop rule, starts no work before "go", and saves an approved multi-session plan to `PLAN.md` as checkable milestones. New near-miss cases confirm it stays silent on clear, specific requests.
+- `write-skill` is removed: Anthropic's skill-creator and `/skill-doctor` cover skill authoring. The eval case format moved to `evals/README.md`.
+- The context check is framed around cost and focus. The README is rewritten around what each skill does, when it starts and what you get.
+
 ### Skill catalog rework
 
 - `plan-first` replaces `grill-me` and `breakdown`. It fires on any multi-step request that comes without a plan, asks one question at a time, and ends with a checkable plan and a "Go ahead?". It also grills an existing plan.
