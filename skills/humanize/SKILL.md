@@ -12,7 +12,7 @@ metadata:
 ## Process
 
 1. Write from the specifics the user gave: names, numbers, dates, the actual reason. Where a detail that matters is missing, put a short `[placeholder]`. Never invent experiences, feelings, quotes or anecdotes for the user. Done when every sentence is either the user's own fact or a placeholder.
-2. Check the draft against every tell below and rewrite each hit, then scan once more for contrasts ("not just", "not X but Y") and dashes, which survive a first pass. Done when none are left.
+2. Check the draft against every tell below and rewrite each hit, then scan once more for contrasts ("not just", "not X but Y"), lists of three and dashes, which survive a first pass. Done when none are left.
 
    <tells>
    - Punctuation: em dashes (use a comma, a period or parentheses); emoji as bullets or decoration; bold phrases inside short messages; more than two hashtags.

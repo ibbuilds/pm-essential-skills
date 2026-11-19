@@ -9,6 +9,8 @@ metadata:
 
 Agree the finish line before doing the work. Skip this when the request names what to change and what done looks like, for a concrete plan the user says to run, and for the next step of already agreed work.
 
+When the request is a software feature and the Skill tool lists `swe-essential-skills:spec`, call the Skill tool with `swe-essential-skills:spec` instead: it owns specs for code. To split an existing spec into tickets, call the Skill tool with `swe-essential-skills:tickets` when it is listed.
+
 ## Process
 
 1. Read what exists: the request, any plan or file the user points to, the documents or code around it. Look up every fact you can instead of asking. Done when you know which decisions are still open.
