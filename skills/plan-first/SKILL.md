@@ -7,11 +7,13 @@ metadata:
 
 # Plan first
 
-Agree the finish line before doing the work. Skip this for one-step requests, for a concrete plan the user says to run, and for the next step of already agreed work.
+Agree the finish line before doing the work. Skip this when the request names what to change and what done looks like, for a concrete plan the user says to run, and for the next step of already agreed work.
+
+When the request is a software feature and the Skill tool lists `swe-essential-skills:spec`, call the Skill tool with `swe-essential-skills:spec` instead: it owns specs for code. To split an existing spec into tickets, call the Skill tool with `swe-essential-skills:tickets` when it is listed.
 
 ## Process
 
-1. Read what exists: the request, any plan or file the user points to, the documents or code around it. Every fact you can look up is a question you skip. Done when you know which decisions are still open.
+1. Read what exists: the request, any plan or file the user points to, the documents or code around it. Look up every fact you can instead of asking. Done when you know which decisions are still open.
 2. Ask about the open decision that would hurt most if it were wrong. One sentence with one question mark, answerable in a line. Save every follow-up for a later turn.
 
    <question-template>
@@ -21,7 +23,7 @@ Agree the finish line before doing the work. Skip this for one-step requests, fo
    </question-template>
 
    Done when the recommendation is the last line of your message, with no preview of later questions, and you are waiting for the answer.
-3. Follow the answer's branch. A new dependency, a contradiction with an earlier answer, or a vague word such as "soon", "most" or "should be fine" earns the next question. Ask as many rounds as the request is vague; a clear request needs one confirmation. If the user says "just go" or "your call", adopt your recommendations. Done when every branch is settled or deliberately parked.
+3. Follow the answer's branch. A new dependency, a contradiction with an earlier answer, or a vague word such as "soon", "most" or "should be fine" earns the next question. If the user says "just go" or "your call", adopt your recommendations. Stop asking when no remaining open decision would change the plan. Done when every branch is settled or deliberately parked.
 4. Close with the result:
    - The user had no plan: present one and ask "Go ahead?". Work begins when the user says go.
    - The user asked you to challenge their plan: give the decision table and the first action.
@@ -41,6 +43,6 @@ Agree the finish line before doing the work. Skip this for one-step requests, fo
    </plan-template>
 
    Put the riskiest milestone as early as its dependencies allow, and say which milestones can run in parallel. Done when every milestone has a done condition and its dependencies, and a new plan ends with "Go ahead?".
-5. When the work spans more than one session, or the user asks, save the plan to `PLAN.md`.
+5. When the work spans more than one session and the user approves the plan, save it to `PLAN.md` with each milestone as a `- [ ]` line, so a fresh session can start from the file alone.
 
 If the user cannot answer a question, offer a questionnaire for whoever can: one question per line, with context and your recommended answer.

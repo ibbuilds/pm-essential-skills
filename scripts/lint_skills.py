@@ -178,6 +178,15 @@ def lint_eval_case(case_dir: Path) -> list[str]:
             if not body.strip():
                 report("prompt.md has no prompt text")
 
+    if has_case_yaml:
+        try:
+            case_fields = yaml.safe_load(read_text(case_dir / "case.yaml")) or {}
+        except yaml.YAMLError:
+            case_fields = None
+            report("case.yaml is not valid YAML")
+        if isinstance(case_fields, dict) and case_fields.get("name") != case_dir.name:
+            report(f"case.yaml name '{case_fields.get('name')}' must match the folder name, or --case filters skip it")
+
     graders = sorted((case_dir / "graders").glob("*.md"))
     if not graders and not has_case_yaml:
         report("needs at least one grader in graders/")
@@ -190,6 +199,9 @@ def lint_eval_case(case_dir: Path) -> list[str]:
         grader_type = fields.get("type")
         if grader_type not in GRADER_TYPES:
             report(f"graders/{grader.name}: type must be one of: {', '.join(sorted(GRADER_TYPES))}")
+        pattern = fields.get("pattern")
+        if isinstance(pattern, str) and re.match(r"\(\?[a-z]+\)", pattern):
+            report(f"graders/{grader.name}: the eval runner uses JavaScript regex, which rejects inline flags like '(?i)'")
     return problems
 
 
