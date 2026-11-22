@@ -8,6 +8,7 @@
   "plugins": [
     {
       "name": "pm-essential-skills",
+      "displayName": "pm-essential-skills",
       "source": "./",
       "description": "Skills that make Claude plan before it works, keep one task per session, get unstuck, hand off cleanly, make repeated corrections stick and write like a person."
     }
